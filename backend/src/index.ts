@@ -1,9 +1,11 @@
-import {exec} from 'child_process';
+
 import * as express from 'express';
 import path = require('path');
+import configureAuthHandlers from './handlers/auth';
+import configureCliHandlers from './handlers/node';
 
 const app = express();
-const port = 8080; // default port to listen
+const port = process.env.PORT || 8080;
 
 // define a route handler for the default home page
 app.get('/', (req, res) => {
@@ -11,23 +13,9 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../../../frontend/index.html'));
 });
 
-app.post('/start', (req, res) => {
-  // Exec the CLI validator start command
-  exec('operator-cli start', (err, stdout, stderr) => {
-    console.log('operator-cli start result: ', err, stdout, stderr);
-    res.end();
-  });
-  console.log('executing operator-cli start...');
-});
+configureAuthHandlers(app)
 
-app.post('/stop', (req, res) => {
-  // Exec the CLI validator stop command
-  exec('operator-cli stop', (err, stdout, stderr) => {
-    console.log('operator-cli stop result: ', err, stdout, stderr);
-    res.end();
-  });
-  console.log('executing operator-cli stop...');
-});
+configureCliHandlers(app)
 
 // start the express server
 app.listen(port, () => {
