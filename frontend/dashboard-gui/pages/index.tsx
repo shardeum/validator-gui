@@ -1,5 +1,5 @@
 import { useNodeStatus } from '../hooks/useNodeStatus';
-import { BarElement, CategoryScale, Chart as ChartJS, LinearScale, Title, Tooltip } from 'chart.js';
+import { BarElement, CategoryScale, Chart as ChartJS, ChartOptions, LinearScale, Title, Tooltip } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { useNodeStatusHistory } from '../hooks/useNodeStatusHistory';
 
@@ -20,7 +20,7 @@ export const options = {
       }
     }
   }
-};
+} as any as ChartOptions;
 
 export default function Overview() {
   const {nodeStatus, isLoading, isError} = useNodeStatus()
@@ -59,6 +59,7 @@ export default function Overview() {
   };
 
 
+  // @ts-ignore
   return <>
     {!!nodeStatus && <div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

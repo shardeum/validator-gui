@@ -22,10 +22,22 @@ export default function Performance() {
               <h1 className="font-semibold mb-3">Performance</h1>
               <div
                   className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                  <div>CPU usage AVG: {performance[0].cpu}%</div>
-                  <div>RAM usage AVG: {performance[0].ram}%</div>
-                  <div>Disk usage AVG: {performance[0].disk}</div>
-                  <div>Network usage AVG: {performance[0].network}%</div>
+                  <div className="flex justify-between h-7">
+                      <div>CPU usage AVG: {performance[0].cpu}%</div>
+                      <Doughnut data={mapToDoughnut(performance[0].cpu, {spacing: 2})}/>
+                  </div>
+                  <div className="flex justify-between h-7">
+                      <div>RAM usage AVG: {performance[0].ram}%</div>
+                      <Doughnut data={mapToDoughnut(performance[0].ram, {spacing: 2})}/>
+                  </div>
+                  <div className="flex justify-between h-7">
+                      <div>Disk usage AVG: {performance[0].disk}</div>
+                      <Doughnut data={mapToDoughnut(performance[0].disk, {spacing: 2})}/>
+                  </div>
+                  <div className="flex justify-between h-7">
+                      <div>Network usage AVG: {performance[0].network}%</div>
+                      <Doughnut data={mapToDoughnut(performance[0].network, {spacing: 2})}/>
+                  </div>
               </div>
           </div>
           <div className="flex flex-col items-stretch">

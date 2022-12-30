@@ -1,5 +1,5 @@
 export interface NodeStatus {
-  state: 'active' | 'paused' | 'inactive' | 'unknown'
+  state: 'active' | ' standby' | 'syncing'
   totalTimeValidating: number
   lastActive: string
   stakeAmount: string

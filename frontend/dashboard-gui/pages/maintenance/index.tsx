@@ -7,7 +7,7 @@ import { ArrowRightIcon, ExclamationCircleIcon } from '@heroicons/react/20/solid
 
 export default function Maintenance() {
   const {version} = useNodeVersion()
-  const {nodeStatus} = useNodeStatus()
+  const {nodeStatus, startNode, stopNode} = useNodeStatus()
   const {performance} = useNodePerformance()
 
   return <>{!!(performance && version && nodeStatus) && <div>
@@ -31,7 +31,11 @@ export default function Maintenance() {
                       </div>
                   </div>
                   <div className="flex justify-end">
-                      <button className="p-3 bg-blue-700 text-stone-200">
+                      <button className="p-3 bg-blue-700 text-stone-200 mr-2" onClick={() => startNode()}>
+                          Start Node
+                          <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
+                      </button>
+                      <button className="p-3 bg-blue-700 text-stone-200" onClick={() => stopNode()}>
                           Stop Node
                           <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
                       </button>

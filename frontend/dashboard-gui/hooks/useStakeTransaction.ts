@@ -4,6 +4,7 @@ export default function useStakeTransaction() {
   return {
     stakeTransaction: async (blobData: any) => {
       try {
+        // @ts-ignore
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         const [gasPrice, from, nonce] = await Promise.all([

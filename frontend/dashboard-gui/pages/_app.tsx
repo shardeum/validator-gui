@@ -1,7 +1,7 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import Layout from '../components/layouts';
-import { appWithTranslation } from 'next-i18next';
+// import { appWithTranslation } from 'next-i18next';
 import { ReactElement } from 'react';
 import { NextPage } from 'next';
 
@@ -24,4 +24,5 @@ function App({Component, pageProps}: AppPropsWithLayout) {
   )
 }
 
-export default appWithTranslation(App)
+// export default appWithTranslation(App)
+export default App

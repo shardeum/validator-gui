@@ -21,7 +21,7 @@ export default function Layout({children}: PropsWithChildren) {
           <div className="flex">
             <img src="logo.png" alt="Logo" className="w-40"/>
             <span className="flex-grow"></span>
-            <Toggle></Toggle>
+            <Toggle/>
           </div>
 
           {/* Navigation links */}
