@@ -7,8 +7,11 @@ const port = 8080; // default port to listen
 
 // define a route handler for the default home page
 app.get('/', (req, res) => {
-  // render the index template
-  res.sendFile(path.join(__dirname, '../../../frontend/index.html'));
+  // // render the index template
+  // res.sendFile(path.join(__dirname, '../../../frontend/index.html'));
+
+  // redirect to port 3000 for next.js frontend
+  res.redirect("http://localhost:3000")
 });
 
 app.post('/start', (req, res) => {
