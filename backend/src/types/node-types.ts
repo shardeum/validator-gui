@@ -94,3 +94,8 @@ type Settings = {
 }
 
 type SettingsResponse = Settings | ErrorResponse;
+
+
+type StakeRequest = {
+  amount: string
+}

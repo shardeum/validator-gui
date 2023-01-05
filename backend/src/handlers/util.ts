@@ -7,3 +7,12 @@ export function badRequestResponse(res: Response, msg: string){
     })
     res.end()
 }
+
+
+export function cliStderrResponse(res: Response, msg: string, details: string){
+    res.status(400).json({
+        errorMessage: msg,
+        errorDetails: details
+    })
+    res.end()
+}

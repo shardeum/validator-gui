@@ -1,12 +1,20 @@
 import {exec} from 'child_process';
 import {Request, Response, Express} from 'express';
-import {badRequestResponse} from './util';
+import {badRequestResponse, cliStderrResponse} from './util';
+const yaml = require('js-yaml')
 
 export default function configureCliHandlers(app: Express) {
   app.post('/node/start', (req: Request, res: Response) => {
     // Exec the CLI validator start command
     exec('operator-cli start', (err, stdout, stderr) => {
-      console.log('operator-cli start result: ', err, stdout, stderr);
+      if(err){
+        cliStderrResponse(res, 'Unable to start validator', err.message)
+        return
+      }
+      if(stderr){
+        cliStderrResponse(res, 'Unable to start validator', stderr)
+        return
+      }
       res.end();
     });
     console.log('executing operator-cli start...');
@@ -15,7 +23,14 @@ export default function configureCliHandlers(app: Express) {
   app.post('/node/stop', (req: Request, res: Response) => {
     // Exec the CLI validator stop command
     exec('operator-cli stop', (err, stdout, stderr) => {
-      console.log('operator-cli stop result: ', err, stdout, stderr);
+      if(err){
+        cliStderrResponse(res, 'Unable to stop validator', err.message)
+        return
+      }
+      if(stderr){
+        cliStderrResponse(res, 'Unable to stop validator', stderr)
+        return
+      }
       res.end();
     });
     console.log('executing operator-cli stop...');
@@ -26,23 +41,72 @@ export default function configureCliHandlers(app: Express) {
     (req: Request, res: Response<NodeStatusResponse>) => {
       // Exec the CLI validator stop command
       exec('operator-cli status', (err, stdout, stderr) => {
-        console.log('operator-cli stop status: ', err, stdout, stderr);
-        // res.end();
+        console.log('operator-cli status: ', err, stdout, stderr);
+        if(err){
+          cliStderrResponse(res, 'Unable to fetch status', err.message)
+          return
+        }
+        if(stderr){
+          cliStderrResponse(res, 'Unable to fetch status', stderr)
+          return
+        }
+        res.json(yaml.load(stdout));
       });
       console.log('executing operator-cli status...');
+    }
+  );
 
-      // mock response
-      res.json({
-        state: 'active', //standby/syncing/active
-        totalTimeValidating: 5000,
-        lastActive: new Date().toISOString(),
-        stakeAmount: '123456.78',
-        stakeRequirement: '123.45',
-        stakeAddress: '0xA206aB7db8EfB9ca23a869D34cDb332842D5F4ba',
-        earnings: '12.34',
-        lastPayout: new Date().toISOString(),
-        lifetimeEarnings: '123.45',
+
+  app.post(
+    '/node/stake',
+    (req: Request<StakeRequest>, res: Response) => {
+      const amount = req.body.amount
+      if (!amount){
+        badRequestResponse(res, 'no amount provided')
+        return
+      }
+
+      // Exec the CLI validator stake command
+      exec(`operator-cli stake ${amount}`, (err, stdout, stderr) => {
+        console.log('operator-cli stake: ', err, stdout, stderr);
+        if(err){
+          cliStderrResponse(res, 'Unable to execute stake', err.message)
+          return
+        }
+        if(stderr){
+          cliStderrResponse(res, 'Unable to execute stake', stderr)
+          return
+        }
+        res.end()
       });
+      console.log('executing operator-cli stake...');
+    }
+  );
+
+
+  app.post(
+    '/node/unstake',
+    (req: Request<StakeRequest>, res: Response) => {
+      const amount = req.body.amount
+      if (!amount){
+        badRequestResponse(res, 'no amount provided')
+        return
+      }
+
+      // Exec the CLI validator stake command
+      exec(`operator-cli unstake ${amount}`, (err, stdout, stderr) => {
+        console.log('operator-cli unstake: ', err, stdout, stderr);
+        if(err){
+          cliStderrResponse(res, 'Unable to execute unstake', err.message)
+          return
+        }
+        if(stderr){
+          cliStderrResponse(res, 'Unable to execute unstake', stderr)
+          return
+        }
+        res.end()
+      });
+      console.log('executing operator-cli unstake...');
     }
   );
 
