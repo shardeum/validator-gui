@@ -1,43 +1,58 @@
-
 import * as express from 'express';
 import path = require('path');
 import configureAuthHandlers from './handlers/auth';
-import configureCliHandlers from './handlers/node';
+import configureNodeHandlers from './handlers/node';
 
 const app = express();
 const port = process.env.PORT || 8080;
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
+  if (req.method == 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+    return res.status(200).json({});
+  }
+
+  next();
+  return;
+});
+
 // define a route handler for the default home page
 app.get('/', (req, res) => {
+  //TODO serve nextjs in the same port, move api to /api routes
   // // render the index template
   // res.sendFile(path.join(__dirname, '../../../frontend/index.html'));
 
   // redirect to port 3000 for next.js frontend
-  res.redirect("http://localhost:3000")
+  res.redirect('http://localhost:3000');
 });
 
-configureAuthHandlers(app)
+configureAuthHandlers(app);
 
-configureCliHandlers(app)
+configureNodeHandlers(app);
 
 // start the express server
 app.listen(port, () => {
   console.log(`server started at http://localhost:${port}`);
 });
 
-app.get('/node/status', (req, res) => {
-  console.log('fetching node state');
-  res.send({
-    state: 'active',
-    lastActive: '2011-05-02T11:52:23.24Z',
-    stakeAmount: '40000000000000000000',
-    stakeRequirement: '20000000000000000000',
-    earnings: '200000000000000000',
-    lastPayout: '2011-05-02T11:52:23.24Z',
-    lifetimeEarnings: '200000000000000000',
-    stakeAddress: '0x23904...',
-  });
-});
+// app.get('/node/status', (req, res) => {
+//   console.log('fetching node state');
+//   res.send({
+//     state: 'active',
+//     lastActive: '2011-05-02T11:52:23.24Z',
+//     stakeAmount: '40000000000000000000',
+//     stakeRequirement: '20000000000000000000',
+//     earnings: '200000000000000000',
+//     lastPayout: '2011-05-02T11:52:23.24Z',
+//     lifetimeEarnings: '200000000000000000',
+//     stakeAddress: '0x23904...',
+//   });
+// });
 
 app.get('/node/status/history', (req, res) => {
   console.log('fetching node history');

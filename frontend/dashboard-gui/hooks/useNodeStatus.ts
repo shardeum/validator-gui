@@ -3,14 +3,14 @@ import { fetcher } from './fetcher';
 import { NodeStatus } from '../model/node-status';
 
 export const useNodeStatus = (): { nodeStatus: NodeStatus, startNode: () => void, stopNode: () => void, isLoading: boolean, isError: boolean } => {
-  const {data, error, isLoading} = useSWR(`http://localhost:3000/api/node/status`, fetcher)
+  const {data, error, isLoading} = useSWR(`http://localhost:8080/api/node/status`, fetcher)
 
   const startNode = () => {
-    fetch('http://localhost:3000/api/start', {method: 'POST'})
+    fetch('http://localhost:8080/api/node/start', {method: 'POST'})
   }
 
   const stopNode = () => {
-    fetch('http://localhost:3000/api/stop', {method: 'POST'})
+    fetch('http://localhost:8080/api/node/stop', {method: 'POST'})
   }
 
   return {

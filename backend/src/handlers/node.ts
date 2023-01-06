@@ -3,8 +3,8 @@ import {Request, Response, Express} from 'express';
 import {badRequestResponse, cliStderrResponse} from './util';
 const yaml = require('js-yaml')
 
-export default function configureCliHandlers(app: Express) {
-  app.post('/node/start', (req: Request, res: Response) => {
+export default function configureNodeHandlers(app: Express) {
+  app.post('/api/node/start', (req: Request, res: Response) => {
     // Exec the CLI validator start command
     exec('operator-cli start', (err, stdout, stderr) => {
       if(err){
@@ -20,7 +20,7 @@ export default function configureCliHandlers(app: Express) {
     console.log('executing operator-cli start...');
   });
 
-  app.post('/node/stop', (req: Request, res: Response) => {
+  app.post('/api/node/stop', (req: Request, res: Response) => {
     // Exec the CLI validator stop command
     exec('operator-cli stop', (err, stdout, stderr) => {
       if(err){
@@ -36,8 +36,8 @@ export default function configureCliHandlers(app: Express) {
     console.log('executing operator-cli stop...');
   });
 
-  app.post(
-    '/node/status',
+  app.get(
+    '/api/node/status',
     (req: Request, res: Response<NodeStatusResponse>) => {
       // Exec the CLI validator stop command
       exec('operator-cli status', (err, stdout, stderr) => {
@@ -58,7 +58,7 @@ export default function configureCliHandlers(app: Express) {
 
 
   app.post(
-    '/node/stake',
+    '/api/node/stake',
     (req: Request<StakeRequest>, res: Response) => {
       const amount = req.body.amount
       if (!amount){
@@ -85,7 +85,7 @@ export default function configureCliHandlers(app: Express) {
 
 
   app.post(
-    '/node/unstake',
+    '/api/node/unstake',
     (req: Request<StakeRequest>, res: Response) => {
       const amount = req.body.amount
       if (!amount){
@@ -111,7 +111,7 @@ export default function configureCliHandlers(app: Express) {
   );
 
   app.post(
-    '/node/status/history',
+    '/api/node/status/history',
     (req: Request, res: Response<NodeStatusHistoryResponse>) => {
       const fromDate = req.query.from;
 
@@ -140,7 +140,7 @@ export default function configureCliHandlers(app: Express) {
   );
 
   app.post(
-    '/node/version',
+    '/api/node/version',
     (req: Request, res: Response<NodeVersionResponse>) => {
       // Exec the CLI validator stop command
       exec('operator-cli version', (err, stdout, stderr) => {
@@ -159,7 +159,7 @@ export default function configureCliHandlers(app: Express) {
   );
 
   app.post(
-    '/node/performance',
+    '/api/node/performance',
     (req: Request, res: Response<NodePerformanceResponse>) => {
       const fromDate = req.query.from?.toString() || '';
       const latestEntry = req.query.latestEntry;
@@ -196,7 +196,7 @@ export default function configureCliHandlers(app: Express) {
   );
 
   app.post(
-    '/node/network',
+    '/api/node/network',
     (req: Request, res: Response<NodeNetworkResponse>) => {
       // Exec the CLI validator stop command
       exec('operator-cli network', (err, stdout, stderr) => {
@@ -238,7 +238,7 @@ export default function configureCliHandlers(app: Express) {
 
 
   app.post(
-    '/node/settings',
+    '/api/node/settings',
     (req: Request, res: Response<SettingsResponse>) => {
       // Exec the CLI validator stop command
       exec('operator-cli settings', (err, stdout, stderr) => {
