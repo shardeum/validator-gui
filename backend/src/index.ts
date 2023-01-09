@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
   // res.sendFile(path.join(__dirname, '../../../frontend/index.html'));
 
   // redirect to port 3000 for next.js frontend
-  res.redirect('http://localhost:3000');
+  res.redirect('http://localhost:3001');
 });
 
 configureAuthHandlers(app);
@@ -54,7 +54,7 @@ app.listen(port, () => {
 //   });
 // });
 
-app.get('/node/status/history', (req, res) => {
+app.get('/api/node/status/history', (req, res) => {
   console.log('fetching node history');
   // @ts-ignore
   if (req.params['from']) {
@@ -84,7 +84,7 @@ app.get('/node/status/history', (req, res) => {
   }
 });
 
-app.get('/node/version', (req, res) => {
+app.get('/api/node/version', (req, res) => {
   console.log('fetching node version');
   res.send({
     runningVersion: '1.0.0',
@@ -93,7 +93,7 @@ app.get('/node/version', (req, res) => {
   });
 });
 
-app.get('/node/performance', (req, res) => {
+app.get('/api/node/performance', (req, res) => {
   console.log('fetching node state');
   res.send([
     {
@@ -109,7 +109,7 @@ app.get('/node/performance', (req, res) => {
   ]);
 });
 
-app.get('/node/network', (req, res) => {
+app.get('/api/node/network', (req, res) => {
   console.log('fetching node state');
   res.send({
     size: {
