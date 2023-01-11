@@ -1,3 +1,5 @@
+import { ErrorResponse } from './error'
+
 type NodeStatus = {
   state: string
   totalTimeValidating: number
@@ -10,7 +12,7 @@ type NodeStatus = {
   lifetimeEarnings: string
 }
 
-type NodeStatusResponse = NodeStatus | ErrorResponse;
+export type NodeStatusResponse = NodeStatus | ErrorResponse
 
 type NodeStatusHistory = {
   state: string
@@ -19,8 +21,7 @@ type NodeStatusHistory = {
   date: string
 }
 
-type NodeStatusHistoryResponse = NodeStatusHistory | ErrorResponse;
-
+export type NodeStatusHistoryResponse = NodeStatusHistory | ErrorResponse
 
 type NodeVersion = {
   runningVersion: string
@@ -28,9 +29,7 @@ type NodeVersion = {
   latestVersion: string
 }
 
-
-type NodeVersionResponse = NodeVersion | ErrorResponse;
-
+export type NodeVersionResponse = NodeVersion | ErrorResponse
 
 type NodePerformance = {
   cpu: number
@@ -43,8 +42,7 @@ type NodePerformance = {
   date: string
 }
 
-type NodePerformanceResponse = NodePerformance | ErrorResponse;
-
+export type NodePerformanceResponse = NodePerformance | ErrorResponse
 
 type NodeNetwork = {
   size: {
@@ -53,38 +51,36 @@ type NodeNetwork = {
     desired: number
     joining: number
     syncing: number
-  },
+  }
   load: {
     maxTps: number
     avgTps: number
     totalProcessed: number
-  },
+  }
   health: {
     activeStandbyRatio: number
     desiredActiveStandbyRatio: number
-  },
+  }
   reward: {
     dailyIssuance: string
     avgPerDay: string
     avgPerNodeDay: string
-  },
+  }
   apr: {
     nodeApr: number
     avgApr: number
   }
 }
 
-type NodeNetworkResponse = NodeNetwork | ErrorResponse;
+export type NodeNetworkResponse = NodeNetwork | ErrorResponse
 
-
-type Notification = {
+type NodeNotification = {
   date: string
   title: string
   content: string
 }
 
-type NotificationResponse = Notification[] | ErrorResponse;
-
+export type NotificationResponse = NodeNotification[] | ErrorResponse
 
 type Settings = {
   rewardWalletAddress: string
@@ -93,9 +89,8 @@ type Settings = {
   alertPhoneNumber: string
 }
 
-type SettingsResponse = Settings | ErrorResponse;
+export type SettingsResponse = Settings | ErrorResponse
 
-
-type StakeRequest = {
+export type StakeRequest = {
   amount: string
 }

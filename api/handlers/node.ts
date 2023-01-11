@@ -1,10 +1,11 @@
 import {exec} from 'child_process';
-import {Request, Response, Express} from 'express';
+import {Request, Response, Router} from 'express';
+import { NodeNetworkResponse, NodePerformanceResponse, NodeStatusHistoryResponse, NodeStatusResponse, NodeVersionResponse, SettingsResponse, StakeRequest } from '../types/node-types';
 import {badRequestResponse, cliStderrResponse} from './util';
 const yaml = require('js-yaml')
 
-export default function configureNodeHandlers(app: Express) {
-  app.post('/api/node/start', (req: Request, res: Response) => {
+export default function configureNodeHandlers(app: Router) {
+  app.post('/node/start', (req: Request, res: Response) => {
     // Exec the CLI validator start command
     exec('operator-cli start', (err, stdout, stderr) => {
       if(err){
@@ -20,7 +21,7 @@ export default function configureNodeHandlers(app: Express) {
     console.log('executing operator-cli start...');
   });
 
-  app.post('/api/node/stop', (req: Request, res: Response) => {
+  app.post('/node/stop', (req: Request, res: Response) => {
     // Exec the CLI validator stop command
     exec('operator-cli stop', (err, stdout, stderr) => {
       if(err){
@@ -37,7 +38,7 @@ export default function configureNodeHandlers(app: Express) {
   });
 
   app.get(
-    '/api/node/status',
+    '/node/status',
     (req: Request, res: Response<NodeStatusResponse>) => {
       // Exec the CLI validator stop command
       exec('operator-cli status', (err, stdout, stderr) => {
@@ -58,7 +59,7 @@ export default function configureNodeHandlers(app: Express) {
 
 
   app.post(
-    '/api/node/stake',
+    '/node/stake',
     (req: Request<StakeRequest>, res: Response) => {
       const amount = req.body.amount
       if (!amount){
@@ -85,7 +86,7 @@ export default function configureNodeHandlers(app: Express) {
 
 
   app.post(
-    '/api/node/unstake',
+    '/node/unstake',
     (req: Request<StakeRequest>, res: Response) => {
       const amount = req.body.amount
       if (!amount){
@@ -111,7 +112,7 @@ export default function configureNodeHandlers(app: Express) {
   );
 
   app.post(
-    '/api/node/status/history',
+    '/node/status/history',
     (req: Request, res: Response<NodeStatusHistoryResponse>) => {
       const fromDate = req.query.from;
 
@@ -140,7 +141,7 @@ export default function configureNodeHandlers(app: Express) {
   );
 
   app.post(
-    '/api/node/version',
+    '/node/version',
     (req: Request, res: Response<NodeVersionResponse>) => {
       // Exec the CLI validator stop command
       exec('operator-cli version', (err, stdout, stderr) => {
@@ -159,7 +160,7 @@ export default function configureNodeHandlers(app: Express) {
   );
 
   app.post(
-    '/api/node/performance',
+    '/node/performance',
     (req: Request, res: Response<NodePerformanceResponse>) => {
       const fromDate = req.query.from?.toString() || '';
       const latestEntry = req.query.latestEntry;
@@ -196,7 +197,7 @@ export default function configureNodeHandlers(app: Express) {
   );
 
   app.post(
-    '/api/node/network',
+    '/node/network',
     (req: Request, res: Response<NodeNetworkResponse>) => {
       // Exec the CLI validator stop command
       exec('operator-cli network', (err, stdout, stderr) => {
@@ -238,7 +239,7 @@ export default function configureNodeHandlers(app: Express) {
 
 
   app.post(
-    '/api/node/settings',
+    '/node/settings',
     (req: Request, res: Response<SettingsResponse>) => {
       // Exec the CLI validator stop command
       exec('operator-cli settings', (err, stdout, stderr) => {

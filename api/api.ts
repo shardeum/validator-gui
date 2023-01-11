@@ -1,44 +1,13 @@
 import * as express from 'express';
-import path = require('path');
 import configureAuthHandlers from './handlers/auth';
 import configureNodeHandlers from './handlers/node';
 
-const app = express();
-const port = process.env.PORT || 8080;
+const apiRouter = express.Router();
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  );
-  if (req.method == 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-    return res.status(200).json({});
-  }
+configureAuthHandlers(apiRouter);
 
-  next();
-  return;
-});
+configureNodeHandlers(apiRouter);
 
-// define a route handler for the default home page
-app.get('/', (req, res) => {
-  //TODO serve nextjs in the same port, move api to /api routes
-  // // render the index template
-  // res.sendFile(path.join(__dirname, '../../../frontend/index.html'));
-
-  // redirect to port 3000 for next.js frontend
-  res.redirect('http://localhost:3001');
-});
-
-configureAuthHandlers(app);
-
-configureNodeHandlers(app);
-
-// start the express server
-app.listen(port, () => {
-  console.log(`server started at http://localhost:${port}`);
-});
 
 // app.get('/node/status', (req, res) => {
 //   console.log('fetching node state');
@@ -54,7 +23,7 @@ app.listen(port, () => {
 //   });
 // });
 
-app.get('/api/node/status/history', (req, res) => {
+apiRouter.get('/node/status/history', (req, res) => {
   console.log('fetching node history');
   // @ts-ignore
   if (req.params['from']) {
@@ -84,7 +53,7 @@ app.get('/api/node/status/history', (req, res) => {
   }
 });
 
-app.get('/api/node/version', (req, res) => {
+apiRouter.get('/node/version', (req, res) => {
   console.log('fetching node version');
   res.send({
     runningVersion: '1.0.0',
@@ -93,7 +62,7 @@ app.get('/api/node/version', (req, res) => {
   });
 });
 
-app.get('/api/node/performance', (req, res) => {
+apiRouter.get('/node/performance', (req, res) => {
   console.log('fetching node state');
   res.send([
     {
@@ -109,7 +78,7 @@ app.get('/api/node/performance', (req, res) => {
   ]);
 });
 
-app.get('/api/node/network', (req, res) => {
+apiRouter.get('/node/network', (req, res) => {
   console.log('fetching node state');
   res.send({
     size: {
@@ -139,3 +108,6 @@ app.get('/api/node/network', (req, res) => {
     },
   });
 });
+
+
+export default apiRouter
