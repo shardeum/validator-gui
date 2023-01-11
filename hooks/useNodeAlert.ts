@@ -3,7 +3,7 @@ import { fetcher } from './fetcher';
 import { NodeAlert } from '../model/node-alert';
 
 export const useNodeAlerts = (): { alerts: NodeAlert[], isLoading: boolean, isError: boolean } => {
-  const {data, error, isLoading} = useSWR(`http://localhost:8080/api/node/alerts`, fetcher)
+  const {data, error, isLoading} = useSWR(`http://localhost:${process.env.PORT}/api/node/alerts`, fetcher)
 
   return {
     alerts: data,
