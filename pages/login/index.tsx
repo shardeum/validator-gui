@@ -1,7 +1,9 @@
-import { ReactElement } from 'react';
+import { FormEvent, ReactElement } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 
 const Login = () => {
-  function handleLogin() {
+  function handleLogin(e: any) {
+    useAuth(e.target.password.value)
   }
 
   return <>
@@ -9,10 +11,10 @@ const Login = () => {
       <h1 className="text-black font-semibold text-4xl">Connect to Validator Dashboard</h1>
       <p>Connect to your validator dashboard to see the performance of your node,
         check rewards and run maintenance tasks!</p>
-      <form onSubmit={() => handleLogin()}>
-        <input placeholder='Validator ID' className="block p-4 w-full bg-stone-200 text-stone-600" ></input>
-        <input placeholder='Password' type='password' className="block p-4 w-full bg-stone-200 text-stone-600 my-2"></input>
-        <button className="p-4 bg-blue-700 text-stone-200">Connect</button>
+      <form onSubmit={(e:any) => handleLogin(e)}>
+        {/* <input placeholder='Validator ID' className="block p-4 w-full bg-stone-200 text-stone-600" ></input> */}
+        <input id="password" placeholder='Password' type='password' className="block p-4 w-full bg-stone-200 text-stone-600 my-2"></input>
+        <button className="p-4 bg-blue-700 text-stone-200" type="submit">Connect</button>
       </form>
     </div>
   </>

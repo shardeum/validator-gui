@@ -1,10 +1,8 @@
 import * as express from 'express';
-import configureAuthHandlers from './handlers/auth';
+
 import configureNodeHandlers from './handlers/node';
 
 const apiRouter = express.Router();
-
-configureAuthHandlers(apiRouter);
 
 configureNodeHandlers(apiRouter);
 
