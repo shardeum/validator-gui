@@ -4,8 +4,8 @@ import { NodeNetworkResponse, NodePerformanceResponse, NodeStatusHistoryResponse
 import {badRequestResponse, cliStderrResponse} from './util';
 const yaml = require('js-yaml')
 
-export default function configureNodeHandlers(app: Router) {
-  app.post('/node/start', (req: Request, res: Response) => {
+export default function configureNodeHandlers(apiRouter: Router) {
+  apiRouter.post('/node/start', (req: Request, res: Response) => {
     // Exec the CLI validator start command
     exec('operator-cli start', (err, stdout, stderr) => {
       if(err){
@@ -21,7 +21,7 @@ export default function configureNodeHandlers(app: Router) {
     console.log('executing operator-cli start...');
   });
 
-  app.post('/node/stop', (req: Request, res: Response) => {
+  apiRouter.post('/node/stop', (req: Request, res: Response) => {
     // Exec the CLI validator stop command
     exec('operator-cli stop', (err, stdout, stderr) => {
       if(err){
@@ -37,7 +37,7 @@ export default function configureNodeHandlers(app: Router) {
     console.log('executing operator-cli stop...');
   });
 
-  app.get(
+  apiRouter.get(
     '/node/status',
     (req: Request, res: Response<NodeStatusResponse>) => {
       // Exec the CLI validator stop command
@@ -58,7 +58,7 @@ export default function configureNodeHandlers(app: Router) {
   );
 
 
-  app.post(
+  apiRouter.post(
     '/node/stake',
     (req: Request<StakeRequest>, res: Response) => {
       const amount = req.body.amount
@@ -85,7 +85,7 @@ export default function configureNodeHandlers(app: Router) {
   );
 
 
-  app.post(
+  apiRouter.post(
     '/node/unstake',
     (req: Request<StakeRequest>, res: Response) => {
       const amount = req.body.amount
@@ -111,7 +111,7 @@ export default function configureNodeHandlers(app: Router) {
     }
   );
 
-  app.post(
+  apiRouter.post(
     '/node/status/history',
     (req: Request, res: Response<NodeStatusHistoryResponse>) => {
       const fromDate = req.query.from;
@@ -140,7 +140,7 @@ export default function configureNodeHandlers(app: Router) {
     }
   );
 
-  app.post(
+  apiRouter.post(
     '/node/version',
     (req: Request, res: Response<NodeVersionResponse>) => {
       // Exec the CLI validator stop command
@@ -159,7 +159,7 @@ export default function configureNodeHandlers(app: Router) {
     }
   );
 
-  app.post(
+  apiRouter.post(
     '/node/performance',
     (req: Request, res: Response<NodePerformanceResponse>) => {
       const fromDate = req.query.from?.toString() || '';
@@ -196,7 +196,7 @@ export default function configureNodeHandlers(app: Router) {
     }
   );
 
-  app.post(
+  apiRouter.post(
     '/node/network',
     (req: Request, res: Response<NodeNetworkResponse>) => {
       // Exec the CLI validator stop command
@@ -238,7 +238,7 @@ export default function configureNodeHandlers(app: Router) {
   );
 
 
-  app.post(
+  apiRouter.post(
     '/node/settings',
     (req: Request, res: Response<SettingsResponse>) => {
       // Exec the CLI validator stop command

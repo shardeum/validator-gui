@@ -1,7 +1,9 @@
-import apiRouter from "./api"
+import apiRouter from './api'
+import { jwtMiddleware, loginHandler } from './auth'
 
 const express = require('express')
 const next = require('next')
+var cookieParser = require('cookie-parser')
 
 const port = process.env.PORT || 8080
 const dev = process.env.NODE_ENV === 'development'
@@ -10,9 +12,12 @@ const nextHandler = nextApp.getRequestHandler()
 
 nextApp.prepare().then(() => {
   const app = express()
-  const port = process.env.PORT || 8080
+  app.use(express.json());
+  app.use(cookieParser())
 
-  app.use('/api', apiRouter)
+  app.post('/auth/login', loginHandler)
+
+  app.use('/api', jwtMiddleware, apiRouter)
 
   app.get('*', (req: any, res: any) => {
     return nextHandler(req, res)
@@ -22,4 +27,3 @@ nextApp.prepare().then(() => {
     console.log(`server started at http://localhost:${port}`)
   })
 })
-

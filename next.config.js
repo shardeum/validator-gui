@@ -3,17 +3,6 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  rewrites: async () => {
-    return [
-      {
-        source: '/api/:path*',
-        destination: `http://localhost:${process.env.PORT}/api/:path*` // Proxy to Backend
-      },
-    ];
-  },
-  env: {
-    PORT: process.env.PORT,
-  },
   distDir: 'build'
 }
 

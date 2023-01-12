@@ -3,6 +3,8 @@ import { fetcher } from './fetcher';
 import { NodeStatus } from '../model/node-status';
 
 export const useNodeStatus = (): { nodeStatus: NodeStatus, startNode: () => void, stopNode: () => void, isLoading: boolean, isError: boolean } => {
+
+
   const {data, error, isLoading} = useSWR(`http://localhost:8080/api/node/status`, fetcher)
 
   const startNode = () => {
