@@ -2,8 +2,8 @@ import useSWR from 'swr'
 import { fetcher } from './fetcher';
 import { NodeNetwork } from '../model/node-network';
 
-export const useNodeNetwork = (): { network: NodeNetwork, isLoading: boolean, isError: boolean } => {
-  const {data, error, isLoading} = useSWR(`http://localhost:8080/api/node/network`, fetcher)
+export const useNodeNetwork = (apiPort: string): { network: NodeNetwork, isLoading: boolean, isError: boolean } => {
+  const {data, error, isLoading} = useSWR(`http://localhost:${apiPort}/api/node/network`, fetcher)
 
   return {
     network: data,

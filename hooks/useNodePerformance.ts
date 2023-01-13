@@ -2,8 +2,8 @@ import useSWR from 'swr'
 import { fetcher } from './fetcher';
 import { NodePerformance } from '../model/node-performance';
 
-export const useNodePerformance = (): { performance: NodePerformance[], isLoading: boolean, isError: boolean } => {
-  const {data, error, isLoading} = useSWR(`http://localhost:8080/api/node/performance`, fetcher)
+export const useNodePerformance = (apiPort: string): { performance: NodePerformance[], isLoading: boolean, isError: boolean } => {
+  const {data, error, isLoading} = useSWR(`http://localhost:${apiPort}/api/node/performance`, fetcher)
 
   return {
     performance: data,

@@ -3,6 +3,10 @@ import { BarElement, CategoryScale, Chart as ChartJS, ChartOptions, LinearScale,
 import { Bar } from 'react-chartjs-2';
 import { useNodeStatusHistory } from '../hooks/useNodeStatusHistory';
 
+export const getServerSideProps = () => ({
+  props: { apiPort: process.env.PORT },
+});
+
 export const options = {
   responsive: true,
   maintainAspectRatio: false,
@@ -22,9 +26,10 @@ export const options = {
   }
 } as any as ChartOptions;
 
-export default function Overview() {
-  const {nodeStatus, isLoading, isError} = useNodeStatus()
-  const {nodeStatusHistory} = useNodeStatusHistory()
+
+export default function Overview({ apiPort }: any) {
+  const {nodeStatus, isLoading, isError} = useNodeStatus(apiPort)
+  const {nodeStatusHistory} = useNodeStatusHistory(apiPort)
 
   ChartJS.register(
     CategoryScale,

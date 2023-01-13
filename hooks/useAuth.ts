@@ -1,5 +1,6 @@
-export const useAuth = (password: string) => {
-  fetch(`http://localhost:8080/auth/login`, {
+
+export const useAuth = (apiPort:string, password: string) => {
+  fetch(`http://localhost:${apiPort}/auth/login`, {
     method: 'POST',
     body: JSON.stringify({ password: password }),
   })
