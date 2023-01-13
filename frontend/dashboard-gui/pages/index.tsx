@@ -22,6 +22,30 @@ export const options = {
   }
 } as any as ChartOptions;
 
+const labels = [
+  'January', '', '', '', '', '', '', '', '', '',
+  'February', '', '', '', '', '', '', '', '',
+  'March', '', '', '', '', '', '', '', '',
+  'April', '', '', '', '', '', '', '',
+  'May', '', '', '', '', '', '', '', '',
+  'June', '', '', '', '', '', '', '', '',
+  'July', '', '', '', '', '', '', '', '',]
+const mockData = []
+for (let i = 0; i < 100; i++) {
+  mockData.push(Math.floor(Math.random() * 3))
+}
+
+const data = {
+  labels,
+  datasets: [
+    {
+      data: mockData,
+      barThickness: 2,
+      backgroundColor: 'rgba(255, 255, 255)',
+    }
+  ],
+};
+
 export default function Overview() {
   const {nodeStatus, isLoading, isError} = useNodeStatus()
   const {nodeStatusHistory} = useNodeStatusHistory()
@@ -33,30 +57,6 @@ export default function Overview() {
     Title,
     Tooltip
   );
-
-  const labels = [
-    'January', '', '', '', '', '', '', '', '', '',
-    'February', '', '', '', '', '', '', '', '',
-    'March', '', '', '', '', '', '', '', '',
-    'April', '', '', '', '', '', '', '',
-    'May', '', '', '', '', '', '', '', '',
-    'June', '', '', '', '', '', '', '', '',
-    'July', '', '', '', '', '', '', '', '',]
-  const mockData = []
-  for (let i = 0; i < 100; i++) {
-    mockData.push(Math.floor(Math.random() * 3))
-  }
-
-  const data = {
-    labels,
-    datasets: [
-      {
-        data: mockData,
-        barThickness: 2,
-        backgroundColor: 'rgba(255, 255, 255)',
-      }
-    ],
-  };
 
 
   // @ts-ignore
@@ -77,7 +77,7 @@ export default function Overview() {
                 <div
                     className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                     <div>SHM staked: {nodeStatus.lockedStake} SHM</div>
-                    <div>Stake address: {nodeStatus.stakeAddress}</div>
+                    <div className="overflow-hidden text-ellipsis">Stake address: {nodeStatus.stakeAddress}</div>
                     <div>Stake requirement: {nodeStatus.stakeRequirement} SHM</div>
                 </div>
             </div>
@@ -85,7 +85,7 @@ export default function Overview() {
                 <h1 className="font-semibold mb-3">Reward SHM</h1>
                 <div
                     className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                    <div>Earnings: {nodeStatus.currentRewards} SHM</div>
+                    <div>Earnings: {nodeStatus.currentRewards?.substring(0, 6)} SHM</div>
                     <div>Last payout: {nodeStatus.lastPayout}</div>
                     <div>Lifetime earnings: {nodeStatus.lifetimeEarnings} SHM</div>
                 </div>
