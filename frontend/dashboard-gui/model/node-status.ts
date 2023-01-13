@@ -7,5 +7,11 @@ export interface NodeStatus {
   stakeRequirement: string
   earnings: string
   lastPayout: string
-  lifetimeEarnings: string
+  lifetimeEarnings: string,
+  nodeInfo: {
+    externalIp: string
+    externalPort: number,
+    internalPort: number,
+    publicKey: string
+  }
 }

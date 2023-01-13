@@ -1,19 +1,6 @@
-// NOTE: Also, keep a tight check on the nonce value in Metamask
-// as that might cause some obvious crashes, although I've passed
-// nonce value in the transaction object but in case it takes time
-// for the transaction to get mined, the nonce value may not get updated on its own.
-
-// You may input the following blob in the input field on the right side:
-// {
-//   "isInternalTx": true,
-//   "type": "stake",
-//   "amount": 5,
-//   "Nominee" : "0xFFFBDA6Ef512e4219C6DCEea896E50e8180a5bff"
-// }
 import { useState } from "react";
 import { ethers } from "ethers";
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
-// import ErrorMessage from "./ErrorMessage";
 
 const sendTransaction = async (e: any, blobData: any) => {
   try {
@@ -29,7 +16,6 @@ const sendTransaction = async (e: any, blobData: any) => {
     console.log("BLOB: ", blobData);
 
     const value = ethers.BigNumber.from(JSON.parse(blobData).stake);
-    // console.log(value.toString());
 
     const params = {
       from,
@@ -114,25 +100,21 @@ export default function SignMessage({nominator}: { nominator: string }) {
     }
   };
 
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
   return (
     <div>
       <form onSubmit={handleSign}>
-        <label htmlFor="stakeWallet" className="block">Stake wallet address</label>
-        <input id="stakeWallet" value={nominator} type="text" className="bg-white text-black p-3 mt-2 w-72 block"
+        <label htmlFor="rewardWallet" className="block">Reward wallet address</label>
+        <input id="rewardWallet" value={nominator} type="text" className="bg-white text-black p-3 mt-2 w-72 block"
                disabled/>
         <label className="block mt-4">
-          Reward Wallet Address
+          Stake wallet address
         </label>
         <input
           required
           type="text"
           name="nominee"
           className="bg-white text-black p-3 mt-2 w-72 block"
-          placeholder="Reward wallet address"
+          placeholder="Stake wallet address"
           onChange={(e) =>
             //@ts-ignore
             setData({...data, nominee: e.target.value.toLowerCase()})
@@ -153,7 +135,7 @@ export default function SignMessage({nominator}: { nominator: string }) {
               //@ts-ignore
               stake: ethers.utils
                 .parseEther(e.target.value.toString())
-                .toHexString()
+                .toString()
             })
           }
         />

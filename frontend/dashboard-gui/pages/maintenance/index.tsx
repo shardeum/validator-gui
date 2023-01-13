@@ -4,6 +4,7 @@ import { useNodeStatus } from '../../hooks/useNodeStatus';
 import { useNodePerformance } from '../../hooks/useNodePerformance';
 import { mapToDoughnut } from '../../utils/mapToDoughnut';
 import { ArrowRightIcon, ExclamationCircleIcon } from '@heroicons/react/20/solid';
+import RemoveStakeButton from '../../components/RemoveStakeButton';
 
 export default function Maintenance() {
   const {version} = useNodeVersion()
@@ -94,7 +95,7 @@ export default function Maintenance() {
                   <div className="flex-grow"/>
                   <div className="flex justify-end">
                       <button className="p-3 bg-blue-700 text-stone-200">
-                          Remove Stake
+                          Benchmark
                           <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
                       </button>
                   </div>
@@ -120,10 +121,7 @@ export default function Maintenance() {
                   </div>
 
                   <div className="flex justify-end">
-                      <button className="p-3 bg-blue-700 text-stone-200">
-                          Remove Stake
-                          <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
-                      </button>
+                      <RemoveStakeButton nominee={nodeStatus.nodeInfo.publicKey}/>
                   </div>
               </div>
           </div>
