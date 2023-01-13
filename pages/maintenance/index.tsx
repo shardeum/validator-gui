@@ -6,10 +6,14 @@ import { mapToDoughnut } from '../../utils/mapToDoughnut';
 import { ArrowRightIcon, ExclamationCircleIcon } from '@heroicons/react/20/solid';
 import RemoveStakeButton from '../../components/RemoveStakeButton';
 
-export default function Maintenance() {
-  const {version} = useNodeVersion()
-  const {nodeStatus, startNode, stopNode} = useNodeStatus()
-  const {performance} = useNodePerformance()
+export const getServerSideProps = () => ({
+    props: { apiPort: process.env.PORT },
+});
+
+export default function Maintenance({ apiPort }: any) {
+  const {version} = useNodeVersion(apiPort)
+  const {nodeStatus, startNode, stopNode} = useNodeStatus(apiPort)
+  const {performance} = useNodePerformance(apiPort)
 
   return <>{!!(performance && version && nodeStatus) && <div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 auto-rows-auto">

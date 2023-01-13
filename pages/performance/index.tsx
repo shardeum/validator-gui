@@ -3,9 +3,13 @@ import { useNodeVersion } from '../../hooks/useNodeVersion';
 import { Doughnut } from 'react-chartjs-2';
 import { mapToDoughnut } from '../../utils/mapToDoughnut';
 
-export default function Performance() {
-  const {version} = useNodeVersion()
-  const {performance} = useNodePerformance()
+export const getServerSideProps = () => ({
+    props: { apiPort: process.env.PORT },
+});
+
+export default function Performance({ apiPort }: any) {
+  const {version} = useNodeVersion(apiPort)
+  const {performance} = useNodePerformance(apiPort)
 
   return <>{!!(performance && version) && <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
