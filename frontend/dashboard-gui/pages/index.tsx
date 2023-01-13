@@ -76,7 +76,7 @@ export default function Overview() {
                 <h1 className="font-semibold mb-3">Staked SHM</h1>
                 <div
                     className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                    <div>SHM staked: {nodeStatus.stakeAmount} SHM</div>
+                    <div>SHM staked: {nodeStatus.lockedStake} SHM</div>
                     <div>Stake address: {nodeStatus.stakeAddress}</div>
                     <div>Stake requirement: {nodeStatus.stakeRequirement} SHM</div>
                 </div>
@@ -85,7 +85,7 @@ export default function Overview() {
                 <h1 className="font-semibold mb-3">Reward SHM</h1>
                 <div
                     className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                    <div>Earnings: {nodeStatus.earnings} SHM</div>
+                    <div>Earnings: {nodeStatus.currentRewards} SHM</div>
                     <div>Last payout: {nodeStatus.lastPayout}</div>
                     <div>Lifetime earnings: {nodeStatus.lifetimeEarnings} SHM</div>
                 </div>

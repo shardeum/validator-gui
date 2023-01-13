@@ -32,14 +32,18 @@ export default function Maintenance() {
                       </div>
                   </div>
                   <div className="flex justify-end">
-                      <button className="p-3 bg-blue-700 text-stone-200 mr-2" onClick={() => startNode()}>
-                          Start Node
-                          <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
-                      </button>
-                      <button className="p-3 bg-blue-700 text-stone-200" onClick={() => stopNode()}>
-                          Stop Node
-                          <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
-                      </button>
+                    {(nodeStatus.state === 'active' || nodeStatus.state === 'standby') &&
+                        <button className="p-3 bg-blue-700 text-stone-200" onClick={() => stopNode()}>
+                            Stop Node
+                            <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
+                        </button>
+                    }
+                    {(nodeStatus.state === 'inactive') &&
+                        <button className="p-3 bg-blue-700 text-stone-200 mr-2" onClick={() => startNode()}>
+                            Start Node
+                            <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
+                        </button>
+                    }
                   </div>
               </div>
           </div>
@@ -106,8 +110,8 @@ export default function Maintenance() {
               <div
                   className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
-                  <div>SHM staked: {nodeStatus.stakeAmount} SHM</div>
-                  <div>Stake address: {nodeStatus.stakeAddress}</div>
+                  <div>SHM staked: {nodeStatus.lockedStake} SHM</div>
+                  <div className="overflow-hidden text-ellipsis">Stake address: {nodeStatus.stakeAddress}</div>
                   <div>Stake requirement: {nodeStatus.stakeRequirement} SHM</div>
                   <div className="flex-grow"/>
 
@@ -121,7 +125,7 @@ export default function Maintenance() {
                   </div>
 
                   <div className="flex justify-end">
-                      <RemoveStakeButton nominee={nodeStatus.nodeInfo.publicKey}/>
+                      <RemoveStakeButton nominee={nodeStatus.nodeInfo?.publicKey}/>
                   </div>
               </div>
           </div>

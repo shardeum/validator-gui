@@ -1,11 +1,13 @@
 import { WalletIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import SignMessage from '../../components/SignMessage';
+import { useNodeStatus } from '../../hooks/useNodeStatus';
 
 export default function Settings() {
   const [haveMetamask, sethaveMetamask] = useState(false);
   const [accountAddress, setAccountAddress] = useState("");
   const [isConnected, setIsConnected] = useState(false);
+  const {nodeStatus} = useNodeStatus()
 
   useEffect(() => {
     // @ts-ignore
@@ -46,7 +48,7 @@ export default function Settings() {
     {haveMetamask ? (
       isConnected ? (
         <div>
-          <SignMessage nominator={accountAddress}/>
+          <SignMessage nominator={accountAddress} nominee={nodeStatus?.nodeInfo?.publicKey}/>
         </div>
       ) : (
         <button className="btn" onClick={connectWallet}>

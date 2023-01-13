@@ -1,11 +1,11 @@
 export interface NodeStatus {
-  state: 'active' | ' standby' | 'syncing'
+  state: 'active' | 'standby' | 'inactive'
   totalTimeValidating: number
   lastActive: string
-  stakeAmount: string
+  lockedStake: string
   stakeAddress: string
   stakeRequirement: string
-  earnings: string
+  currentRewards: string
   lastPayout: string
   lifetimeEarnings: string,
   nodeInfo: {
