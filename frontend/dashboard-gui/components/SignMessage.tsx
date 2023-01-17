@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ethers } from "ethers";
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { Alert, Box, Button, CircularProgress, Snackbar } from '@mui/material';
-import { green } from '@mui/material/colors';
+import { ToastContext } from './ToastContextProvider';
 
 export default function SignMessage({nominator, nominee}: { nominator: string, nominee: string }) {
+  const {showTemporarySuccessMessage} = useContext(ToastContext);
 
   const sendTransaction = async (e: any, blobData: any) => {
     setLoading(true);
@@ -39,7 +39,7 @@ export default function SignMessage({nominator, nominee}: { nominator: string, n
       const txConfirmation = await wait();
       console.log("TX CONFRIMED: ", txConfirmation);
       setLoading(false);
-      setOpenSnackbar(true);
+      showTemporarySuccessMessage('Stake successful!');
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -77,14 +77,6 @@ export default function SignMessage({nominator, nominee}: { nominator: string, n
     nominee,
     timestamp: Date.now()
   });
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenSnackbar(false);
-  };
 
   // @ts-ignore
   window.ethereum.on("accountsChanged", (accounts: any) => {
@@ -163,15 +155,10 @@ export default function SignMessage({nominator, nominee}: { nominator: string, n
       >
         Stake
         {!isLoading && <ArrowRightIcon className="h-5 w-5 inline ml-2"/>}
-        {isLoading && <span className="h-5 w-5 inline ml-2"><CircularProgress size={15} sx={{color: 'white'}} /></span>}
+        {isLoading && <span className="h-5 w-5 inline ml-2">
+          <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24"/>
+        </span>}
       </button>
-
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleClose}
-                anchorOrigin={{horizontal: 'center', vertical: 'top'}}>
-        <Alert onClose={handleClose} severity="success" sx={{width: '100%'}}>
-          Stake successful!
-        </Alert>
-      </Snackbar>
     </div>
   )
     ;

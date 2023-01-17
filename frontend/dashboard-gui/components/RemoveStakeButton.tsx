@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { Alert, CircularProgress, Snackbar } from '@mui/material';
+import { ToastContext } from './ToastContextProvider';
 
 export default function RemoveStakeButton({nominee}: { nominee: string }) {
+  const {showTemporarySuccessMessage} = useContext(ToastContext);
 
   const sendTransaction = async (nominator: string, nominee: string) => {
     try {
@@ -42,7 +43,7 @@ export default function RemoveStakeButton({nominee}: { nominee: string }) {
 
       const txConfirmation = await wait();
       console.log("TX CONFRIMED: ", txConfirmation);
-      setOpenSnackbar(true);
+      showTemporarySuccessMessage('Remove stake successful!');
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -98,14 +99,6 @@ export default function RemoveStakeButton({nominee}: { nominee: string }) {
     nominator: accountAddress,
     timestamp: Date.now()
   });
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenSnackbar(false);
-  };
 
   // @ts-ignore
   window.ethereum.on("accountsChanged", (accounts: any) => {
@@ -121,22 +114,20 @@ export default function RemoveStakeButton({nominee}: { nominee: string }) {
     <>
       {haveMetamask ? (
         <div>
-          <button className="p-3 bg-blue-700 text-stone-200" onClick={() => removeStake()}>
+          <button className="p-3 bg-blue-700 text-stone-200 flex" onClick={() => removeStake()}>
             Remove Stake
             {!isLoading && <ArrowRightIcon className="h-5 w-5 inline ml-2"/>}
-            {isLoading && <span className="h-5 w-5 inline ml-2"><CircularProgress size={15} sx={{color: 'white'}} /></span>}
+            {isLoading && <span className="h-5 w-5 inline ml-2">
+            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            </span>}
           </button>
         </div>
       ) : (
         <div className="alert alert-error">Please Install Metamask</div>
       )}
-
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleClose}
-                anchorOrigin={{horizontal: 'center', vertical: 'top'}}>
-        <Alert onClose={handleClose} severity="success" sx={{width: '100%'}}>
-          Remove stake successful!
-        </Alert>
-      </Snackbar>
     </>
   );
 }
