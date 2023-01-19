@@ -5,6 +5,7 @@ import { useNodePerformance } from '../../hooks/useNodePerformance';
 import { mapToDoughnut } from '../../utils/mapToDoughnut';
 import { ArrowRightIcon, ExclamationCircleIcon } from '@heroicons/react/20/solid';
 import RemoveStakeButton from '../../components/RemoveStakeButton';
+import { nullPlaceholder } from '../../utils/null-placerholder';
 
 export const getServerSideProps = () => ({
     props: { apiPort: process.env.PORT },
@@ -22,9 +23,9 @@ export default function Maintenance({ apiPort }: any) {
               <div
                   className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
-                  <div>Status: {nodeStatus.state}</div>
-                  <div>Total time validating: {nodeStatus.totalTimeValidating}</div>
-                  <div>Time since last active: {nodeStatus.lastActive}</div>
+                  <div className="capitalize">Status: {nullPlaceholder(nodeStatus.state)}</div>
+                  <div>Total time validating: {nullPlaceholder(nodeStatus.totalTimeValidating)}</div>
+                  <div>Time since last active: {nullPlaceholder(nodeStatus.lastActive)}</div>
                   <div className="flex-grow"/>
                   <div className="flex text-red-500 items-center">
                       <div>
@@ -57,9 +58,9 @@ export default function Maintenance({ apiPort }: any) {
               <div
                   className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
-                  <div>Running version: {version.runningVersion}</div>
-                  <div>Minimum version: {version.minimumVersion}</div>
-                  <div>Latest version: {version.latestVersion}</div>
+                  <div>Running version: {nullPlaceholder(version.runningVersion)}</div>
+                  <div>Minimum version: {nullPlaceholder(version.minimumVersion)}</div>
+                  <div>Latest version: {nullPlaceholder(version.latestVersion)}</div>
                   <div className="flex-grow"/>
 
                   <div className="flex text-red-500 items-center">
@@ -114,9 +115,9 @@ export default function Maintenance({ apiPort }: any) {
               <div
                   className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
-                  <div>SHM staked: {nodeStatus.lockedStake} SHM</div>
-                  <div className="overflow-hidden text-ellipsis">Stake address: {nodeStatus.nominatorAddress}</div>
-                  <div>Stake requirement: {nodeStatus.stakeRequirement} SHM</div>
+                  <div>SHM staked: {nodeStatus.lockedStake ? nodeStatus.lockedStake + ' SHM' : '-'}</div>
+                  <div className="overflow-hidden text-ellipsis">Stake address: {nullPlaceholder(nodeStatus.nominatorAddress)}</div>
+                  <div>Stake requirement: {nodeStatus.stakeRequirement ? nodeStatus.stakeRequirement + ' SHM' : '-'}</div>
                   <div className="flex-grow"/>
 
                   <div className="flex text-red-500 items-center">

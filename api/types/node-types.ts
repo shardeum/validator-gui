@@ -1,15 +1,22 @@
 import { ErrorResponse } from './error'
 
-type NodeStatus = {
-  state: string
+export type NodeStatus = {
+  state: 'active' | 'standby' | 'inactive'
   totalTimeValidating: number
   lastActive: string
-  stakeAmount: string
-  stakeRequirement: string
+  lockedStake: string
   stakeAddress: string
-  earnings: string
+  stakeRequirement: string
+  nominatorAddress: string
+  currentRewards: string
   lastPayout: string
-  lifetimeEarnings: string
+  lifetimeEarnings: string,
+  nodeInfo: {
+    externalIp: string
+    externalPort: number,
+    internalPort: number,
+    publicKey: string
+  }
 }
 
 export type NodeStatusResponse = NodeStatus | ErrorResponse

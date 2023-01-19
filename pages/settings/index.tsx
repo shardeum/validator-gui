@@ -55,12 +55,12 @@ export default function Settings({ apiPort }: any) {
           <SignMessage nominator={accountAddress} nominee={nodeStatus?.nodeInfo?.publicKey}/>
         </div>
       ) : (
-        <button className="btn" onClick={connectWallet}>
+        <button className="border-2 border-b-white rounded-xl p-3" onClick={connectWallet}>
           Connect Metamask Wallet
         </button>
       )
     ) : (
-      <div className="alert alert-error">Please Install Metamask</div>
+      <div className="text-white">Please Install Metamask</div>
     )}
 
   </>

@@ -1,10 +1,20 @@
 import {exec} from 'child_process';
 import {Request, Response, Router} from 'express';
-import { NodeNetworkResponse, NodePerformanceResponse, NodeStatusHistoryResponse, NodeStatusResponse, NodeVersionResponse, SettingsResponse, StakeRequest } from '../types/node-types';
+import {
+  NodeNetworkResponse,
+  NodePerformanceResponse,
+  NodeStatus,
+  NodeStatusHistoryResponse,
+  NodeStatusResponse,
+  NodeVersionResponse,
+  SettingsResponse,
+  StakeRequest
+} from '../types/node-types';
 import {badRequestResponse, cliStderrResponse} from './util';
 const yaml = require('js-yaml')
 
 export default function configureNodeHandlers(apiRouter: Router) {
+  let lastActiveNodeState: NodeStatus;
   apiRouter.post('/node/start', (req: Request, res: Response) => {
     // Exec the CLI validator start command
     exec('operator-cli start', (err, stdout, stderr) => {
@@ -51,7 +61,16 @@ export default function configureNodeHandlers(apiRouter: Router) {
           cliStderrResponse(res, 'Unable to fetch status', stderr)
           return
         }
-        res.json(yaml.load(stdout));
+        let yamlData: NodeStatus = yaml.load(stdout);
+        if (yamlData.state === 'active') {
+          lastActiveNodeState = yamlData;
+        } else if (yamlData.state === 'inactive') {
+          yamlData = {
+            ...yamlData,
+            nodeInfo: lastActiveNodeState?.nodeInfo
+          }
+        }
+        res.json(yamlData);
       });
       console.log('executing operator-cli status...');
     }

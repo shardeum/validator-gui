@@ -2,6 +2,7 @@ import { useNodePerformance } from '../../hooks/useNodePerformance';
 import { useNodeVersion } from '../../hooks/useNodeVersion';
 import { Doughnut } from 'react-chartjs-2';
 import { mapToDoughnut } from '../../utils/mapToDoughnut';
+import { nullPlaceholder } from '../../utils/null-placerholder';
 
 export const getServerSideProps = () => ({
     props: { apiPort: process.env.PORT },
@@ -17,9 +18,9 @@ export default function Performance({ apiPort }: any) {
               <h1 className="font-semibold mb-3">Version Info</h1>
               <div
                   className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                  <div>Running version: {version.runningVersion}</div>
-                  <div>Minimum version: {version.minimumVersion}</div>
-                  <div>Latest version: {version.latestVersion}</div>
+                  <div>Running version: {nullPlaceholder(version.runningVersion)}</div>
+                  <div>Minimum version: {nullPlaceholder(version.minimumVersion)}</div>
+                  <div>Latest version: {nullPlaceholder(version.latestVersion)}</div>
               </div>
           </div>
           <div className="flex flex-col items-stretch">
@@ -48,9 +49,9 @@ export default function Performance({ apiPort }: any) {
               <h1 className="font-semibold mb-3">TPS Overview</h1>
               <div
                   className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                  <div>Node throughput: {performance[0].tpsThroughput} TPS</div>
-                  <div>Last payout: {performance[0].transactionsCount}</div>
-                  <div>Lifetime earnings: {performance[0].stateStorage}</div>
+                  <div>Node throughput: {performance[0].tpsThroughput ? performance[0].tpsThroughput + ' TPS' : '-'}</div>
+                  <div>Last payout: {nullPlaceholder(performance[0].transactionsCount)}</div>
+                  <div>Lifetime earnings: {nullPlaceholder(performance[0].stateStorage)}</div>
               </div>
           </div>
       </div>
