@@ -3,11 +3,15 @@ import { useEffect, useState } from 'react';
 import SignMessage from '../../components/SignMessage';
 import { useNodeStatus } from '../../hooks/useNodeStatus';
 
-export default function Settings() {
+export const getServerSideProps = () => ({
+  props: { apiPort: process.env.PORT },
+});
+
+export default function Settings({ apiPort }: any) {
   const [haveMetamask, sethaveMetamask] = useState(false);
   const [accountAddress, setAccountAddress] = useState("");
   const [isConnected, setIsConnected] = useState(false);
-  const {nodeStatus} = useNodeStatus()
+  const {nodeStatus} = useNodeStatus(apiPort)
 
   useEffect(() => {
     // @ts-ignore
