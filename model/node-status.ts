@@ -5,6 +5,7 @@ export interface NodeStatus {
   lockedStake: string
   stakeAddress: string
   stakeRequirement: string
+  nominatorAddress: string
   currentRewards: string
   lastPayout: string
   lifetimeEarnings: string,

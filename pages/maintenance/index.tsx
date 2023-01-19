@@ -115,7 +115,7 @@ export default function Maintenance({ apiPort }: any) {
                   className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
                   <div>SHM staked: {nodeStatus.lockedStake} SHM</div>
-                  <div className="overflow-hidden text-ellipsis">Stake address: {nodeStatus.stakeAddress}</div>
+                  <div className="overflow-hidden text-ellipsis">Stake address: {nodeStatus.nominatorAddress}</div>
                   <div>Stake requirement: {nodeStatus.stakeRequirement} SHM</div>
                   <div className="flex-grow"/>
 
