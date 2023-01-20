@@ -1,4 +1,4 @@
-import { Response } from 'express'
+import { Request, Response } from 'express'
 
 export function badRequestResponse(res: Response, msg: string) {
   res.status(400).json({
@@ -15,9 +15,9 @@ export function cliStderrResponse(res: Response, msg: string, details: string) {
   res.end()
 }
 
-export function unautorizedResponse(res: Response) {
+export function unautorizedResponse(req: Request, res: Response) {
 //   res.status(403).json({
 //     errorMessage: 'unauthorized',
 //   })
-  res.redirect(`http://localhost:${process.env.PORT || 8080}/login`)
+  res.redirect(`http://${req.hostname}:${process.env.PORT || 8080}/login`);
 }

@@ -35,7 +35,7 @@ export const loginHandler = (req: Request, res: Response) => {
       secure: process.env.NODE_ENV === 'production',
     })
 
-    res.redirect(`http://localhost:${process.env.PORT || 8080}/`)
+    res.redirect(`http://${req.hostname}:${process.env.PORT || 8080}/`);
   })
   console.log('executing operator-cli gui login...')
 }
@@ -45,14 +45,14 @@ export const jwtMiddleware = (req: Request, res: Response, next: NextFunction) =
 //   const token = req.cookies.accessToken
 
 //   if (!token) {
-//     unautorizedResponse(res)
+//     unautorizedResponse(req, res)
 //     return
 //   }
 
 //   jwt.verify(token, jwtSecret, (err: any, jwtData: any) => {
 //     if (err) {
 //       // invalid token
-//       unautorizedResponse(res)
+//       unautorizedResponse(req, res)
 //       return
 //     }
 
