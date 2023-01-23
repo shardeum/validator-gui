@@ -3,16 +3,18 @@ import { useNodeVersion } from '../../hooks/useNodeVersion';
 import { Doughnut } from 'react-chartjs-2';
 import { mapToDoughnut } from '../../utils/mapToDoughnut';
 import { nullPlaceholder } from '../../utils/null-placerholder';
+import { useNodeStatus } from '../../hooks/useNodeStatus';
 
 export const getServerSideProps = () => ({
-    props: { apiPort: process.env.PORT },
+  props: {apiPort: process.env.PORT},
 });
 
-export default function Performance({ apiPort }: any) {
+export default function Performance({apiPort}: any) {
   const {version} = useNodeVersion(apiPort)
+  const {nodeStatus} = useNodeStatus(apiPort)
   const {performance} = useNodePerformance(apiPort)
 
-  return <>{!!(performance && version) && <div>
+  return <>{!!(performance && nodeStatus && version) && <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="flex flex-col items-stretch">
               <h1 className="font-semibold mb-3">Version Info</h1>
@@ -28,20 +30,20 @@ export default function Performance({ apiPort }: any) {
               <div
                   className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex justify-between h-7">
-                      <div>CPU usage AVG: {performance[0].cpu}%</div>
-                      <Doughnut data={mapToDoughnut(performance[0].cpu, {spacing: 2})}/>
+                      <div>CPU usage AVG: {nodeStatus.performance?.cpuPercentage.toFixed(2)}%</div>
+                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.cpuPercentage, {spacing: 2})}/>
                   </div>
                   <div className="flex justify-between h-7">
-                      <div>RAM usage AVG: {performance[0].ram}%</div>
-                      <Doughnut data={mapToDoughnut(performance[0].ram, {spacing: 2})}/>
+                      <div>RAM usage AVG: {nodeStatus.performance?.memPercentage.toFixed(2)}%</div>
+                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.memPercentage, {spacing: 2})}/>
                   </div>
                   <div className="flex justify-between h-7">
-                      <div>Disk usage AVG: {performance[0].disk}</div>
-                      <Doughnut data={mapToDoughnut(performance[0].disk, {spacing: 2})}/>
+                      <div>Disk usage AVG: {nodeStatus.performance?.diskPercentage.toFixed(2)}%</div>
+                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.diskPercentage, {spacing: 2})}/>
                   </div>
                   <div className="flex justify-between h-7">
-                      <div>Network usage AVG: {performance[0].network}%</div>
-                      <Doughnut data={mapToDoughnut(performance[0].network, {spacing: 2})}/>
+                      <div>Network usage AVG: {performance[0]?.network}%</div>
+                      <Doughnut data={mapToDoughnut(performance[0]?.network, {spacing: 2})}/>
                   </div>
               </div>
           </div>
@@ -49,9 +51,10 @@ export default function Performance({ apiPort }: any) {
               <h1 className="font-semibold mb-3">TPS Overview</h1>
               <div
                   className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                  <div>Node throughput: {performance[0].tpsThroughput ? performance[0].tpsThroughput + ' TPS' : '-'}</div>
-                  <div>Last payout: {nullPlaceholder(performance[0].transactionsCount)}</div>
-                  <div>Lifetime earnings: {nullPlaceholder(performance[0].stateStorage)}</div>
+                  <div>Node
+                      throughput: {nodeStatus.performance?.tpsThroughput ? nodeStatus.performance?.tpsThroughput + ' TPS' : '-'}</div>
+                  <div>Last payout: {nullPlaceholder(nodeStatus.performance?.transactionsCount)}</div>
+                  <div>Lifetime earnings: {nullPlaceholder(nodeStatus.performance?.stateStorage)}</div>
               </div>
           </div>
       </div>
@@ -60,19 +63,19 @@ export default function Performance({ apiPort }: any) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="relative aspect-square">
               <div className="flex absolute justify-center items-center w-full h-full font-bold text-lg">CPU</div>
-              <Doughnut data={mapToDoughnut(performance[0].cpu)}/>
+              <Doughnut data={mapToDoughnut(nodeStatus.performance?.cpuPercentage)}/>
           </div>
           <div className="aspect-square relative">
               <div className="flex absolute justify-center items-center w-full h-full font-bold text-lg">RAM</div>
-              <Doughnut data={mapToDoughnut(performance[0].ram)}/>
+              <Doughnut data={mapToDoughnut(nodeStatus.performance?.memPercentage)}/>
           </div>
           <div className="aspect-square relative">
               <div className="flex absolute justify-center items-center w-full h-full font-bold text-lg">DISK</div>
-              <Doughnut data={mapToDoughnut(performance[0].disk)}/>
+              <Doughnut data={mapToDoughnut(nodeStatus.performance?.diskPercentage)}/>
           </div>
           <div className="aspect-square relative">
               <div className="flex absolute justify-center items-center w-full h-full font-bold text-lg">NETWORK</div>
-              <Doughnut data={mapToDoughnut(performance[0].network)}/>
+              <Doughnut data={mapToDoughnut(performance[0]?.network)}/>
           </div>
       </div>
   </div>

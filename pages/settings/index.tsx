@@ -60,7 +60,7 @@ export default function Settings({ apiPort }: any) {
         </button>
       )
     ) : (
-      <div className="text-white">Please Install Metamask</div>
+      <div className="text-white">Please install a Web3 Wallet</div>
     )}
 
   </>

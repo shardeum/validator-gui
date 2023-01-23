@@ -56,7 +56,7 @@ apiRouter.get('/node/version', (req, res) => {
   res.send({
     runningVersion: '1.0.0',
     minimumVersion: '1.0.0',
-    latestVersion: '1.1.1',
+    latestVersion: '1.0.0',
   });
 });
 

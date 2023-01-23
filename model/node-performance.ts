@@ -1,7 +1,7 @@
 export interface NodePerformance {
-  cpu: number
-  ram: number
-  disk: number
+  cpuPercentage: number
+  memPercentage: number
+  diskPercentage: number
   network: number
   tpsThroughput: number
   transactionsCount: number

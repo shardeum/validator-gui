@@ -1,4 +1,7 @@
+import { NodePerformance } from './node-performance';
+
 export interface NodeStatus {
+  performance: NodePerformance;
   state: 'active' | 'standby' | 'inactive'
   totalTimeValidating: number
   lastActive: string

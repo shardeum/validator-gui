@@ -1,17 +1,17 @@
 import { useNodeVersion } from '../../hooks/useNodeVersion';
 import { Doughnut } from 'react-chartjs-2';
 import { useNodeStatus } from '../../hooks/useNodeStatus';
-import { useNodePerformance } from '../../hooks/useNodePerformance';
 import { mapToDoughnut } from '../../utils/mapToDoughnut';
 import { ArrowRightIcon, ExclamationCircleIcon } from '@heroicons/react/20/solid';
 import RemoveStakeButton from '../../components/RemoveStakeButton';
 import { nullPlaceholder } from '../../utils/null-placerholder';
+import { useNodePerformance } from '../../hooks/useNodePerformance';
 
 export const getServerSideProps = () => ({
-    props: { apiPort: process.env.PORT },
+  props: {apiPort: process.env.PORT},
 });
 
-export default function Maintenance({ apiPort }: any) {
+export default function Maintenance({apiPort}: any) {
   const {version} = useNodeVersion(apiPort)
   const {nodeStatus, startNode, stopNode} = useNodeStatus(apiPort)
   const {performance} = useNodePerformance(apiPort)
@@ -86,20 +86,20 @@ export default function Maintenance({ apiPort }: any) {
                   className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
                   <div className="flex justify-between h-7">
-                      <div>CPU usage AVG: {performance[0].cpu}%</div>
-                      <Doughnut data={mapToDoughnut(performance[0].cpu, {spacing: 2})}/>
+                      <div>CPU usage AVG: {nodeStatus.performance?.cpuPercentage.toFixed(2)}%</div>
+                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.cpuPercentage, {spacing: 2})}/>
                   </div>
                   <div className="flex justify-between h-7">
-                      <div>RAM usage AVG: {performance[0].ram}%</div>
-                      <Doughnut data={mapToDoughnut(performance[0].ram, {spacing: 2})}/>
+                      <div>RAM usage AVG: {nodeStatus.performance?.memPercentage.toFixed(2)}%</div>
+                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.memPercentage, {spacing: 2})}/>
                   </div>
                   <div className="flex justify-between h-7">
-                      <div>Disk usage AVG: {performance[0].disk}</div>
-                      <Doughnut data={mapToDoughnut(performance[0].disk, {spacing: 2})}/>
+                      <div>Disk usage AVG: {nodeStatus.performance?.diskPercentage.toFixed(2)}%</div>
+                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.diskPercentage, {spacing: 2})}/>
                   </div>
                   <div className="flex justify-between h-7">
-                      <div>Network usage AVG: {performance[0].network}%</div>
-                      <Doughnut data={mapToDoughnut(performance[0].network, {spacing: 2})}/>
+                      <div>Network usage AVG: {performance[0]?.network}%</div>
+                      <Doughnut data={mapToDoughnut(performance[0]?.network, {spacing: 2})}/>
                   </div>
                   <div className="flex-grow"/>
                   <div className="flex justify-end">
@@ -116,8 +116,10 @@ export default function Maintenance({ apiPort }: any) {
                   className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
                   <div>SHM staked: {nodeStatus.lockedStake ? nodeStatus.lockedStake + ' SHM' : '-'}</div>
-                  <div className="overflow-hidden text-ellipsis">Stake address: {nullPlaceholder(nodeStatus.nominatorAddress)}</div>
-                  <div>Stake requirement: {nodeStatus.stakeRequirement ? nodeStatus.stakeRequirement + ' SHM' : '-'}</div>
+                  <div className="overflow-hidden text-ellipsis">Stake
+                      address: {nullPlaceholder(nodeStatus.nominatorAddress)}</div>
+                  <div>Stake
+                      requirement: {nodeStatus.stakeRequirement ? nodeStatus.stakeRequirement + ' SHM' : '-'}</div>
                   <div className="flex-grow"/>
 
                   <div className="flex text-red-500 items-center">
