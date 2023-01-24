@@ -159,22 +159,24 @@ export default function configureNodeHandlers(apiRouter: Router) {
     }
   );
 
-  apiRouter.post(
+  apiRouter.get(
     '/node/version',
     (req: Request, res: Response<NodeVersionResponse>) => {
-      // Exec the CLI validator stop command
+      // Exec the CLI dashboard version command
       exec('operator-cli version', (err, stdout, stderr) => {
-        console.log('operator-cli version status: ', err, stdout, stderr);
-        // res.end();
+        console.log('operator-cli status: ', err, stdout, stderr);
+        if(err){
+          cliStderrResponse(res, 'Unable to fetch version', err.message)
+          return
+        }
+        if(stderr){
+          cliStderrResponse(res, 'Unable to fetch version', stderr)
+          return
+        }
+        const yamlData: NodeVersionResponse = yaml.load(stdout);
+        res.json(yamlData);
       });
-      console.log('executing operator-cli status...');
-
-      // mock response
-      res.json({
-        runningVersion: '1.00',
-        minimumVersion: '1.00',
-        latestVersion: '1.00',
-      });
+      console.log('executing operator-cli version...');
     }
   );
 

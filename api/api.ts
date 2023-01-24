@@ -51,15 +51,6 @@ apiRouter.get('/node/status/history', (req, res) => {
   }
 });
 
-apiRouter.get('/node/version', (req, res) => {
-  console.log('fetching node version');
-  res.send({
-    runningVersion: '1.0.0',
-    minimumVersion: '1.0.0',
-    latestVersion: '1.0.0',
-  });
-});
-
 apiRouter.get('/node/performance', (req, res) => {
   console.log('fetching node state');
   res.send([

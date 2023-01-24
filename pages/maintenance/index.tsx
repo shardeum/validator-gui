@@ -2,7 +2,7 @@ import { useNodeVersion } from '../../hooks/useNodeVersion';
 import { Doughnut } from 'react-chartjs-2';
 import { useNodeStatus } from '../../hooks/useNodeStatus';
 import { mapToDoughnut } from '../../utils/mapToDoughnut';
-import { ArrowRightIcon, ExclamationCircleIcon } from '@heroicons/react/20/solid';
+import { ArrowRightIcon, ExclamationCircleIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import RemoveStakeButton from '../../components/RemoveStakeButton';
 import { nullPlaceholder } from '../../utils/null-placerholder';
 import { useNodePerformance } from '../../hooks/useNodePerformance';
@@ -10,6 +10,35 @@ import { useNodePerformance } from '../../hooks/useNodePerformance';
 export const getServerSideProps = () => ({
   props: {apiPort: process.env.PORT},
 });
+
+
+const versionCheck = (version: any) => {
+  if (version.runningVersion < version.minimumVersion) {
+    return (
+      <div className="flex text-red-500 items-center">
+        <div>
+          <ExclamationCircleIcon className="h-7 w-7" />
+        </div>
+        <div className="ml-2 font-semibold">
+          Please ensure your node meets the minimum required Software version to continue network
+          participation
+        </div>
+      </div>
+    )
+  }
+  if (version.runningVersion == version.latestVersion) {
+    return (
+      <div className="flex text-orange-500 items-center">
+        <div>
+          <ExclamationTriangleIcon className="h-7 w-7" />
+        </div>
+        <div className="ml-2 font-semibold">The running version is not the latest available!</div>
+      </div>
+    )
+  }
+
+  return null
+}
 
 export default function Maintenance({apiPort}: any) {
   const {version} = useNodeVersion(apiPort)
@@ -62,16 +91,7 @@ export default function Maintenance({apiPort}: any) {
                   <div>Minimum version: {nullPlaceholder(version.minimumVersion)}</div>
                   <div>Latest version: {nullPlaceholder(version.latestVersion)}</div>
                   <div className="flex-grow"/>
-
-                  <div className="flex text-red-500 items-center">
-                      <div>
-                          <ExclamationCircleIcon className="h-7 w-7"/>
-                      </div>
-                      <div className="ml-2 font-semibold">
-                          Please ensure your node meets the minimum required Software version to continue network
-                          participation
-                      </div>
-                  </div>
+                    {versionCheck(version)}
                   <div className="flex justify-end">
                       <button className="p-3 bg-blue-700 text-stone-200">
                           Update Node
