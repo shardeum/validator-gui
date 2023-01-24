@@ -161,7 +161,7 @@ export default function SignMessage({nominator, nominee}: { nominator: string, n
 
       <button
         onClick={async (e) => sendTransaction(e, JSON.stringify(data))}
-        className="p-3 bg-blue-700 text-stone-200 mr-2 mt-5 flex" disabled={isLoading}
+        className="p-3 bg-blue-700 text-stone-200 mr-2 mt-5 flex items-center" disabled={isLoading}
       >
         Stake
         {!isLoading && <ArrowRightIcon className="h-5 w-5 inline ml-2"/>}
