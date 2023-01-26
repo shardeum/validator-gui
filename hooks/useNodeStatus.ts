@@ -7,11 +7,11 @@ export const useNodeStatus = (apiPort: string): { nodeStatus: NodeStatus, startN
   const {data, error, isLoading} = useSWR(`http://${globalThis.window?.location.hostname}:${apiPort}/api/node/status`, fetcher, { refreshInterval: 1000 })
 
   const startNode = () => {
-    fetch(`http://${globalThis.window?.location.hostname}:${apiPort}/api/node/start`, {method: 'POST'})
+    return fetch(`http://${globalThis.window?.location.hostname}:${apiPort}/api/node/start`, {method: 'POST'})
   }
 
   const stopNode = () => {
-    fetch(`http://${globalThis.window?.location.hostname}:${apiPort}/api/node/stop`, {method: 'POST'})
+    return fetch(`http://${globalThis.window?.location.hostname}:${apiPort}/api/node/stop`, {method: 'POST'})
   }
 
   return {

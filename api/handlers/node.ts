@@ -1,5 +1,5 @@
-import {exec} from 'child_process';
-import {Request, Response, Router} from 'express';
+import { exec } from 'child_process';
+import { Request, Response, Router } from 'express';
 import {
   NodeNetworkResponse,
   NodePerformanceResponse,
@@ -10,7 +10,8 @@ import {
   SettingsResponse,
   StakeRequest
 } from '../types/node-types';
-import {badRequestResponse, cliStderrResponse} from './util';
+import { badRequestResponse, cliStderrResponse } from './util';
+
 const yaml = require('js-yaml')
 
 export default function configureNodeHandlers(apiRouter: Router) {
@@ -18,11 +19,11 @@ export default function configureNodeHandlers(apiRouter: Router) {
   apiRouter.post('/node/start', (req: Request, res: Response) => {
     // Exec the CLI validator start command
     exec('operator-cli start', (err, stdout, stderr) => {
-      if(err){
+      if (err) {
         cliStderrResponse(res, 'Unable to start validator', err.message)
         return
       }
-      if(stderr){
+      if (stderr) {
         cliStderrResponse(res, 'Unable to start validator', stderr)
         return
       }
@@ -34,11 +35,11 @@ export default function configureNodeHandlers(apiRouter: Router) {
   apiRouter.post('/node/stop', (req: Request, res: Response) => {
     // Exec the CLI validator stop command
     exec('operator-cli stop', (err, stdout, stderr) => {
-      if(err){
+      if (err) {
         cliStderrResponse(res, 'Unable to stop validator', err.message)
         return
       }
-      if(stderr){
+      if (stderr) {
         cliStderrResponse(res, 'Unable to stop validator', stderr)
         return
       }
@@ -53,11 +54,11 @@ export default function configureNodeHandlers(apiRouter: Router) {
       // Exec the CLI validator stop command
       exec('operator-cli status', (err, stdout, stderr) => {
         console.log('operator-cli status: ', err, stdout, stderr);
-        if(err){
+        if (err) {
           cliStderrResponse(res, 'Unable to fetch status', err.message)
           return
         }
-        if(stderr){
+        if (stderr) {
           cliStderrResponse(res, 'Unable to fetch status', stderr)
           return
         }
@@ -81,7 +82,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
     '/node/stake',
     (req: Request<StakeRequest>, res: Response) => {
       const amount = req.body.amount
-      if (!amount){
+      if (!amount) {
         badRequestResponse(res, 'no amount provided')
         return
       }
@@ -89,11 +90,11 @@ export default function configureNodeHandlers(apiRouter: Router) {
       // Exec the CLI validator stake command
       exec(`operator-cli stake ${amount}`, (err, stdout, stderr) => {
         console.log('operator-cli stake: ', err, stdout, stderr);
-        if(err){
+        if (err) {
           cliStderrResponse(res, 'Unable to execute stake', err.message)
           return
         }
-        if(stderr){
+        if (stderr) {
           cliStderrResponse(res, 'Unable to execute stake', stderr)
           return
         }
@@ -108,7 +109,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
     '/node/unstake',
     (req: Request<StakeRequest>, res: Response) => {
       const amount = req.body.amount
-      if (!amount){
+      if (!amount) {
         badRequestResponse(res, 'no amount provided')
         return
       }
@@ -116,16 +117,51 @@ export default function configureNodeHandlers(apiRouter: Router) {
       // Exec the CLI validator stake command
       exec(`operator-cli unstake ${amount}`, (err, stdout, stderr) => {
         console.log('operator-cli unstake: ', err, stdout, stderr);
-        if(err){
+        if (err) {
           cliStderrResponse(res, 'Unable to execute unstake', err.message)
           return
         }
-        if(stderr){
+        if (stderr) {
           cliStderrResponse(res, 'Unable to execute unstake', stderr)
           return
         }
         res.end()
       });
+      console.log('executing operator-cli unstake...');
+    }
+  );
+
+  apiRouter.post(
+    '/node/update',
+    async (req: Request<StakeRequest>, res: Response) => {
+      // Exec the CLI validator stake command
+      const update = new Promise<void>((resolve) => exec(`operator-cli update`, (err, stdout, stderr) => {
+        console.log('operator-cli update: ', err, stdout, stderr);
+        if (err) {
+          cliStderrResponse(res, 'Error occurred while updating', err.message)
+          return
+        }
+        if (stderr) {
+          cliStderrResponse(res, 'Error occurred while updating', stderr)
+          return
+        }
+        resolve();
+      }));
+      const restart = new Promise<void>((resolve) => exec(`operator-cli restart`, (err, stdout, stderr) => {
+        console.log('operator-cli restart: ', err, stdout, stderr);
+        if (err) {
+          cliStderrResponse(res, 'Error occurred while restarting the GUI', err.message)
+          return
+        }
+        if (stderr) {
+          cliStderrResponse(res, 'Error occurred while restarting the GUI', stderr)
+          return
+        }
+        resolve();
+      }));
+
+      await update;
+      await restart;
       console.log('executing operator-cli unstake...');
     }
   );
@@ -165,11 +201,11 @@ export default function configureNodeHandlers(apiRouter: Router) {
       // Exec the CLI dashboard version command
       exec('operator-cli version', (err, stdout, stderr) => {
         console.log('operator-cli status: ', err, stdout, stderr);
-        if(err){
+        if (err) {
           cliStderrResponse(res, 'Unable to fetch version', err.message)
           return
         }
-        if(stderr){
+        if (stderr) {
           cliStderrResponse(res, 'Unable to fetch version', stderr)
           return
         }

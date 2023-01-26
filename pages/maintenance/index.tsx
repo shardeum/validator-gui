@@ -6,42 +6,41 @@ import { ArrowRightIcon, ExclamationCircleIcon, ExclamationTriangleIcon } from '
 import RemoveStakeButton from '../../components/RemoveStakeButton';
 import { nullPlaceholder } from '../../utils/null-placerholder';
 import { useNodePerformance } from '../../hooks/useNodePerformance';
+import { NodeVersion } from '../../model/node-version';
 
 export const getServerSideProps = () => ({
   props: {apiPort: process.env.PORT},
 });
 
 
-const versionCheck = (version: any) => {
+const versionCheck = (version: NodeVersion) => {
   if (version.runningVersion < version.minimumVersion) {
     return (
       <div className="flex text-red-500 items-center">
         <div>
-          <ExclamationCircleIcon className="h-7 w-7" />
+          <ExclamationCircleIcon className="h-7 w-7"/>
         </div>
         <div className="ml-2 font-semibold">
           Please ensure your node meets the minimum required Software version to continue network
-          participation
+          participation!
         </div>
       </div>
     )
   }
-  if (version.runningVersion == version.latestVersion) {
+  if (version.runningVersion < version.latestVersion) {
     return (
       <div className="flex text-orange-500 items-center">
         <div>
-          <ExclamationTriangleIcon className="h-7 w-7" />
+          <ExclamationTriangleIcon className="h-7 w-7"/>
         </div>
         <div className="ml-2 font-semibold">The running version is not the latest available!</div>
       </div>
     )
   }
-
-  return null
 }
 
 export default function Maintenance({apiPort}: any) {
-  const {version} = useNodeVersion(apiPort)
+  const {version, update} = useNodeVersion(apiPort)
   const {nodeStatus, startNode, stopNode} = useNodeStatus(apiPort)
   const {performance} = useNodePerformance(apiPort)
 
@@ -91,13 +90,15 @@ export default function Maintenance({apiPort}: any) {
                   <div>Minimum version: {nullPlaceholder(version.minimumVersion)}</div>
                   <div>Latest version: {nullPlaceholder(version.latestVersion)}</div>
                   <div className="flex-grow"/>
-                    {versionCheck(version)}
-                  <div className="flex justify-end">
-                      <button className="p-3 bg-blue-700 text-stone-200">
-                          Update Node
-                          <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
-                      </button>
-                  </div>
+                {versionCheck(version)}
+                {version.latestVersion > version.runningVersion &&
+                    <div className="flex justify-end">
+                        <button className="p-3 bg-blue-700 text-stone-200 disabled:bg-stone-400" onClick={() => update()}>
+                            Update Node
+                            <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
+                        </button>
+                    </div>
+                }
               </div>
           </div>
           <div className="flex flex-col items-stretch">
