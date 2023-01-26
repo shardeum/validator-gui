@@ -5,6 +5,7 @@ import Layout from '../components/Layout';
 import { ReactElement } from 'react';
 import { NextPage } from 'next';
 import ToastContextProvider from '../components/ToastContextProvider';
+import { RouteGuard } from '../components/RouteGuard';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactElement<any, any> | null
@@ -22,9 +23,11 @@ function App({Component, pageProps}: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? getDefaultLayout
   return (
     <>
-      <ToastContextProvider>
-        {getLayout(<Component {...pageProps} />)}
-      </ToastContextProvider>
+      <RouteGuard>
+        <ToastContextProvider>
+          {getLayout(<Component {...pageProps} />)}
+        </ToastContextProvider>
+      </RouteGuard>
     </>
   )
 }

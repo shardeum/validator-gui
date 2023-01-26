@@ -3,7 +3,6 @@ import { jwtMiddleware, loginHandler } from './auth'
 
 const express = require('express')
 const next = require('next')
-var cookieParser = require('cookie-parser')
 
 const port = process.env.PORT || 8080
 const dev = process.env.NODE_ENV === 'development'
@@ -13,7 +12,6 @@ const nextHandler = nextApp.getRequestHandler()
 nextApp.prepare().then(() => {
   const app = express()
   app.use(express.json());
-  app.use(cookieParser())
 
   app.post('/auth/login', loginHandler)
 

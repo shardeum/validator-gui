@@ -28,3 +28,21 @@ a {
     background: black;
   }
 }
+
+li.li-right{
+  float: right;
+}
+
+.spinner{
+  animation: rotateMe 2s infinite;
+}
+
+
+@keyframes rotateMe {
+  0% {
+    transform: rotate(-360deg);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}

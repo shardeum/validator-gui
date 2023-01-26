@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 
 export function badRequestResponse(res: Response, msg: string) {
+  console.log(`ERROR HTTP 400: ${msg}`)
   res.status(400).json({
     errorMessage: msg,
   })
@@ -8,6 +9,7 @@ export function badRequestResponse(res: Response, msg: string) {
 }
 
 export function cliStderrResponse(res: Response, msg: string, details: string) {
+  console.log(`ERROR HTTP 400: ${msg}`)
   res.status(400).json({
     errorMessage: msg,
     errorDetails: details,
@@ -16,8 +18,8 @@ export function cliStderrResponse(res: Response, msg: string, details: string) {
 }
 
 export function unautorizedResponse(req: Request, res: Response) {
-//   res.status(403).json({
-//     errorMessage: 'unauthorized',
-//   })
-  res.redirect(`http://${req.hostname}:${process.env.PORT || 8080}/login`);
+  res.status(403).json({
+    errorMessage: 'unauthorized',
+  })
+  console.log(`ERROR HTTP 403: ${req.url}`)
 }

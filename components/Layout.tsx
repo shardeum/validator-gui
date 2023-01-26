@@ -3,6 +3,9 @@ import Head from 'next/head';
 import { PropsWithChildren } from 'react';
 import Toggle from './Toggle';
 import { useRouter } from 'next/router';
+import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';
+import { authService } from '../services';
+
 
 export default function Layout({children}: PropsWithChildren) {
   const router = useRouter();
@@ -25,27 +28,33 @@ export default function Layout({children}: PropsWithChildren) {
           </div>
 
           {/* Navigation links */}
-          <ul className="flex items-center mb-3 mt-10 border-b-2 border-b-gray-500 h-10 items-stretch">
-            <li className={router.pathname == "/" ? "border-b-2 border-b-white px-5 -mb-0.5 text-white" : "px-5"}>
-              <Link href='/'>Overview</Link></li>
-            <li
-              className={router.pathname == "/performance" ? "border-b-2 border-b-white px-5 -mb-0.5 text-white" : "px-5"}>
-              <Link href='/performance'>Performance</Link>
-            </li>
-            <li
-              className={router.pathname == "/maintenance" ? "border-b-2 border-b-white px-5 -mb-0.5 text-white" : "px-5"}>
-              <Link href='/maintenance'>Maintenance</Link>
-            </li>
-            <li
-              className={router.pathname == "/network" ? "border-b-2 border-b-white px-5 -mb-0.5 text-white" : "px-5"}>
-              <Link href='/network'>Network</Link></li>
-            <li
-              className={router.pathname == "/alert-info" ? "border-b-2 border-b-white px-5 -mb-0.5 text-white" : "px-5"}>
-              <Link href='/alert-info'>Alert Info</Link></li>
-            <li
-              className={router.pathname == "/settings" ? "border-b-2 border-b-white px-5 -mb-0.5 text-white" : "px-5"}>
-              <Link href='/settings'>Settings</Link></li>
-          </ul>
+          <div className="flex flex-direction-column">
+
+            <ul className="flex-grow flex mb-3 mt-10 border-b-2 border-b-gray-500 h-10 items-stretch">
+              <li className={router.pathname == "/" ? "border-b-2 border-b-white px-5 -mb-0.5 text-white" : "px-5"}>
+                <Link href='/'>Overview</Link></li>
+              <li
+                className={router.pathname == "/performance" ? "border-b-2 border-b-white px-5 -mb-0.5 text-white" : "px-5"}>
+                <Link href='/performance'>Performance</Link>
+              </li>
+              <li
+                className={router.pathname == "/maintenance" ? "border-b-2 border-b-white px-5 -mb-0.5 text-white" : "px-5"}>
+                <Link href='/maintenance'>Maintenance</Link>
+              </li>
+              <li
+                className={router.pathname == "/network" ? "border-b-2 border-b-white px-5 -mb-0.5 text-white" : "px-5"}>
+                <Link href='/network'>Network</Link></li>
+              <li
+                className={router.pathname == "/alert-info" ? "border-b-2 border-b-white px-5 -mb-0.5 text-white" : "px-5"}>
+                <Link href='/alert-info'>Alert Info</Link></li>
+              <li
+                className={router.pathname == "/settings" ? "border-b-2 border-b-white px-5 -mb-0.5 text-white" : "px-5"}>
+                <Link href='/settings'>Settings</Link></li>
+            </ul>
+            <button title='Logout' className="hover:text-stone-200" onClick={() => authService.logout()}>
+                 <ArrowRightOnRectangleIcon className='h-5 w-5 inline ml-2' onClick={()=>authService.logout()}/></button>
+          </div>
+
         </nav>
 
         {/* Dynamic content */}
