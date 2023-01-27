@@ -1,12 +1,12 @@
 import { authService } from '../services'
 
-export const fetcher = (...args: any) => {
-  // @ts-ignore
-  return fetch(...args, {
+export const fetcher = (input: RequestInfo | URL, init?: RequestInit) => {
+  return fetch(input, {
     headers:{
       'Content-Type': 'application/json',
-      "X-Api-Token": authService.authToken,
-    }
+      "X-Api-Token": authService.authToken!,
+    },
+    ...(init ?? {})
   }).then(async res => {
     const data = await res.json()
     if (!res.ok) {
