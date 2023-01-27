@@ -15,7 +15,7 @@ export const useNodeVersion = (apiPort: string): {
   } = useSWR(`http://${globalThis.window?.location.hostname}:${apiPort}/api/node/version`, fetcher)
 
   const update = () => {
-    return fetch(`http://${globalThis.window?.location.hostname}:${apiPort}/api/node/update`, {method: 'POST'})
+    return fetcher(`http://${globalThis.window?.location.hostname}:${apiPort}/api/node/update`, {method: 'POST'})
   }
 
   return {
