@@ -4,6 +4,7 @@ import { Doughnut } from 'react-chartjs-2';
 import { mapToDoughnut } from '../../utils/mapToDoughnut';
 import { nullPlaceholder } from '../../utils/null-placerholder';
 import { useNodeStatus } from '../../hooks/useNodeStatus';
+import { useNodeNetwork } from '../../hooks/useNodeNetwork';
 
 export const getServerSideProps = () => ({
   props: {apiPort: process.env.PORT},
@@ -13,6 +14,7 @@ export default function Performance({apiPort}: any) {
   const {version} = useNodeVersion(apiPort)
   const {nodeStatus} = useNodeStatus(apiPort)
   const {performance} = useNodePerformance(apiPort)
+  const {network} = useNodeNetwork(apiPort)
 
   return <>{!!(performance && nodeStatus && version) && <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -20,9 +22,9 @@ export default function Performance({apiPort}: any) {
               <h1 className="font-semibold mb-3">Version Info</h1>
               <div
                   className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                  <div>Running version: {nullPlaceholder(version.runningVersion)}</div>
-                  <div>Minimum version: {nullPlaceholder(version.minimumVersion)}</div>
-                  <div>Latest version: {nullPlaceholder(version.latestVersion)}</div>
+                  <div>Running version (CLI/GUI): {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}</div>
+                  <div>Minimum version (CLI/GUI): {nullPlaceholder(version.minimumCliVersion)} / {nullPlaceholder(version.minimumGuiVersion)}</div>
+                  <div>Latest version (CLI/GUI): {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}</div>
               </div>
           </div>
           <div className="flex flex-col items-stretch">
@@ -52,9 +54,9 @@ export default function Performance({apiPort}: any) {
               <div
                   className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div>Node
-                      throughput: {nodeStatus.performance?.tpsThroughput ? nodeStatus.performance?.tpsThroughput + ' TPS' : '-'}</div>
-                  <div>Last payout: {nullPlaceholder(nodeStatus.performance?.transactionsCount)}</div>
-                  <div>Lifetime earnings: {nullPlaceholder(nodeStatus.performance?.stateStorage)}</div>
+                      throughput: {network?.txApplied ? network?.txApplied + ' TPS' : '-'}</div>
+                  <div>Transaction processed: {nullPlaceholder(nodeStatus.performance?.transactionsCount)}</div>
+                  <div>State storage usage: {nullPlaceholder(nodeStatus.performance?.stateStorage)}</div>
               </div>
           </div>
       </div>

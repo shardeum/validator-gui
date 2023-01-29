@@ -1,27 +1,14 @@
 export interface NodeNetwork {
-  size: {
-    active: number
-    standBy: number
-    desired: number
-    joining: number
-    syncing: number
-  },
-  load: {
-    maxTps: number
-    avgTps: number
-    totalProcessed: number
-  },
-  health: {
-    activeStandbyRatio: number
-    desiredActiveStandbyRatio: number
-  },
-  reward: {
-    dailyIssuance: string
-    avgPerDay: string
-    avgPerNodeDay: string
-  },
-  apr: {
-    nodeApr: number
-    avgApr: number
-  }
+  active: number
+  standby: number
+  desired: number
+  joining: number
+  syncing: number
+  load: number
+  nodeLoad: {internal: number, external: number}
+  txApplied: number
+  txExpired: number
+  txInjected: number
+  txProcessed: number
+  txRejected: number
 }

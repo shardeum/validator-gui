@@ -1,6 +1,9 @@
 import * as express from 'express';
 
 import configureNodeHandlers from './handlers/node';
+import { exec } from 'child_process';
+import { cliStderrResponse } from './handlers/util';
+const yaml = require('js-yaml')
 
 const apiRouter = express.Router();
 
@@ -66,37 +69,5 @@ apiRouter.get('/node/performance', (req, res) => {
     },
   ]);
 });
-
-apiRouter.get('/node/network', (req, res) => {
-  console.log('fetching node state');
-  res.send({
-    size: {
-      active: 2002,
-      standBy: 200,
-      desired: 2000,
-      joining: 4,
-      syncing: 2,
-    },
-    load: {
-      maxTps: 14000,
-      avgTps: 9000,
-      totalProcessed: 51258129,
-    },
-    health: {
-      activeStandbyRatio: 20,
-      desiredActiveStandbyRatio: 25,
-    },
-    reward: {
-      dailyIssuance: '1000000000000000',
-      avgPerDay: '1000000000000000',
-      avgPerNodeDay: '1000000000000000',
-    },
-    apr: {
-      nodeApr: 4,
-      avgApr: 9,
-    },
-  });
-});
-
 
 export default apiRouter

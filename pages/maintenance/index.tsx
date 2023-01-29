@@ -2,19 +2,30 @@ import { useNodeVersion } from '../../hooks/useNodeVersion';
 import { Doughnut } from 'react-chartjs-2';
 import { useNodeStatus } from '../../hooks/useNodeStatus';
 import { mapToDoughnut } from '../../utils/mapToDoughnut';
-import { ArrowRightIcon, ExclamationCircleIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid';
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ExclamationCircleIcon,
+  ExclamationTriangleIcon
+} from '@heroicons/react/20/solid';
 import RemoveStakeButton from '../../components/RemoveStakeButton';
 import { nullPlaceholder } from '../../utils/null-placerholder';
 import { useNodePerformance } from '../../hooks/useNodePerformance';
 import { NodeVersion } from '../../model/node-version';
+import React, { useState } from 'react';
+import SignMessage from '../../components/SignMessage';
+import { useAccount } from 'wagmi';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useAccountStakeInfo } from '../../hooks/useAccountStakeInfo';
 
 export const getServerSideProps = () => ({
   props: {apiPort: process.env.PORT},
 });
 
 
-const versionCheck = (version: NodeVersion) => {
-  if (version.runningVersion < version.minimumVersion) {
+const versionWarning = (version: NodeVersion) => {
+  if (version.runningCliVersion < version.minimumCliVersion
+    || version.runningGuiVersion < version.minimumGuiVersion) {
     return (
       <div className="flex text-red-500 items-center">
         <div>
@@ -27,7 +38,8 @@ const versionCheck = (version: NodeVersion) => {
       </div>
     )
   }
-  if (version.runningVersion < version.latestVersion) {
+  if (version.runningCliVersion < version.latestCliVersion
+    || version.runningGuiVersion < version.latestGuiVersion) {
     return (
       <div className="flex text-orange-500 items-center">
         <div>
@@ -42,7 +54,10 @@ const versionCheck = (version: NodeVersion) => {
 export default function Maintenance({apiPort}: any) {
   const {version, update} = useNodeVersion(apiPort)
   const {nodeStatus, startNode, stopNode} = useNodeStatus(apiPort)
+  const {address, isConnected} = useAccount();
+  const {stakeInfo} = useAccountStakeInfo(apiPort, address);
   const {performance} = useNodePerformance(apiPort)
+  const [showStakeForm, setShowStakeForm] = useState<boolean>(false);
 
   return <>{!!(performance && version && nodeStatus) && <div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 auto-rows-auto">
@@ -82,25 +97,76 @@ export default function Maintenance({apiPort}: any) {
           </div>
 
           <div className="flex flex-col items-stretch">
-              <h1 className="font-semibold mb-3">Update Version</h1>
-              <div
-                  className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                  <div className="flex-grow"/>
-                  <div>Running version: {nullPlaceholder(version.runningVersion)}</div>
-                  <div>Minimum version: {nullPlaceholder(version.minimumVersion)}</div>
-                  <div>Latest version: {nullPlaceholder(version.latestVersion)}</div>
-                  <div className="flex-grow"/>
-                {versionCheck(version)}
-                {version.latestVersion > version.runningVersion &&
-                    <div className="flex justify-end">
-                        <button className="p-3 bg-blue-700 text-stone-200 disabled:bg-stone-400" onClick={() => update()}>
-                            Update Node
-                            <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
-                        </button>
+              <h1 className="font-semibold mb-3">Add / Remove Stake</h1>
+            {showStakeForm &&
+                <div
+                    className="bg-white text-stone-500	rounded-xl p-8 text-sm relative">
+                    <SignMessage nominator={address!}
+                                 nominee={nodeStatus?.nodeInfo?.publicKey}
+                                 stakeAmount={nodeStatus.stakeRequirement ? +nodeStatus.stakeRequirement : 0}
+                                 onStake={() => setShowStakeForm(false)}/>
+                    <button className="p-3 border border-blue-700 text-stone-600 mr-2 absolute bottom-8"
+                            onClick={() => setShowStakeForm(false)}>
+                        <ArrowLeftIcon className="h-5 w-5 inline mr-2"/>
+                        Cancel
+                    </button>
+                </div>
+            }
+            {!showStakeForm &&
+                <div
+                    className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                    <div className="flex-grow"/>
+                    <div>SHM staked: {stakeInfo?.stake ? stakeInfo.stake + ' SHM' : '-'}</div>
+                    <div className="overflow-hidden text-ellipsis">Stake
+                        address: {nullPlaceholder(nodeStatus.nominatorAddress)}</div>
+                    <div>Stake
+                        requirement: {nodeStatus.stakeRequirement ? nodeStatus.stakeRequirement + ' SHM' : '-'}</div>
+                    <div className="flex-grow"/>
+
+                    <div className="flex text-red-500 items-center">
+                        <div>
+                            <ExclamationCircleIcon className="h-7 w-7"/>
+                        </div>
+                        <div className="ml-2 font-semibold">
+                            Please ensure your stake wallet has enough funds to meet the minimum staking requirement
+                        </div>
                     </div>
-                }
-              </div>
+
+                  {isConnected
+                    && stakeInfo?.stake > '0.0'
+                    && nodeStatus?.nodeInfo?.publicKey != null
+                    && stakeInfo?.nominee !== nodeStatus?.nodeInfo?.publicKey &&
+                      <div className="flex text-red-500 items-center">
+                          <div>
+                              <ExclamationCircleIcon className="h-7 w-7"/>
+                          </div>
+                          <div className="ml-2 font-semibold">
+                              This wallet already has an active stake on a different node.
+                              Remove your stake first if you wish to stake for the current node.
+                          </div>
+                      </div>
+                  }
+
+                    <div className="flex justify-end">
+                      {isConnected && stakeInfo?.stake > '0.0' &&
+                          <RemoveStakeButton nominee={stakeInfo?.nominee}/>
+                      }
+
+                      {isConnected && nodeStatus?.state !== 'stopped' &&
+                          <button className="p-3 bg-blue-700 text-stone-200 mr-2"
+                                  onClick={() => setShowStakeForm(true)}>
+                              Add Stake
+                              <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
+                          </button>
+                      }
+                      {!isConnected &&
+                          <ConnectButton></ConnectButton>
+                      }
+                    </div>
+                </div>
+            }
           </div>
+
           <div className="flex flex-col items-stretch">
               <h1 className="font-semibold mb-3">Benchmark Node</h1>
               <div
@@ -125,36 +191,35 @@ export default function Maintenance({apiPort}: any) {
                   <div className="flex-grow"/>
                   <div className="flex justify-end">
                       <button className="p-3 bg-blue-700 text-stone-200">
-                          Benchmark
+                          Benchmark - Coming Soon
                           <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
                       </button>
                   </div>
               </div>
           </div>
+
           <div className="flex flex-col items-stretch">
-              <h1 className="font-semibold mb-3">Add / Remove Stake</h1>
+              <h1 className="font-semibold mb-3">Update Version</h1>
               <div
-                  className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                  className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
-                  <div>SHM staked: {nodeStatus.lockedStake ? nodeStatus.lockedStake + ' SHM' : '-'}</div>
-                  <div className="overflow-hidden text-ellipsis">Stake
-                      address: {nullPlaceholder(nodeStatus.nominatorAddress)}</div>
-                  <div>Stake
-                      requirement: {nodeStatus.stakeRequirement ? nodeStatus.stakeRequirement + ' SHM' : '-'}</div>
+                  <div>Running version
+                      (CLI/GUI): {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}</div>
+                  <div>Minimum version
+                      (CLI/GUI): {nullPlaceholder(version.minimumCliVersion)} / {nullPlaceholder(version.minimumGuiVersion)}</div>
+                  <div>Latest version
+                      (CLI/GUI): {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}</div>
                   <div className="flex-grow"/>
-
-                  <div className="flex text-red-500 items-center">
-                      <div>
-                          <ExclamationCircleIcon className="h-7 w-7"/>
-                      </div>
-                      <div className="ml-2 font-semibold">
-                          Please ensure your stake wallet has enough funds to meet the minimum staking requirement
-                      </div>
-                  </div>
-
-                  <div className="flex justify-end">
-                      <RemoveStakeButton nominee={nodeStatus.nodeInfo?.publicKey}/>
-                  </div>
+                {versionWarning(version)}
+                {(version.latestCliVersion > version.runningCliVersion || version.latestCliVersion > version.runningCliVersion) &&
+                    <div className="flex justify-end">
+                        <button className="p-3 bg-blue-700 text-stone-200 disabled:bg-stone-400"
+                                onClick={() => update()}>
+                            Update Node
+                            <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
+                        </button>
+                    </div>
+                }
               </div>
           </div>
       </div>

@@ -73,11 +73,10 @@ export default function RemoveStakeButton({nominee}: { nominee: string }) {
       if (!ethereum) {
         sethaveMetamask(false);
       }
+      // @ts-ignore
       const accounts = await ethereum.request({
         method: "eth_requestAccounts"
       });
-
-      console.log("Account: ", ethereum.se);
 
       setAccountAddress(accounts[0]);
 
@@ -114,7 +113,7 @@ export default function RemoveStakeButton({nominee}: { nominee: string }) {
     <>
       {haveMetamask ? (
         <div>
-          <button className="p-3 bg-blue-700 text-stone-200 flex" onClick={() => removeStake()}>
+          <button className="p-3 bg-blue-700 text-stone-200 mr-2" onClick={() => removeStake()}>
             Remove Stake
             {!isLoading && <ArrowRightIcon className="h-5 w-5 inline ml-2"/>}
             {isLoading && <span className="h-5 w-5 inline ml-2">

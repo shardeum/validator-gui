@@ -77,6 +77,31 @@ export default function configureNodeHandlers(apiRouter: Router) {
     }
   );
 
+  apiRouter.get(
+    '/account/:address/stakeInfo',
+    (req: Request, res: Response<NodeStatusResponse>) => {
+      const address = req.params.address;
+      if (!address) {
+        badRequestResponse(res, 'No address provided');
+        return;
+      }
+      exec('operator-cli stake_info ' + address, (err, stdout, stderr) => {
+        console.log('operator-cli status: ', err, stdout, stderr);
+        if (err) {
+          cliStderrResponse(res, 'Unable to fetch stake info', err.message)
+          return
+        }
+        if (stderr) {
+          cliStderrResponse(res, 'Unable to fetch stake info', stderr)
+          return
+        }
+        const yamlData = yaml.load(stdout);
+        res.json(yamlData);
+      });
+      console.log('executing operator-cli status...');
+    }
+  );
+
 
   apiRouter.post(
     '/node/stake',
@@ -135,34 +160,34 @@ export default function configureNodeHandlers(apiRouter: Router) {
     '/node/update',
     async (req: Request<StakeRequest>, res: Response) => {
       // Exec the CLI validator stake command
-      const update = new Promise<void>((resolve) => exec(`operator-cli update`, (err, stdout, stderr) => {
+      const update = new Promise<void>((resolve, reject) => exec(`operator-cli update`, (err, stdout, stderr) => {
         console.log('operator-cli update: ', err, stdout, stderr);
         if (err) {
-          cliStderrResponse(res, 'Error occurred while updating', err.message)
-          return
+          cliStderrResponse(res, 'Error occurred while updating', err.message);
+          reject();
         }
         if (stderr) {
-          cliStderrResponse(res, 'Error occurred while updating', stderr)
-          return
+          cliStderrResponse(res, 'Error occurred while updating', stderr);
+          reject();
         }
         resolve();
       }));
-      const restart = new Promise<void>((resolve) => exec(`operator-cli restart`, (err, stdout, stderr) => {
-        console.log('operator-cli restart: ', err, stdout, stderr);
+      const restart = new Promise<void>((resolve, reject) => exec(`operator-cli gui restart`, (err, stdout, stderr) => {
+        console.log('operator-cli gui restart: ', err, stdout, stderr);
         if (err) {
-          cliStderrResponse(res, 'Error occurred while restarting the GUI', err.message)
-          return
+          cliStderrResponse(res, 'Error occurred while restarting the GUI', err.message);
+          reject();
         }
         if (stderr) {
-          cliStderrResponse(res, 'Error occurred while restarting the GUI', stderr)
-          return
+          cliStderrResponse(res, 'Error occurred while restarting the GUI', stderr);
+          reject();
         }
         resolve();
       }));
 
       await update;
       await restart;
-      console.log('executing operator-cli unstake...');
+      res.end();
     }
   );
 
@@ -253,46 +278,25 @@ export default function configureNodeHandlers(apiRouter: Router) {
     }
   );
 
-  apiRouter.post(
+  apiRouter.get(
     '/node/network',
     (req: Request, res: Response<NodeNetworkResponse>) => {
       // Exec the CLI validator stop command
-      exec('operator-cli network', (err, stdout, stderr) => {
-        console.log('operator-cli network: ', err, stdout, stderr);
-        // res.end();
+      exec('operator-cli network-stats', (err, stdout, stderr) => {
+        console.log('operator-cli network-stats: ', err, stdout, stderr);
+        if (err) {
+          cliStderrResponse(res, 'Unable to fetch version', err.message)
+          return
+        }
+        if (stderr) {
+          cliStderrResponse(res, 'Unable to fetch version', stderr)
+          return
+        }
+        const yamlData = yaml.load(stdout);
+        res.json(yamlData);
       });
-      console.log('executing operator-cli network...');
-
-      // mock response
-      res.json({
-        size: {
-          active: 9000,
-          standBy: 5000,
-          desired: 8000,
-          joining: 6000,
-          syncing: 12345,
-        },
-        load: {
-          maxTps: 123,
-          avgTps: 99,
-          totalProcessed: 500,
-        },
-        health: {
-          activeStandbyRatio: 60,
-          desiredActiveStandbyRatio: 75,
-        },
-        reward: {
-          dailyIssuance: '321.01',
-          avgPerDay: '123.45',
-          avgPerNodeDay: '111.23',
-        },
-        apr: {
-          nodeApr: 75,
-          avgApr: 55,
-        },
-      });
-    }
-  );
+      console.log('executing operator-cli network-stats');
+    });
 
 
   apiRouter.post(

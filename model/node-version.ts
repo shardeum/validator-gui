@@ -1,5 +1,8 @@
 export interface NodeVersion {
-  runningVersion: string
-  minimumVersion: string
-  latestVersion: string
+  runningCliVersion: string
+  minimumCliVersion: string
+  latestCliVersion: string
+  runningGuiVersion: string
+  minimumGuiVersion: string
+  latestGuiVersion: string
 }

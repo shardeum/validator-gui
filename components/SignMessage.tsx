@@ -3,7 +3,12 @@ import { ethers } from "ethers";
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { ToastContext } from './ToastContextProvider';
 
-export default function SignMessage({nominator, nominee}: { nominator: string, nominee: string }) {
+export default function SignMessage({
+                                      nominator,
+                                      nominee,
+                                      stakeAmount,
+                                      onStake
+                                    }: { nominator: string, nominee: string, stakeAmount?: number, onStake?: () => void }) {
   const {showTemporarySuccessMessage} = useContext(ToastContext);
 
   const sendTransaction = async (e: any, blobData: any) => {
@@ -38,12 +43,12 @@ export default function SignMessage({nominator, nominee}: { nominator: string, n
 
       const txConfirmation = await wait();
       console.log("TX CONFRIMED: ", txConfirmation);
-      setLoading(false);
       showTemporarySuccessMessage('Stake successful!');
     } catch (error) {
       console.log(error);
-      setLoading(false);
     }
+    setLoading(false);
+    onStake?.();
   };
 
   const signMessage = async ({setError, message}: any) => {
@@ -75,6 +80,7 @@ export default function SignMessage({nominator, nominee}: { nominator: string, n
     internalTXType: 6,
     nominator,
     nominee,
+    stake: stakeAmount,
     timestamp: Date.now()
   });
 
@@ -82,7 +88,8 @@ export default function SignMessage({nominator, nominee}: { nominator: string, n
       setData({
         ...data,
         nominator,
-        nominee
+        nominee,
+        stake: stakeAmount
       });
     },
     [nominator, nominee]
@@ -121,7 +128,8 @@ export default function SignMessage({nominator, nominee}: { nominator: string, n
     <div>
       <form onSubmit={handleSign}>
         <label htmlFor="rewardWallet" className="block">Stake Wallet Address</label>
-        <input id="rewardWallet" value={nominator} type="text" className="bg-white text-black p-3 mt-2 w-72 block"
+        <input id="rewardWallet" value={data.nominator} type="text"
+               className="bg-white text-black p-3 mt-2 w-72 block border border-black"
                disabled/>
         <label className="block mt-4">
           Nominee Public Key
@@ -130,9 +138,9 @@ export default function SignMessage({nominator, nominee}: { nominator: string, n
           required
           type="text"
           name="nominee"
-          className="bg-white text-black p-3 mt-2 w-72 block"
+          className="bg-white text-black p-3 mt-2 w-72 block border border-black"
           placeholder="Nominee Public Key"
-          value={nominee}
+          value={data.nominee}
           onChange={(e) =>
             //@ts-ignore
             setData({...data, nominee: e.target.value.toLowerCase()})
@@ -145,7 +153,7 @@ export default function SignMessage({nominator, nominee}: { nominator: string, n
           required
           type="text"
           name="stake"
-          className="bg-white text-black p-3 mt-2 w-72"
+          className="bg-white text-black p-3 mt-2 w-72 border border-black"
           placeholder="Stake Amount (SHM)"
           onChange={(e) =>
             setData({
@@ -161,7 +169,7 @@ export default function SignMessage({nominator, nominee}: { nominator: string, n
 
       <button
         onClick={async (e) => sendTransaction(e, JSON.stringify(data))}
-        className="p-3 bg-blue-700 text-stone-200 mr-2 mt-5 flex items-center" disabled={isLoading}
+        className="p-3 bg-blue-700 text-stone-200 mt-5 flex items-center float-right" disabled={isLoading}
       >
         Stake
         {!isLoading && <ArrowRightIcon className="h-5 w-5 inline ml-2"/>}
