@@ -1,12 +1,15 @@
 import apiRouter from './api'
 import { jwtMiddleware, loginHandler } from './auth'
+import * as https from 'https';
+import * as fs from 'fs';
+import path from 'path';
 
 const express = require('express')
 const next = require('next')
 
 const port = process.env.PORT || 8080
 const dev = process.env.NODE_ENV === 'development'
-const nextApp = next({ dev })
+const nextApp = next({dev})
 const nextHandler = nextApp.getRequestHandler()
 
 nextApp.prepare().then(() => {
@@ -21,7 +24,18 @@ nextApp.prepare().then(() => {
     return nextHandler(req, res)
   })
 
-  app.listen(port, () => {
-    console.log(`server started at http://localhost:${port}`)
-  })
+  if (!dev) {
+    const privateKey = fs.readFileSync(path.join(__dirname, '../selfsigned.key'), 'utf8');
+    const certificate = fs.readFileSync(path.join(__dirname, '../selfsigned.crt'), 'utf8');
+
+    const credentials = {key: privateKey, cert: certificate};
+    https.createServer(credentials, app)
+      .listen(port, () => {
+        console.log(`server started at https://localhost:${port}`)
+      })
+  } else {
+    app.listen(port, () => {
+      console.log(`server started at http://localhost:${port}`)
+    })
+  }
 })

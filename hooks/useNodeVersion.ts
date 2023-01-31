@@ -1,6 +1,7 @@
 import useSWR from 'swr'
 import { fetcher } from './fetcher';
 import { NodeVersion } from '../model/node-version';
+import { httpOrHttps } from '../utils/is-dev';
 
 export const useNodeVersion = (apiPort: string): {
   isLoading: boolean;
@@ -12,10 +13,10 @@ export const useNodeVersion = (apiPort: string): {
     data,
     error,
     isLoading
-  } = useSWR(`http://${globalThis.window?.location.hostname}:${apiPort}/api/node/version`, fetcher)
+  } = useSWR(`${httpOrHttps()}://${globalThis.window?.location.hostname}:${apiPort}/api/node/version`, fetcher)
 
   const update = () => {
-    return fetcher(`http://${globalThis.window?.location.hostname}:${apiPort}/api/node/update`, {method: 'POST'})
+    return fetcher(`${httpOrHttps()}://${globalThis.window?.location.hostname}:${apiPort}/api/node/update`, {method: 'POST'})
   }
 
   return {

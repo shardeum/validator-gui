@@ -1,9 +1,10 @@
 import useSWR from 'swr'
 import { fetcher } from './fetcher';
 import { NodeAlert } from '../model/node-alert';
+import { httpOrHttps } from '../utils/is-dev';
 
 export const useNodeAlerts = (apiPort: string): { alerts: NodeAlert[], isLoading: boolean, isError: boolean } => {
-  const {data, error, isLoading} = useSWR(`http://${globalThis.window?.location.hostname}:${apiPort}/api/node/alerts`, fetcher)
+  const {data, error, isLoading} = useSWR(`${httpOrHttps()}://${globalThis.window?.location.hostname}:${apiPort}/api/node/alerts`, fetcher)
 
   return {
     alerts: data,

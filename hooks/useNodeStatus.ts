@@ -1,17 +1,18 @@
 import useSWR from 'swr'
 import { fetcher } from './fetcher';
 import { NodeStatus } from '../model/node-status';
+import { httpOrHttps } from '../utils/is-dev';
 
 export const useNodeStatus = (apiPort: string): { nodeStatus: NodeStatus, startNode: () => void, stopNode: () => void, isLoading: boolean, isError: boolean } => {
 
-  const {data, error, isLoading} = useSWR(`http://${globalThis.window?.location.hostname}:${apiPort}/api/node/status`, fetcher, { refreshInterval: 1000 })
+  const {data, error, isLoading} = useSWR(`${httpOrHttps()}://${globalThis.window?.location.hostname}:${apiPort}/api/node/status`, fetcher, { refreshInterval: 1000 })
 
   const startNode = () => {
-    return fetcher(`http://${globalThis.window?.location.hostname}:${apiPort}/api/node/start`, {method: 'POST'})
+    return fetcher(`${httpOrHttps()}://${globalThis.window?.location.hostname}:${apiPort}/api/node/start`, {method: 'POST'})
   }
 
   const stopNode = () => {
-    return fetcher(`http://${globalThis.window?.location.hostname}:${apiPort}/api/node/stop`, {method: 'POST'})
+    return fetcher(`${httpOrHttps()}://${globalThis.window?.location.hostname}:${apiPort}/api/node/stop`, {method: 'POST'})
   }
 
   return {

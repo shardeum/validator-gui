@@ -1,6 +1,7 @@
 import useSWR from 'swr';
 import { fetcher } from './fetcher';
 import { AccountStakeInfo } from '../model/account-stake-info';
+import { httpOrHttps } from '../utils/is-dev';
 
 export const useAccountStakeInfo = (apiPort: string, eoa?: string): { stakeInfo: AccountStakeInfo, isLoading: boolean, isError: boolean } => {
   let data: any | null
@@ -12,7 +13,7 @@ export const useAccountStakeInfo = (apiPort: string, eoa?: string): { stakeInfo:
       data,
       error,
       isLoading
-    } = useSWR(`http://${globalThis.window?.location.hostname}:${apiPort}/api/account/${eoa}/stakeInfo`, fetcher, {refreshInterval: 1000}));
+    } = useSWR(`${httpOrHttps()}://${globalThis.window?.location.hostname}:${apiPort}/api/account/${eoa}/stakeInfo`, fetcher, {refreshInterval: 1000}));
   }
 
   return {

@@ -227,11 +227,11 @@ export default function configureNodeHandlers(apiRouter: Router) {
       exec('operator-cli version', (err, stdout, stderr) => {
         console.log('operator-cli status: ', err, stdout, stderr);
         if (err) {
-          cliStderrResponse(res, 'Unable to fetch version', err.message)
+          cliStderrResponse(res, 'Unable to fetch network stats', err.message)
           return
         }
         if (stderr) {
-          cliStderrResponse(res, 'Unable to fetch version', stderr)
+          cliStderrResponse(res, 'Unable to fetch network stats', stderr)
           return
         }
         const yamlData: NodeVersionResponse = yaml.load(stdout);
