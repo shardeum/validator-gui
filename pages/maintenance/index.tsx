@@ -71,7 +71,7 @@ export default function Maintenance({apiPort}: any) {
                             <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
                         </button>
                     }
-                    {(nodeStatus.state === 'inactive') &&
+                    {(nodeStatus.state === 'stopped') &&
                         <button className="p-3 bg-blue-700 text-stone-200 mr-2" onClick={() => startNode()}>
                             Start Node
                             <ArrowRightIcon className="h-5 w-5 inline ml-2"/>

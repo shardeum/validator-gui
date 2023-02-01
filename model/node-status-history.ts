@@ -1,5 +1,5 @@
 export interface NodeStatusHistory {
-  state: 'active' | 'paused' | 'inactive' | 'unknown'
+  state: 'active' | 'paused' | 'stopped' | 'unknown'
   stakeAmount: string
   lifetimeEarnings: string
   date: string

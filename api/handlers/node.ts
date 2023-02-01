@@ -65,7 +65,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
         let yamlData: NodeStatus = yaml.load(stdout);
         if (yamlData.state === 'active') {
           lastActiveNodeState = yamlData;
-        } else if (yamlData.state === 'inactive') {
+        } else if (yamlData.state === 'stopped') {
           yamlData = {
             ...yamlData,
             nodeInfo: lastActiveNodeState?.nodeInfo

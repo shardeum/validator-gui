@@ -2,7 +2,7 @@ import { NodePerformance } from './node-performance';
 
 export interface NodeStatus {
   performance: NodePerformance;
-  state: 'active' | 'standby' | 'inactive'
+  state: 'active' | 'standby' | 'stopped' | 'active-syncing'
   totalTimeValidating: number
   lastActive: string
   lockedStake: string

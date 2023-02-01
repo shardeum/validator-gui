@@ -1,7 +1,7 @@
 import { ErrorResponse } from './error'
 
 export type NodeStatus = {
-  state: 'active' | 'standby' | 'inactive'
+  state: 'active' | 'standby' | 'stopped'
   totalTimeValidating: number
   lastActive: string
   lockedStake: string
