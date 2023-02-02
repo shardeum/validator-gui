@@ -23,8 +23,11 @@ function getDefaultLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 }
 
+const RPC_URL = process.env.RPC_URL ?? 'http://139.144.46.212:8080/';
+const CHAIN_ID = process.env.CHAIN_ID ? +process.env.CHAIN_ID : 8082;
+
 export const devnet: Chain = {
-  id: 8081,
+  id: CHAIN_ID,
   name: 'Shardeum',
   network: 'shardeum_devnet',
   nativeCurrency: {
@@ -33,7 +36,7 @@ export const devnet: Chain = {
     symbol: 'SHM',
   },
   rpcUrls: {
-    default: { http: ['http://173.230.128.141:8080/'] },
+    default: {http: [RPC_URL]},
   }
 }
 
