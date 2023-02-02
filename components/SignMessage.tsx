@@ -78,7 +78,7 @@ export default function SignMessage({
   const [data, setData] = useState({
     isInternalTx: true,
     internalTXType: 6,
-    nominator,
+    nominator: nominator.toLowerCase(),
     nominee,
     stake: stakeAmount,
     timestamp: Date.now()
@@ -87,7 +87,7 @@ export default function SignMessage({
   useEffect(() => {
       setData({
         ...data,
-        nominator,
+        nominator: nominator.toLowerCase(),
         nominee,
         stake: stakeAmount
       });
@@ -97,7 +97,7 @@ export default function SignMessage({
 
   // @ts-ignore
   window.ethereum.on("accountsChanged", (accounts: any) => {
-    setData({...data, nominator: accounts[0]});
+    setData({...data, nominator: accounts[0].toLowerCase()});
   });
 
   console.log("DATA: ", data);
