@@ -1,4 +1,4 @@
-import { authService } from '../services'
+import { authService } from '../services/auth.service';
 
 export const fetcher = (input: RequestInfo | URL, init?: RequestInit) => {
   return fetch(input, {

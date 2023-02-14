@@ -23,8 +23,8 @@ function getDefaultLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 }
 
-const RPC_URL = process.env.RPC_URL ?? 'http://139.144.46.212:8080/';
-const CHAIN_ID = process.env.CHAIN_ID ? +process.env.CHAIN_ID : 8082;
+export const RPC_URL = process.env.RPC_URL ?? 'https://sphinx.shardeum.org/';
+export const CHAIN_ID = process.env.CHAIN_ID ? +process.env.CHAIN_ID : 8082;
 
 export const devnet: Chain = {
   id: CHAIN_ID,

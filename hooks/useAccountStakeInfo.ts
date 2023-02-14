@@ -7,14 +7,11 @@ export const useAccountStakeInfo = (apiPort: string, eoa?: string): { stakeInfo:
   let data: any | null
   let error: any | null;
   let isLoading: boolean = false;
-
-  if (eoa != null) {
-    ({
-      data,
-      error,
-      isLoading
-    } = useSWR(`${httpOrHttps()}://${globalThis.window?.location.hostname}:${apiPort}/api/account/${eoa}/stakeInfo`, fetcher, {refreshInterval: 1000}));
-  }
+  ({
+    data,
+    error,
+    isLoading
+  } = useSWR(eoa != null ? `${httpOrHttps()}://${globalThis.window?.location.hostname}:${apiPort}/api/account/${eoa}/stakeInfo` : null, fetcher, {refreshInterval: 1000}));
 
   return {
     stakeInfo: data,

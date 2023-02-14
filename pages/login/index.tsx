@@ -3,8 +3,8 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 
-import { authService } from '../../services'
 import { ArrowPathIcon } from '@heroicons/react/20/solid'
+import { authService } from '../../services/auth.service';
 
 export const getServerSideProps = () => ({
   props: { apiPort: process.env.PORT },
@@ -23,7 +23,7 @@ const Login = ({ apiPort }: any) => {
 
   const { register, handleSubmit, setError, formState } = useForm()
 
-  const [apiError, setApiError] = useState(null);
+  const [apiError, setApiError] = useState<Error | null>(null);
 
   function onSubmit({password}: any) {
     setApiError(null);
@@ -52,10 +52,10 @@ const Login = ({ apiPort }: any) => {
             <input {...register('password')} placeholder="Password" type="password" className="block p-4 w-full bg-stone-200 text-stone-600 my-2"></input>
             {apiError && (
               <div className="flex text-red-500 items-center mb-5">
-                  <div className="ml-2 font-semibold">{apiError}</div>
+                  <div className="ml-2 font-semibold">{apiError.message}</div>
               </div>
              )}
-            <button disabled={formState.isSubmitting} className="p-4 bg-blue-700 text-stone-200" type="submit" >
+            <button disabled={formState.isSubmitting} className="btn btn-primary" type="submit" >
               { formState.isSubmitting ? <ArrowPathIcon className='w-5 spinner'/> : 'Connect'}
             </button>
           </form>

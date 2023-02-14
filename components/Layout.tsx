@@ -4,8 +4,7 @@ import { PropsWithChildren } from 'react';
 import Toggle from './Toggle';
 import { useRouter } from 'next/router';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';
-import { authService } from '../services';
-
+import { authService } from '../services/auth.service';
 
 export default function Layout({children}: PropsWithChildren) {
   const router = useRouter();

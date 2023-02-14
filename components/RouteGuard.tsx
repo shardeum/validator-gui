@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-
-import { authService } from '../services';
+import { authService } from '../services/auth.service';
 
 export { RouteGuard };
 

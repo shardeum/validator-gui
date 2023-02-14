@@ -52,7 +52,7 @@ const data = {
 };
 
 export default function Overview({apiPort}: any) {
-  const {nodeStatus, isLoading, isError} = useNodeStatus(apiPort)
+  const {nodeStatus, isLoading} = useNodeStatus(apiPort)
   const {nodeStatusHistory} = useNodeStatusHistory(apiPort)
 
   ChartJS.register(
@@ -94,7 +94,8 @@ export default function Overview({apiPort}: any) {
                     className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                     <div>Earnings: {nodeStatus.currentRewards ? nodeStatus.currentRewards?.substring(0, 6) + ' SHM' : '-'} </div>
                     <div>Last payout: {nullPlaceholder(nodeStatus.lastPayout)}</div>
-                    <div>Lifetime earnings: {nodeStatus.lifetimeEarnings ? nodeStatus.lifetimeEarnings + ' SHM' : '-'}</div>
+                    <div>Lifetime
+                        earnings: {nodeStatus.lifetimeEarnings ? nodeStatus.lifetimeEarnings + ' SHM' : '-'}</div>
                 </div>
             </div>
         </div>

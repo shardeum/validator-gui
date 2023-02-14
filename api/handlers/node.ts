@@ -27,7 +27,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
         cliStderrResponse(res, 'Unable to start validator', stderr)
         return
       }
-      res.end();
+      res.status(200).json({status:"ok"})
     });
     console.log('executing operator-cli start...');
   });
@@ -37,13 +37,13 @@ export default function configureNodeHandlers(apiRouter: Router) {
     exec('operator-cli stop', (err, stdout, stderr) => {
       if (err) {
         cliStderrResponse(res, 'Unable to stop validator', err.message)
-        return
+        res.end()
       }
       if (stderr) {
         cliStderrResponse(res, 'Unable to stop validator', stderr)
-        return
+        res.end()
       }
-      res.end();
+      res.status(200).json({status:"ok"})
     });
     console.log('executing operator-cli stop...');
   });

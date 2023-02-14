@@ -1,7 +1,5 @@
-import { BehaviorSubject } from 'rxjs'
-import getConfig from 'next/config'
 import Router from 'next/router'
-import {httpOrHttps} from "../utils/is-dev";
+import { httpOrHttps } from "../utils/is-dev";
 
 const tokenKey = 'shmguitk'
 
@@ -16,7 +14,7 @@ export const authService = {
   logout,
 }
 
-function login(password, apiPort) {
+function login(password: string, apiPort: number) {
   return fetch(`${httpOrHttps()}://${globalThis.window?.location.hostname}:${apiPort}/auth/login`, {
     headers: {'Content-Type': 'application/json'},
     method: 'POST',

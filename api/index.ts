@@ -3,13 +3,14 @@ import { jwtMiddleware, loginHandler } from './auth'
 import * as https from 'https';
 import * as fs from 'fs';
 import path from 'path';
+import express from 'express';
+import next from 'next';
+import dotenv from 'dotenv';
 
-const express = require('express')
-const next = require('next')
-
-const port = process.env.PORT || 8080
+dotenv.config()
+const port = process.env.PORT ? +process.env.PORT : 8080
 const dev = process.env.NODE_ENV === 'development'
-const nextApp = next({dev})
+const nextApp = next({dev, port})
 const nextHandler = nextApp.getRequestHandler()
 
 nextApp.prepare().then(() => {

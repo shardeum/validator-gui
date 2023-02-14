@@ -1,7 +1,8 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { ToastContext } from './ToastContextProvider';
+import LoadingButton from './LoadingButton';
 
 export default function SignMessage({
                                       nominator,
@@ -129,7 +130,7 @@ export default function SignMessage({
       <form onSubmit={handleSign}>
         <label htmlFor="rewardWallet" className="block">Stake Wallet Address</label>
         <input id="rewardWallet" value={data.nominator} type="text"
-               className="bg-white text-black p-3 mt-2 w-72 block border border-black"
+               className="bg-white text-black p-3 mt-2 w-full block border border-black"
                disabled/>
         <label className="block mt-4">
           Nominee Public Key
@@ -138,7 +139,7 @@ export default function SignMessage({
           required
           type="text"
           name="nominee"
-          className="bg-white text-black p-3 mt-2 w-72 block border border-black"
+          className="bg-white text-black p-3 mt-2 w-full block border border-black"
           placeholder="Nominee Public Key"
           value={data.nominee}
           onChange={(e) =>
@@ -153,7 +154,7 @@ export default function SignMessage({
           required
           type="text"
           name="stake"
-          className="bg-white text-black p-3 mt-2 w-72 border border-black"
+          className="bg-white text-black p-3 mt-2 w-full border border-black"
           placeholder="Stake Amount (SHM)"
           onChange={(e) =>
             setData({
@@ -167,20 +168,16 @@ export default function SignMessage({
         />
       </form>
 
-      <button
-        onClick={async (e) => sendTransaction(e, JSON.stringify(data))}
-        className="p-3 bg-blue-700 text-stone-200 mt-5 flex items-center float-right" disabled={isLoading}
-      >
-        Stake
-        {!isLoading && <ArrowRightIcon className="h-5 w-5 inline ml-2"/>}
-        {isLoading && <span className="h-5 w-5 inline ml-2">
-            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-              <path className="opacity-75" fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-        </span>}
-      </button>
+      <div className="mt-5 float-right">
+        <LoadingButton
+          onClick={async (e) => sendTransaction(e, JSON.stringify(data))}
+          isLoading={isLoading}
+          className="btn btn-primary" disabled={isLoading}
+        >
+          Stake
+          <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
+        </LoadingButton>
+      </div>
     </div>
   )
     ;

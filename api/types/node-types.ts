@@ -2,6 +2,8 @@ import { ErrorResponse } from './error'
 
 export type NodeStatus = {
   state: 'active' | 'standby' | 'stopped'
+  exitStatus: 'Exit with warning' | 'Exited cleanly'|'Exit with error',
+  exitMessage: string,
   totalTimeValidating: number
   lastActive: string
   lockedStake: string
