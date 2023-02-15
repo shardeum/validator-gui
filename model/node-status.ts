@@ -13,8 +13,13 @@ export interface NodeStatus {
   nominatorAddress: string
   currentRewards: string
   lastPayout: string
-  lifetimeEarnings: string,
+  lifetimeEarnings: string
   nodeInfo: {
+    appData: {
+      activeVersion: string
+      minVersion: string
+      shardeumVersion: string
+    }
     externalIp: string
     externalPort: number,
     internalPort: number,

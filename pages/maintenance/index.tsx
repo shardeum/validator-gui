@@ -19,6 +19,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccountStakeInfo } from '../../hooks/useAccountStakeInfo';
 import { CHAIN_ID } from '../_app';
 import LoadingButton from '../../components/LoadingButton';
+import NodeExitStatus from '../../components/NodeExitStatus';
 
 export const getServerSideProps = () => ({
   props: {apiPort: process.env.PORT},
@@ -88,16 +89,7 @@ export default function Maintenance({apiPort}: any) {
                         </div>
                     </div>
                 }
-
-                {nodeStatus.exitStatus != null &&
-                    <div className="flex text-red-500 items-center">
-                        <div>
-                            <ExclamationCircleIcon className="h-7 w-7"/>
-                        </div>
-                        <div className="ml-2 font-semibold">
-                            Node exited with following message: {nodeStatus.exitMessage}
-                        </div>
-                    </div>}
+                  <NodeExitStatus nodeStatus={nodeStatus}/>
 
                   <div className="flex justify-end">
                     {(nodeStatus.state === 'active' || nodeStatus.state === 'standby') &&
@@ -147,11 +139,11 @@ export default function Maintenance({apiPort}: any) {
                         requirement: {nodeStatus.stakeRequirement ? nodeStatus.stakeRequirement + ' SHM' : '-'}</div>
                     <div className="flex-grow"/>
 
-                    <div className="flex text-red-500 items-center">
+                    <div className="flex items-center">
                         <div>
-                            <ExclamationCircleIcon className="h-7 w-7"/>
+                            <InformationCircleIcon className="h-7 w-7 text-blue-600"/>
                         </div>
-                        <div className="ml-2 font-semibold">
+                        <div className="ml-2">
                             Please ensure your stake wallet has enough funds to meet the minimum staking requirement
                         </div>
                     </div>
@@ -245,17 +237,19 @@ export default function Maintenance({apiPort}: any) {
                   <div className="flex-grow"/>
                   <div>Running version
                       (CLI/GUI): {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}</div>
-                  <div>Minimum version
-                      (CLI/GUI): {nullPlaceholder(version.minimumCliVersion)} / {nullPlaceholder(version.minimumGuiVersion)}</div>
                   <div>Latest version
                       (CLI/GUI): {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}</div>
+                  <div>Running version (Validator): {nullPlaceholder(nodeStatus.nodeInfo?.appData?.activeVersion)}</div>
+                  <div>Latest version
+                      (Validator): {nullPlaceholder(nodeStatus.nodeInfo?.appData?.shardeumVersion)}</div>
+                  <div>Minimum version (Validator): {nullPlaceholder(nodeStatus.nodeInfo?.appData?.minVersion)}</div>
                   <div className="flex-grow"/>
                 {versionWarning(version)}
                 {(version.latestCliVersion > version.runningCliVersion || version.latestCliVersion > version.runningCliVersion) &&
                     <div className="flex justify-end">
                         <button className="p-3 bg-blue-700 text-stone-200 disabled:bg-stone-400"
                                 onClick={() => update()}>
-                            Update Node
+                            Update CLI and GUI
                             <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
                         </button>
                     </div>

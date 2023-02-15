@@ -23,8 +23,10 @@ export default function Performance({apiPort}: any) {
               <div
                   className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div>Running version (CLI/GUI): {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}</div>
-                  <div>Minimum version (CLI/GUI): {nullPlaceholder(version.minimumCliVersion)} / {nullPlaceholder(version.minimumGuiVersion)}</div>
                   <div>Latest version (CLI/GUI): {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}</div>
+                  <div>Running version (Validator): {nullPlaceholder(nodeStatus.nodeInfo?.appData?.activeVersion)}</div>
+                  <div>Latest version (Validator): {nullPlaceholder(nodeStatus.nodeInfo?.appData?.shardeumVersion)}</div>
+                  <div>Minimum version (Validator): {nullPlaceholder(nodeStatus.nodeInfo?.appData?.minVersion)}</div>
               </div>
           </div>
           <div className="flex flex-col items-stretch">
