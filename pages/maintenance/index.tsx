@@ -118,7 +118,7 @@ export default function Maintenance({apiPort}: any) {
                 <div
                     className="bg-white text-stone-500	rounded-xl p-8 text-sm relative">
                     <SignMessage nominator={address!}
-                                 nominee={nodeStatus?.nodeInfo?.publicKey}
+                                 nominee={nodeStatus?.nomineeAddress}
                                  stakeAmount={nodeStatus.stakeRequirement ? +nodeStatus.stakeRequirement : 0}
                                  onStake={() => setShowStakeForm(false)}/>
                     <button className="btn btn-primary btn-outline mr-2 absolute bottom-8"
@@ -151,8 +151,8 @@ export default function Maintenance({apiPort}: any) {
                   {isConnected
                     && chain?.id === CHAIN_ID
                     && stakeInfo?.stake > '0.0'
-                    && nodeStatus?.nodeInfo?.publicKey != null
-                    && stakeInfo?.nominee !== nodeStatus?.nodeInfo?.publicKey &&
+                    && nodeStatus?.nomineeAddress != null
+                    && stakeInfo?.nominee !== nodeStatus?.nomineeAddress &&
                       <div className="flex text-red-500 items-center">
                           <div>
                               <ExclamationCircleIcon className="h-7 w-7"/>
