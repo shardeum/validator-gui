@@ -124,6 +124,7 @@ export default function Maintenance({apiPort}: any) {
                     <SignMessage nominator={address!}
                                  nominee={nodeStatus?.nomineeAddress}
                                  stakeAmount={nodeStatus.stakeRequirement}
+                                 apiPort={apiPort}
                                  onStake={() => setShowStakeForm(false)}/>
                     <button className="btn btn-primary btn-outline mr-2 absolute bottom-8"
                             onClick={() => setShowStakeForm(false)}>
@@ -175,7 +176,7 @@ export default function Maintenance({apiPort}: any) {
                       {isConnected
                         && chain?.id === CHAIN_ID
                         && stakeInfo?.stake > '0.0' &&
-                          <RemoveStakeButton nominee={stakeInfo?.nominee}/>
+                          <RemoveStakeButton nominee={stakeInfo?.nominee} apiPort={apiPort}/>
                       }
 
                       {isConnected

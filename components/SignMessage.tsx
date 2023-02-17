@@ -2,20 +2,34 @@ import React, { useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { ToastContext } from './ToastContextProvider';
+import { useTXLogs } from "../hooks/useTXLogs";
 import LoadingButton from './LoadingButton';
 
 export default function SignMessage({
                                       nominator,
                                       nominee,
                                       stakeAmount,
+                                      apiPort,
                                       onStake
-                                    }: { nominator: string, nominee: string, stakeAmount: string, onStake?: () => void }) {
+                                    }: { nominator: string, nominee: string, stakeAmount: string, apiPort: string, onStake?: () => void }) {
   const {showTemporarySuccessMessage} = useContext(ToastContext);
 
   const requiredStake = ethers.utils.parseEther(stakeAmount).toString()
 
+  const createStakeLog = (data: any, params: {data: any}, hash: string, sender: string) => {
+    params.data = JSON.parse(data)
+    const logData = {
+      tx: params,
+      sender,
+      txHash: hash
+    }
+
+    return logData
+  }
+
   const sendTransaction = async (e: any, blobData: any) => {
     setLoading(true);
+    const {writeStakeLog} = useTXLogs(apiPort)
     try {
       // @ts-ignore
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -43,6 +57,7 @@ export default function SignMessage({
 
       const {hash, data, wait} = await signer.sendTransaction(params);
       console.log("TX RECEIPT: ", {hash, data});
+      await writeStakeLog(createStakeLog(blobData, params, hash, from))
 
       const txConfirmation = await wait();
       console.log("TX CONFRIMED: ", txConfirmation);
