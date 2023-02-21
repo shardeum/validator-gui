@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Head from 'next/head';
 import { PropsWithChildren } from 'react';
-import Toggle from './Toggle';
 import { useRouter } from 'next/router';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';
 import { authService } from '../services/auth.service';
@@ -23,7 +22,6 @@ export default function Layout({children}: PropsWithChildren) {
           <div className="flex">
             <img src="logo.png" alt="Logo" className="w-40"/>
             <span className="flex-grow"></span>
-            <Toggle/>
           </div>
 
           {/* Navigation links */}

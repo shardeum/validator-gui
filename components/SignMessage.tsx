@@ -9,8 +9,10 @@ export default function SignMessage({
                                       nominee,
                                       stakeAmount,
                                       onStake
-                                    }: { nominator: string, nominee: string, stakeAmount?: number, onStake?: () => void }) {
+                                    }: { nominator: string, nominee: string, stakeAmount: string, onStake?: () => void }) {
   const {showTemporarySuccessMessage} = useContext(ToastContext);
+
+  const requiredStake = ethers.utils.parseEther(stakeAmount).toString()
 
   const sendTransaction = async (e: any, blobData: any) => {
     setLoading(true);
@@ -81,8 +83,9 @@ export default function SignMessage({
     internalTXType: 6,
     nominator: nominator.toLowerCase(),
     nominee,
-    stake: stakeAmount,
-    timestamp: Date.now()
+    stake: requiredStake,
+    timestamp: Date.now(),
+    stakeOk: true,
   });
 
   useEffect(() => {
@@ -90,7 +93,7 @@ export default function SignMessage({
         ...data,
         nominator: nominator.toLowerCase(),
         nominee,
-        stake: stakeAmount
+        stake: requiredStake,
       });
     },
     [nominator, nominee]
@@ -156,23 +159,41 @@ export default function SignMessage({
           name="stake"
           className="bg-white text-black p-3 mt-2 w-full border border-black"
           placeholder="Stake Amount (SHM)"
-          onChange={(e) =>
-            setData({
-              ...data,
-              //@ts-ignore
-              stake: ethers.utils
-                .parseEther(e.target.value.toString())
-                .toString()
-            })
+          onChange={(e) =>{
+              try {
+                const newValue = e.target.value.toString();
+
+                if(!newValue) throw new Error("invalid value")
+
+                const stake = ethers.utils
+                  .parseEther(newValue)
+                  .toString();
+
+                setData({
+                  ...data,
+                  //@ts-ignore
+                  stake: stake,
+                  stakeOk: true,
+                })
+              } catch(e){
+                setData({
+                  ...data,
+                  stakeOk: false,
+                })
+              }
+            }
           }
         />
+        <div className={"flex items-center mb-5 "+(!data.stakeOk ? "text-red-500" : "")}>
+           <div className="ml-2 font-semibold">Stake requirement: {stakeAmount}</div>
+        </div>
       </form>
 
       <div className="mt-5 float-right">
         <LoadingButton
           onClick={async (e) => sendTransaction(e, JSON.stringify(data))}
           isLoading={isLoading}
-          className="btn btn-primary" disabled={isLoading}
+          className={"btn btn-primary "+(isLoading || !data.stakeOk ? "btn-disabled" : "")}
         >
           Stake
           <ArrowRightIcon className="h-5 w-5 inline ml-2"/>

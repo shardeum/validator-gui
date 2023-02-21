@@ -20,6 +20,7 @@ import { useAccountStakeInfo } from '../../hooks/useAccountStakeInfo';
 import { CHAIN_ID } from '../_app';
 import LoadingButton from '../../components/LoadingButton';
 import NodeExitStatus from '../../components/NodeExitStatus';
+import { ethers } from 'ethers';
 
 export const getServerSideProps = () => ({
   props: {apiPort: process.env.PORT},
@@ -64,6 +65,9 @@ export default function Maintenance({apiPort}: any) {
   const {chain} = useNetwork()
   const {switchNetwork} = useSwitchNetwork()
 
+  const showStakeWarning = stakeInfo?.stake
+    && ethers.utils.parseEther(stakeInfo?.stake).lt(ethers.utils.parseEther(nodeStatus.stakeRequirement))
+
   return <>{!!(performance && version && nodeStatus) && <div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 auto-rows-auto">
           <div className="flex flex-col items-stretch">
@@ -71,11 +75,11 @@ export default function Maintenance({apiPort}: any) {
               <div
                   className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
-                  <div className="capitalize">Status: {nullPlaceholder(nodeStatus.state)}</div>
-                  <div>Total time validating: {nullPlaceholder(nodeStatus.totalTimeValidating)}</div>
-                  <div>Time since last active: {nullPlaceholder(nodeStatus.lastActive)}</div>
+                  <div className="capitalize"><span className='font-semibold'>Status:</span> {nullPlaceholder(nodeStatus.state)}</div>
+                  <div><span className='font-semibold'>Total time validating:</span> {nullPlaceholder(nodeStatus.totalTimeValidating)}</div>
+                  <div><span className='font-semibold'>Time since last active:</span> {nullPlaceholder(nodeStatus.lastActive)}</div>
                 {nodeStatus.exitStatus != null &&
-                    <div>Exit status: {nullPlaceholder(nodeStatus.exitStatus)}</div>}
+                    <div><span className='font-semibold'>Exit status:</span> {nullPlaceholder(nodeStatus.exitStatus)}</div>}
                   <div className="flex-grow"/>
 
                 {nodeStatus.state === 'stopped' &&
@@ -119,7 +123,7 @@ export default function Maintenance({apiPort}: any) {
                     className="bg-white text-stone-500	rounded-xl p-8 text-sm relative">
                     <SignMessage nominator={address!}
                                  nominee={nodeStatus?.nomineeAddress}
-                                 stakeAmount={nodeStatus.stakeRequirement ? +nodeStatus.stakeRequirement : 0}
+                                 stakeAmount={nodeStatus.stakeRequirement}
                                  onStake={() => setShowStakeForm(false)}/>
                     <button className="btn btn-primary btn-outline mr-2 absolute bottom-8"
                             onClick={() => setShowStakeForm(false)}>
@@ -131,22 +135,25 @@ export default function Maintenance({apiPort}: any) {
             {!showStakeForm &&
                 <div
                     className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                     <div className="flex-grow"/>
+                    <div><span className='font-semibold'>SHM staked:</span> {stakeInfo?.stake ? stakeInfo.stake + ' SHM' : '-'}</div>
+                    <div className="overflow-hidden text-ellipsis"><span className='font-semibold'>Stake
+                        address:</span> {nullPlaceholder(nodeStatus.nominatorAddress)}</div>
+                    <div><span className='font-semibold'>Stake
+                        requirement:</span> {nodeStatus.stakeRequirement ? nodeStatus.stakeRequirement + ' SHM' : '-'}</div>
                     <div className="flex-grow"/>
-                    <div>SHM staked: {stakeInfo?.stake ? stakeInfo.stake + ' SHM' : '-'}</div>
-                    <div className="overflow-hidden text-ellipsis">Stake
-                        address: {nullPlaceholder(nodeStatus.nominatorAddress)}</div>
-                    <div>Stake
-                        requirement: {nodeStatus.stakeRequirement ? nodeStatus.stakeRequirement + ' SHM' : '-'}</div>
-                    <div className="flex-grow"/>
-
-                    <div className="flex items-center">
-                        <div>
-                            <InformationCircleIcon className="h-7 w-7 text-blue-600"/>
-                        </div>
-                        <div className="ml-2">
-                            Please ensure your stake wallet has enough funds to meet the minimum staking requirement
-                        </div>
-                    </div>
+                    {
+                      showStakeWarning
+                      ? (<div className="flex items-center">
+                            <div>
+                                <InformationCircleIcon className="h-7 w-7 text-blue-600"/>
+                            </div>
+                            <div className="ml-2">
+                                Please ensure your stake wallet has enough funds to meet the minimum staking requirement
+                            </div>
+                          </div>)
+                      : null
+                    }
 
                   {isConnected
                     && chain?.id === CHAIN_ID
@@ -205,44 +212,44 @@ export default function Maintenance({apiPort}: any) {
                   className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
                   <div className="flex justify-between h-7">
-                      <div>CPU usage AVG: {nodeStatus.performance?.cpuPercentage.toFixed(2)}%</div>
+                      <div><span className='font-semibold'>CPU usage AVG:</span> {nodeStatus.performance?.cpuPercentage.toFixed(2)}%</div>
                       <Doughnut data={mapToDoughnut(nodeStatus.performance?.cpuPercentage, {spacing: 2})}/>
                   </div>
                   <div className="flex justify-between h-7">
-                      <div>RAM usage AVG: {nodeStatus.performance?.memPercentage.toFixed(2)}%</div>
+                      <div><span className='font-semibold'>RAM usage AVG:</span> {nodeStatus.performance?.memPercentage.toFixed(2)}%</div>
                       <Doughnut data={mapToDoughnut(nodeStatus.performance?.memPercentage, {spacing: 2})}/>
                   </div>
                   <div className="flex justify-between h-7">
-                      <div>Disk usage AVG: {nodeStatus.performance?.diskPercentage.toFixed(2)}%</div>
+                      <div><span className='font-semibold'>Disk usage AVG:</span> {nodeStatus.performance?.diskPercentage.toFixed(2)}%</div>
                       <Doughnut data={mapToDoughnut(nodeStatus.performance?.diskPercentage, {spacing: 2})}/>
                   </div>
                   <div className="flex justify-between h-7">
-                      <div>Network usage AVG: {performance[0]?.network}%</div>
+                      <div><span className='font-semibold'>Network usage AVG:</span> {performance[0]?.network}%</div>
                       <Doughnut data={mapToDoughnut(performance[0]?.network, {spacing: 2})}/>
                   </div>
                   <div className="flex-grow"/>
                   <div className="flex justify-end">
-                      <button className="btn btn-primary">
-                          Benchmark - Coming Soon
+                      <div className="tooltip" data-tip="Coming Soon!">
+                        <button className="btn btn-primary btn-disabled" >
+                          Benchmark
                           <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
-                      </button>
+                        </button>
+                      </div>
                   </div>
               </div>
           </div>
+
 
           <div className="flex flex-col items-stretch">
               <h1 className="font-semibold mb-3">Update Version</h1>
               <div
                   className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
-                  <div>Running version
-                      (CLI/GUI): {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}</div>
-                  <div>Latest version
-                      (CLI/GUI): {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}</div>
-                  <div>Running version (Validator): {nullPlaceholder(nodeStatus.nodeInfo?.appData?.activeVersion)}</div>
-                  <div>Latest version
-                      (Validator): {nullPlaceholder(nodeStatus.nodeInfo?.appData?.shardeumVersion)}</div>
-                  <div>Minimum version (Validator): {nullPlaceholder(nodeStatus.nodeInfo?.appData?.minVersion)}</div>
+                  <div><span className='font-semibold'>CLI/GUI Running version:</span> {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}</div>
+                  <div><span className='font-semibold'>CLI/GUI Latest version:</span> {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}</div>
+                  <div><span className='font-semibold'>Validator Running version:</span> {nullPlaceholder(nodeStatus.nodeInfo?.appData?.activeVersion)}</div>
+                  <div><span className='font-semibold'>Validator Latest version:</span> {nullPlaceholder(nodeStatus.nodeInfo?.appData?.shardeumVersion)}</div>
+                  <div><span className='font-semibold'>Validator Minimum version:</span> {nullPlaceholder(nodeStatus.nodeInfo?.appData?.minVersion)}</div>
                   <div className="flex-grow"/>
                 {versionWarning(version)}
                 {(version.latestCliVersion > version.runningCliVersion || version.latestCliVersion > version.runningCliVersion) &&

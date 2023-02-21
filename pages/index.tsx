@@ -72,30 +72,30 @@ export default function Overview({apiPort}: any) {
                 <h1 className="font-semibold mb-3">Node Status</h1>
                 <div
                     className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                    <div className="capitalize">Status: {nodeStatus.state}</div>
-                    <div>Total time validating: {nullPlaceholder(nodeStatus.totalTimeValidating)}</div>
-                    <div>Time since last active: {nullPlaceholder(nodeStatus.lastActive)}</div>
+                    <div className="capitalize"><span className='font-semibold'>Status:</span> {nodeStatus.state}</div>
+                    <div><span className='font-semibold'>Total time validating:</span> {nullPlaceholder(nodeStatus.totalTimeValidating)}</div>
+                    <div><span className='font-semibold'>Time since last active:</span> {nullPlaceholder(nodeStatus.lastActive)}</div>
                 </div>
             </div>
             <div className="flex flex-col items-stretch">
                 <h1 className="font-semibold mb-3">Staked SHM</h1>
                 <div
                     className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                    <div>SHM staked: {nodeStatus.lockedStake ? nodeStatus.lockedStake + ' SHM' : '-'}</div>
-                    <div className="overflow-hidden text-ellipsis">Stake
-                        address: {nullPlaceholder(nodeStatus.nominatorAddress)}</div>
-                    <div>Stake
-                        requirement: {nodeStatus.stakeRequirement ? nodeStatus.stakeRequirement + ' SHM' : '-'}</div>
+                    <div><span className='font-semibold'>SHM staked:</span>  {nodeStatus.lockedStake ? nodeStatus.lockedStake + ' SHM' : '-'}</div>
+                    <div className="overflow-hidden text-ellipsis"><span className='font-semibold'>Stake
+                        address:</span> {nullPlaceholder(nodeStatus.nominatorAddress)}</div>
+                    <div><span className='font-semibold'>Stake
+                        requirement:</span> {nodeStatus.stakeRequirement ? nodeStatus.stakeRequirement + ' SHM' : '-'}</div>
                 </div>
             </div>
             <div className="flex flex-col items-stretch">
                 <h1 className="font-semibold mb-3">Reward SHM</h1>
                 <div
                     className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                    <div>Earnings: {nodeStatus.currentRewards ? nodeStatus.currentRewards?.substring(0, 6) + ' SHM' : '-'} </div>
-                    <div>Last payout: {nullPlaceholder(nodeStatus.lastPayout)}</div>
-                    <div>Lifetime
-                        earnings: {nodeStatus.lifetimeEarnings ? nodeStatus.lifetimeEarnings + ' SHM' : '-'}</div>
+                    <div><span className='font-semibold'>Earnings:</span> {nodeStatus.currentRewards ? nodeStatus.currentRewards?.substring(0, 6) + ' SHM' : '-'} </div>
+                    <div><span className='font-semibold'>Last payout:</span> {nullPlaceholder(nodeStatus.lastPayout)}</div>
+                    <div><span className='font-semibold'>Lifetime
+                        earnings:</span> {nodeStatus.lifetimeEarnings ? nodeStatus.lifetimeEarnings + ' SHM' : '-'}</div>
                 </div>
             </div>
         </div>
