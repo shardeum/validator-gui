@@ -74,7 +74,7 @@ export default function Overview({apiPort}: any) {
                     className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                     <div className="capitalize"><span className='font-semibold'>Status:</span> {nodeStatus.state}</div>
                     <div><span className='font-semibold'>Total time validating:</span> {nullPlaceholder(nodeStatus.totalTimeValidating)}</div>
-                    <div><span className='font-semibold'>Time since last active:</span> {nullPlaceholder(nodeStatus.lastActive)}</div>
+                    <div><span className='font-semibold'>Time last active:</span> {nullPlaceholder(nodeStatus.lastActive)}</div>
                 </div>
             </div>
             <div className="flex flex-col items-stretch">

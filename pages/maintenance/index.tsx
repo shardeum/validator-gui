@@ -77,7 +77,7 @@ export default function Maintenance({apiPort}: any) {
                   <div className="flex-grow"/>
                   <div className="capitalize"><span className='font-semibold'>Status:</span> {nullPlaceholder(nodeStatus.state)}</div>
                   <div><span className='font-semibold'>Total time validating:</span> {nullPlaceholder(nodeStatus.totalTimeValidating)}</div>
-                  <div><span className='font-semibold'>Time since last active:</span> {nullPlaceholder(nodeStatus.lastActive)}</div>
+                  <div><span className='font-semibold'>Time last active:</span> {nullPlaceholder(nodeStatus.lastActive)}</div>
                 {nodeStatus.exitStatus != null &&
                     <div><span className='font-semibold'>Exit status:</span> {nullPlaceholder(nodeStatus.exitStatus)}</div>}
                   <div className="flex-grow"/>
