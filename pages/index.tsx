@@ -4,10 +4,6 @@ import { Bar } from 'react-chartjs-2';
 import { useNodeStatusHistory } from '../hooks/useNodeStatusHistory';
 import { nullPlaceholder } from '../utils/null-placerholder';
 
-export const getServerSideProps = () => ({
-  props: {apiPort: process.env.PORT},
-});
-
 export const options = {
   responsive: true,
   maintainAspectRatio: false,
@@ -51,9 +47,9 @@ const data = {
   ],
 };
 
-export default function Overview({apiPort}: any) {
-  const {nodeStatus, isLoading} = useNodeStatus(apiPort)
-  const {nodeStatusHistory} = useNodeStatusHistory(apiPort)
+export default function Overview() {
+  const {nodeStatus, isLoading} = useNodeStatus()
+  const {nodeStatusHistory} = useNodeStatusHistory()
 
   ChartJS.register(
     CategoryScale,

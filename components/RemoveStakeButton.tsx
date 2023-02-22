@@ -5,7 +5,7 @@ import { ToastContext } from './ToastContextProvider';
 import { useTXLogs } from "../hooks/useTXLogs";
 import LoadingButton from './LoadingButton';
 
-export default function RemoveStakeButton({nominee, apiPort}: { nominee: string, apiPort: string }) {
+export default function RemoveStakeButton({nominee}: { nominee: string}) {
   const {showTemporarySuccessMessage} = useContext(ToastContext);
 
   const createUnstakeLog = (data: any, params: {data: any}, hash: string, sender: string) => {
@@ -20,7 +20,7 @@ export default function RemoveStakeButton({nominee, apiPort}: { nominee: string,
   }
 
   const sendTransaction = async (nominator: string, nominee: string) => {
-    const {writeUnstakeLog} = useTXLogs(apiPort)
+    const {writeUnstakeLog} = useTXLogs()
     try {
       // @ts-ignore
       const provider = new ethers.providers.Web3Provider(window.ethereum);

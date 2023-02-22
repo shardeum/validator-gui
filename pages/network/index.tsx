@@ -1,12 +1,8 @@
 import { useNodeNetwork } from '../../hooks/useNodeNetwork';
 import { nullPlaceholder } from '../../utils/null-placerholder';
 
-export const getServerSideProps = () => ({
-    props: { apiPort: process.env.PORT },
-});
-
-export default function Network({ apiPort }: any) {
-  const {network} = useNodeNetwork(apiPort)
+export default function Network() {
+  const {network} = useNodeNetwork()
 
   return <>{!!(network) && <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

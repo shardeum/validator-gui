@@ -1,5 +1,5 @@
 import Router from 'next/router'
-import { httpOrHttps } from "../utils/is-dev";
+import { useGlobals } from '../utils/globals';
 
 const tokenKey = 'shmguitk'
 
@@ -14,8 +14,9 @@ export const authService = {
   logout,
 }
 
-function login(password: string, apiPort: number) {
-  return fetch(`${httpOrHttps()}://${globalThis.window?.location.hostname}:${apiPort}/auth/login`, {
+function login(password: string) {
+  const {apiBase} = useGlobals()
+  return fetch(`${apiBase}/auth/login`, {
     headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: JSON.stringify({ password }),

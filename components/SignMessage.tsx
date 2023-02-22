@@ -9,9 +9,8 @@ export default function SignMessage({
                                       nominator,
                                       nominee,
                                       stakeAmount,
-                                      apiPort,
                                       onStake
-                                    }: { nominator: string, nominee: string, stakeAmount: string, apiPort: string, onStake?: () => void }) {
+                                    }: { nominator: string, nominee: string, stakeAmount: string, onStake?: () => void }) {
   const {showTemporarySuccessMessage} = useContext(ToastContext);
 
   const requiredStake = ethers.utils.parseEther(stakeAmount).toString()
@@ -29,7 +28,7 @@ export default function SignMessage({
 
   const sendTransaction = async (e: any, blobData: any) => {
     setLoading(true);
-    const {writeStakeLog} = useTXLogs(apiPort)
+    const {writeStakeLog} = useTXLogs()
     try {
       // @ts-ignore
       const provider = new ethers.providers.Web3Provider(window.ethereum);

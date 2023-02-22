@@ -1,13 +1,14 @@
 import useSWR from 'swr'
 import { fetcher } from './fetcher';
-import { httpOrHttps } from '../utils/is-dev';
 import { authService } from '../services/auth.service';
+import { useGlobals } from '../utils/globals';
 
-export const useNodeLogs = (apiPort: string): { isLoading: boolean; isError: boolean; downloadLog: (logName: string) => void; logs: string[] | undefined } => {
-  const {data, error, isLoading} = useSWR(`${httpOrHttps()}://${globalThis.window?.location.hostname}:${apiPort}/api/node/logs`, fetcher)
+export const useNodeLogs = (): { isLoading: boolean; isError: boolean; downloadLog: (logName: string) => void; logs: string[] | undefined } => {
+  const {apiBase} = useGlobals()
+  const {data, error, isLoading} = useSWR(`${apiBase}/api/node/logs`, fetcher)
 
   const downloadLog = (logName: string) => {
-    fetch(`${httpOrHttps()}://${globalThis.window?.location.hostname}:${apiPort}/api/node/logs/${logName}`, {
+    fetch(`${apiBase}/api/node/logs/${logName}`, {
       method: 'GET',
       headers: {"X-Api-Token": authService.authToken!},
     })

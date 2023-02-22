@@ -6,11 +6,7 @@ import { useForm } from 'react-hook-form'
 import { ArrowPathIcon } from '@heroicons/react/20/solid'
 import { authService } from '../../services/auth.service';
 
-export const getServerSideProps = () => ({
-  props: { apiPort: process.env.PORT },
-})
-
-const Login = ({ apiPort }: any) => {
+const Login = () => {
   const router = useRouter()
 
   useEffect(() => {
@@ -29,7 +25,7 @@ const Login = ({ apiPort }: any) => {
     setApiError(null);
 
     return authService
-      .login(password, apiPort)
+      .login(password)
       .then(() => {
         // get return url from query parameters or default to '/'
         const returnUrl = router.query.returnUrl?.toString() || '/'

@@ -1,22 +1,23 @@
 import useSWR from 'swr'
 import { fetcher } from './fetcher';
 import { NodeVersion } from '../model/node-version';
-import { httpOrHttps } from '../utils/is-dev';
+import { useGlobals } from '../utils/globals';
 
-export const useNodeVersion = (apiPort: string): {
+export const useNodeVersion = (): {
   isLoading: boolean;
   isError: boolean;
   update: () => Promise<Response>;
   version: NodeVersion
 } => {
+  const {apiBase} = useGlobals()
   const {
     data,
     error,
     isLoading
-  } = useSWR(`${httpOrHttps()}://${globalThis.window?.location.hostname}:${apiPort}/api/node/version`, fetcher)
+  } = useSWR(`${apiBase}/api/node/version`, fetcher)
 
   const update = () => {
-    return fetcher(`${httpOrHttps()}://${globalThis.window?.location.hostname}:${apiPort}/api/node/update`, {method: 'POST'})
+    return fetcher(`${apiBase}/api/node/update`, {method: 'POST'})
   }
 
   return {

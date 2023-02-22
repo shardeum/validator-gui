@@ -22,11 +22,6 @@ import LoadingButton from '../../components/LoadingButton';
 import NodeExitStatus from '../../components/NodeExitStatus';
 import { ethers } from 'ethers';
 
-export const getServerSideProps = () => ({
-  props: {apiPort: process.env.PORT},
-});
-
-
 const versionWarning = (version: NodeVersion) => {
   if (version.runningCliVersion < version.minimumCliVersion
     || version.runningGuiVersion < version.minimumGuiVersion
@@ -57,12 +52,12 @@ const versionWarning = (version: NodeVersion) => {
   }
 }
 
-export default function Maintenance({apiPort}: any) {
-  const {version, update} = useNodeVersion(apiPort)
-  const {nodeStatus, isLoading, startNode, stopNode} = useNodeStatus(apiPort)
+export default function Maintenance() {
+  const {version, update} = useNodeVersion()
+  const {nodeStatus, isLoading, startNode, stopNode} = useNodeStatus()
   const {address, isConnected} = useAccount()
-  const {stakeInfo} = useAccountStakeInfo(apiPort, address)
-  const {performance} = useNodePerformance(apiPort)
+  const {stakeInfo} = useAccountStakeInfo(address)
+  const {performance} = useNodePerformance()
   const [showStakeForm, setShowStakeForm] = useState<boolean>(false)
   const {chain} = useNetwork()
   const {switchNetwork} = useSwitchNetwork()
@@ -131,7 +126,6 @@ export default function Maintenance({apiPort}: any) {
                     <SignMessage nominator={address!}
                                  nominee={nodeStatus?.nomineeAddress}
                                  stakeAmount={nodeStatus.stakeRequirement}
-                                 apiPort={apiPort}
                                  onStake={() => setShowStakeForm(false)}/>
                     <button className="btn btn-primary btn-outline mr-2 absolute bottom-8"
                             onClick={() => setShowStakeForm(false)}>
@@ -186,7 +180,7 @@ export default function Maintenance({apiPort}: any) {
                       {isConnected
                         && chain?.id === CHAIN_ID
                         && stakeInfo?.stake > '0.0' &&
-                          <RemoveStakeButton nominee={stakeInfo?.nominee} apiPort={apiPort}/>
+                          <RemoveStakeButton nominee={stakeInfo?.nominee}/>
                       }
 
                       {isConnected

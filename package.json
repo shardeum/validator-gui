@@ -3,10 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "ts-node --project tsconfig.server.json api/index.ts",
+    "build": "next build && next export && tsc -project tsconfig.server.json",
     "start": "node build/index.js",
-    "lint": "next lint",
-    "build": "next build && tsc -project tsconfig.server.json"
+    "lint": "next lint"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.13",

@@ -6,15 +6,11 @@ import { nullPlaceholder } from '../../utils/null-placerholder';
 import { useNodeStatus } from '../../hooks/useNodeStatus';
 import { useNodeNetwork } from '../../hooks/useNodeNetwork';
 
-export const getServerSideProps = () => ({
-  props: {apiPort: process.env.PORT},
-});
-
-export default function Performance({apiPort}: any) {
-  const {version} = useNodeVersion(apiPort)
-  const {nodeStatus} = useNodeStatus(apiPort)
-  const {performance} = useNodePerformance(apiPort)
-  const {network} = useNodeNetwork(apiPort)
+export default function Performance() {
+  const {version} = useNodeVersion()
+  const {nodeStatus} = useNodeStatus()
+  const {performance} = useNodePerformance()
+  const {network} = useNodeNetwork()
 
   return <>{!!(performance && nodeStatus && version) && <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -1,12 +1,8 @@
 import { useNodeLogs } from '../../hooks/useNodeLogs';
 import { ArrowDownTrayIcon } from '@heroicons/react/20/solid';
 
-export const getServerSideProps = () => ({
-  props: {apiPort: process.env.PORT},
-});
-
-export default function Settings({apiPort}: any) {
-  const {logs, downloadLog} = useNodeLogs(apiPort)
+export default function Settings() {
+  const {logs, downloadLog} = useNodeLogs()
 
   return <div>
     <h1 className="font-semibold mb-3 text-lg">Logs</h1>
