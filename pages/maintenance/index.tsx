@@ -214,19 +214,23 @@ export default function Maintenance({apiPort}: any) {
                   <div className="flex-grow"/>
                   <div className="flex justify-between h-7">
                       <div><span className='font-semibold'>CPU usage AVG:</span> {nodeStatus.performance?.cpuPercentage.toFixed(2)}%</div>
-                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.cpuPercentage, {spacing: 2})}/>
+                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.cpuPercentage, {spacing: 2})}
+                                options={{plugins: {tooltip: {enabled: false}}}}/>
                   </div>
                   <div className="flex justify-between h-7">
                       <div><span className='font-semibold'>RAM usage AVG:</span> {nodeStatus.performance?.memPercentage.toFixed(2)}%</div>
-                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.memPercentage, {spacing: 2})}/>
+                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.memPercentage, {spacing: 2})}
+                                options={{plugins: {tooltip: {enabled: false}}}}/>
                   </div>
                   <div className="flex justify-between h-7">
                       <div><span className='font-semibold'>Disk usage AVG:</span> {nodeStatus.performance?.diskPercentage.toFixed(2)}%</div>
-                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.diskPercentage, {spacing: 2})}/>
+                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.diskPercentage, {spacing: 2})}
+                                options={{plugins: {tooltip: {enabled: false}}}}/>
                   </div>
                   <div className="flex justify-between h-7">
                       <div><span className='font-semibold'>Network usage AVG:</span> {performance[0]?.network}%</div>
-                      <Doughnut data={mapToDoughnut(performance[0]?.network, {spacing: 2})}/>
+                      <Doughnut data={mapToDoughnut(performance[0]?.network, {spacing: 2})}
+                                options={{plugins: {tooltip: {enabled: false}}}}/>
                   </div>
                   <div className="flex-grow"/>
                   <div className="flex justify-end">

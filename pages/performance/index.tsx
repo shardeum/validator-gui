@@ -35,15 +35,18 @@ export default function Performance({apiPort}: any) {
                   className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex justify-between h-7">
                       <div><span className='font-semibold'>CPU usage AVG:</span> {nodeStatus.performance?.cpuPercentage.toFixed(2)}%</div>
-                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.cpuPercentage, {spacing: 2})}/>
+                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.cpuPercentage, {spacing: 2})}
+                                options={{plugins: {tooltip: {enabled: false}}}}/>
                   </div>
                   <div className="flex justify-between h-7">
                       <div><span className='font-semibold'>RAM usage AVG:</span> {nodeStatus.performance?.memPercentage.toFixed(2)}%</div>
-                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.memPercentage, {spacing: 2})}/>
+                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.memPercentage, {spacing: 2})}
+                                options={{plugins: {tooltip: {enabled: false}}}}/>
                   </div>
                   <div className="flex justify-between h-7">
                       <div><span className='font-semibold'>Disk usage AVG:</span> {nodeStatus.performance?.diskPercentage.toFixed(2)}%</div>
-                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.diskPercentage, {spacing: 2})}/>
+                      <Doughnut data={mapToDoughnut(nodeStatus.performance?.diskPercentage, {spacing: 2})}
+                      options={{plugins: {tooltip: {enabled: false}}}}/>
                   </div>
                   <div className="flex justify-between h-7">
                       <div><span className='font-semibold'>Network usage AVG:</span> {performance[0]?.network}%</div>
@@ -67,19 +70,23 @@ export default function Performance({apiPort}: any) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="relative aspect-square">
               <div className="flex absolute justify-center items-center w-full h-full font-bold text-lg">CPU</div>
-              <Doughnut data={mapToDoughnut(nodeStatus.performance?.cpuPercentage)}/>
+              <Doughnut data={mapToDoughnut(nodeStatus.performance?.cpuPercentage)}
+                        options={{plugins: {tooltip: {enabled: false}}}}/>
           </div>
           <div className="aspect-square relative">
               <div className="flex absolute justify-center items-center w-full h-full font-bold text-lg">RAM</div>
-              <Doughnut data={mapToDoughnut(nodeStatus.performance?.memPercentage)}/>
+              <Doughnut data={mapToDoughnut(nodeStatus.performance?.memPercentage)}
+                        options={{plugins: {tooltip: {enabled: false}}}}/>
           </div>
           <div className="aspect-square relative">
               <div className="flex absolute justify-center items-center w-full h-full font-bold text-lg">DISK</div>
-              <Doughnut data={mapToDoughnut(nodeStatus.performance?.diskPercentage)}/>
+              <Doughnut data={mapToDoughnut(nodeStatus.performance?.diskPercentage)}
+                        options={{plugins: {tooltip: {enabled: false}}}}/>
           </div>
           <div className="aspect-square relative">
               <div className="flex absolute justify-center items-center w-full h-full font-bold text-lg">NETWORK</div>
-              <Doughnut data={mapToDoughnut(performance[0]?.network)}/>
+              <Doughnut data={mapToDoughnut(performance[0]?.network)}
+                        options={{plugins: {tooltip: {enabled: false}}}}/>
           </div>
       </div>
   </div>
