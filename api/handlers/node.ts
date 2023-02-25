@@ -1,6 +1,7 @@
 import { exec } from 'child_process';
 import { Request, Response, Router } from 'express';
 import {
+  NodeLogsResponse,
   NodeNetworkResponse,
   NodePerformanceResponse,
   NodeStatus,
@@ -11,6 +12,7 @@ import {
   StakeRequest
 } from '../types/node-types';
 import { badRequestResponse, cliStderrResponse } from './util';
+import path from 'path';
 
 const yaml = require('js-yaml')
 
@@ -76,6 +78,28 @@ export default function configureNodeHandlers(apiRouter: Router) {
       console.log('executing operator-cli status...');
     }
   );
+
+  apiRouter.get('/node/logs', (req: Request, res: Response<NodeLogsResponse>) => {
+    // Exec the CLI validator stop command
+    exec('ls -m', {cwd: path.join(__dirname, '../../../cli/build/logs')}, (err, stdout, stderr) => {
+      if (err) {
+        cliStderrResponse(res, 'Unable to get logs', err.message)
+        res.end()
+      }
+      if (stderr) {
+        cliStderrResponse(res, 'Unable to get logs', stderr)
+        res.end()
+      }
+      const availableLogs = stdout.split(',').map((s: string) => s.trim());
+      res.json(availableLogs);
+    });
+  });
+
+  // THIS IS NOT SECURE! passed in file name is not sanitized. Only admin can have access to this endpoint
+  apiRouter.get('/node/logs/:file', (req: Request, res: Response<NodeLogsResponse>) => {
+    const file = path.join(__dirname, '../../../cli/build/logs', req.params.file);
+    res.download(file);
+  });
 
   apiRouter.get(
     '/account/:address/stakeInfo',

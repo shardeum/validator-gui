@@ -21,6 +21,7 @@ export type NodeStatus = {
   }
 }
 
+export type NodeLogsResponse = string[] | ErrorResponse
 export type NodeStatusResponse = NodeStatus | ErrorResponse
 
 type NodeStatusHistory = {
