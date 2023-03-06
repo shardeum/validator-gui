@@ -5,4 +5,7 @@ export interface NodeVersion {
   runningGuiVersion: string
   minimumGuiVersion: string
   latestGuiVersion: string
+  runnningValidatorVersion: string
+  minShardeumVersion: string
+  activeShardeumVersion: string
 }

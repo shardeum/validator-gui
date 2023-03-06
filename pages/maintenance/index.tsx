@@ -29,7 +29,8 @@ export const getServerSideProps = () => ({
 
 const versionWarning = (version: NodeVersion) => {
   if (version.runningCliVersion < version.minimumCliVersion
-    || version.runningGuiVersion < version.minimumGuiVersion) {
+    || version.runningGuiVersion < version.minimumGuiVersion
+    || version.runnningValidatorVersion < version.minShardeumVersion) {
     return (
       <div className="flex text-red-500 items-center">
         <div>
@@ -43,7 +44,8 @@ const versionWarning = (version: NodeVersion) => {
     )
   }
   if (version.runningCliVersion < version.latestCliVersion
-    || version.runningGuiVersion < version.latestGuiVersion) {
+    || version.runningGuiVersion < version.latestGuiVersion
+    || version.runnningValidatorVersion < version.activeShardeumVersion) {
     return (
       <div className="flex text-orange-500 items-center">
         <div>
@@ -75,11 +77,16 @@ export default function Maintenance({apiPort}: any) {
               <div
                   className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
-                  <div className="capitalize"><span className='font-semibold'>Status:</span> {nullPlaceholder(nodeStatus.state)}</div>
-                  <div><span className='font-semibold'>Total time validating:</span> {nullPlaceholder(nodeStatus.totalTimeValidating)}</div>
-                  <div><span className='font-semibold'>Time last active:</span> {nullPlaceholder(nodeStatus.lastActive)}</div>
+                  <div className="capitalize"><span
+                      className='font-semibold'>Status:</span> {nullPlaceholder(nodeStatus.state)}</div>
+                  <div><span
+                      className='font-semibold'>Total time validating:</span> {nullPlaceholder(nodeStatus.totalTimeValidating)}
+                  </div>
+                  <div><span className='font-semibold'>Time last active:</span> {nullPlaceholder(nodeStatus.lastActive)}
+                  </div>
                 {nodeStatus.exitStatus != null &&
-                    <div><span className='font-semibold'>Exit status:</span> {nullPlaceholder(nodeStatus.exitStatus)}</div>}
+                    <div><span className='font-semibold'>Exit status:</span> {nullPlaceholder(nodeStatus.exitStatus)}
+                    </div>}
                   <div className="flex-grow"/>
 
                 {nodeStatus.state === 'stopped' &&
@@ -136,25 +143,28 @@ export default function Maintenance({apiPort}: any) {
             {!showStakeForm &&
                 <div
                     className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                     <div className="flex-grow"/>
-                    <div><span className='font-semibold'>SHM staked:</span> {stakeInfo?.stake ? stakeInfo.stake + ' SHM' : '-'}</div>
+                    <div className="flex-grow"/>
+                    <div><span
+                        className='font-semibold'>SHM staked:</span> {stakeInfo?.stake ? stakeInfo.stake + ' SHM' : '-'}
+                    </div>
                     <div className="overflow-hidden text-ellipsis"><span className='font-semibold'>Stake
                         address:</span> {nullPlaceholder(nodeStatus.nominatorAddress)}</div>
                     <div><span className='font-semibold'>Stake
-                        requirement:</span> {nodeStatus.stakeRequirement ? nodeStatus.stakeRequirement + ' SHM' : '-'}</div>
+                        requirement:</span> {nodeStatus.stakeRequirement ? nodeStatus.stakeRequirement + ' SHM' : '-'}
+                    </div>
                     <div className="flex-grow"/>
-                    {
-                      showStakeWarning
+                  {
+                    showStakeWarning
                       ? (<div className="flex items-center">
-                            <div>
-                                <InformationCircleIcon className="h-7 w-7 text-blue-600"/>
-                            </div>
-                            <div className="ml-2">
-                                Please ensure your stake wallet has enough funds to meet the minimum staking requirement
-                            </div>
-                          </div>)
+                        <div>
+                          <InformationCircleIcon className="h-7 w-7 text-blue-600"/>
+                        </div>
+                        <div className="ml-2">
+                          Please ensure your stake wallet has enough funds to meet the minimum staking requirement
+                        </div>
+                      </div>)
                       : null
-                    }
+                  }
 
                   {isConnected
                     && chain?.id === CHAIN_ID
@@ -213,17 +223,23 @@ export default function Maintenance({apiPort}: any) {
                   className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
                   <div className="flex justify-between h-7">
-                      <div><span className='font-semibold'>CPU usage AVG:</span> {nodeStatus.performance?.cpuPercentage.toFixed(2)}%</div>
+                      <div><span
+                          className='font-semibold'>CPU usage AVG:</span> {nodeStatus.performance?.cpuPercentage.toFixed(2)}%
+                      </div>
                       <Doughnut data={mapToDoughnut(nodeStatus.performance?.cpuPercentage, {spacing: 2})}
                                 options={{plugins: {tooltip: {enabled: false}}}}/>
                   </div>
                   <div className="flex justify-between h-7">
-                      <div><span className='font-semibold'>RAM usage AVG:</span> {nodeStatus.performance?.memPercentage.toFixed(2)}%</div>
+                      <div><span
+                          className='font-semibold'>RAM usage AVG:</span> {nodeStatus.performance?.memPercentage.toFixed(2)}%
+                      </div>
                       <Doughnut data={mapToDoughnut(nodeStatus.performance?.memPercentage, {spacing: 2})}
                                 options={{plugins: {tooltip: {enabled: false}}}}/>
                   </div>
                   <div className="flex justify-between h-7">
-                      <div><span className='font-semibold'>Disk usage AVG:</span> {nodeStatus.performance?.diskPercentage.toFixed(2)}%</div>
+                      <div><span
+                          className='font-semibold'>Disk usage AVG:</span> {nodeStatus.performance?.diskPercentage.toFixed(2)}%
+                      </div>
                       <Doughnut data={mapToDoughnut(nodeStatus.performance?.diskPercentage, {spacing: 2})}
                                 options={{plugins: {tooltip: {enabled: false}}}}/>
                   </div>
@@ -235,10 +251,10 @@ export default function Maintenance({apiPort}: any) {
                   <div className="flex-grow"/>
                   <div className="flex justify-end">
                       <div className="tooltip" data-tip="Coming Soon!">
-                        <button className="btn btn-primary btn-disabled" >
-                          Benchmark
-                          <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
-                        </button>
+                          <button className="btn btn-primary btn-disabled">
+                              Benchmark
+                              <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
+                          </button>
                       </div>
                   </div>
               </div>
@@ -250,11 +266,21 @@ export default function Maintenance({apiPort}: any) {
               <div
                   className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
-                  <div><span className='font-semibold'>CLI/GUI Running version:</span> {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}</div>
-                  <div><span className='font-semibold'>CLI/GUI Latest version:</span> {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}</div>
-                  <div><span className='font-semibold'>Validator Running version:</span> {nullPlaceholder(nodeStatus.nodeInfo?.appData?.activeVersion)}</div>
-                  <div><span className='font-semibold'>Validator Latest version:</span> {nullPlaceholder(nodeStatus.nodeInfo?.appData?.shardeumVersion)}</div>
-                  <div><span className='font-semibold'>Validator Minimum version:</span> {nullPlaceholder(nodeStatus.nodeInfo?.appData?.minVersion)}</div>
+                  <div><span
+                      className='font-semibold'>CLI/GUI Running version:</span> {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}
+                  </div>
+                  <div><span
+                      className='font-semibold'>CLI/GUI Latest version:</span> {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}
+                  </div>
+                  <div><span
+                      className='font-semibold'>Validator Running version:</span> {nullPlaceholder(version.runnningValidatorVersion)}
+                  </div>
+                  <div><span
+                      className='font-semibold'>Validator Latest version:</span> {nullPlaceholder(version.activeShardeumVersion)}
+                  </div>
+                  <div><span
+                      className='font-semibold'>Validator Minimum version:</span> {nullPlaceholder(version.minShardeumVersion)}
+                  </div>
                   <div className="flex-grow"/>
                 {versionWarning(version)}
                 {(version.latestCliVersion > version.runningCliVersion || version.latestCliVersion > version.runningCliVersion) &&
