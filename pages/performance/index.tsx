@@ -24,9 +24,9 @@ export default function Performance({apiPort}: any) {
                   className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div><span className='font-semibold'>CLI/GUI Running version:</span> {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}</div>
                   <div><span className='font-semibold'>CLI/GUI Latest version:</span> {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}</div>
-                  <div><span className='font-semibold'>Validator Running version:</span> {nullPlaceholder(nodeStatus.nodeInfo?.appData?.activeVersion)}</div>
-                  <div><span className='font-semibold'>Validator Latest version:</span> {nullPlaceholder(nodeStatus.nodeInfo?.appData?.shardeumVersion)}</div>
-                  <div><span className='font-semibold'>Validator Minimum version:</span> {nullPlaceholder(nodeStatus.nodeInfo?.appData?.minVersion)}</div>
+                  <div><span className='font-semibold'>Validator Running version:</span> {nullPlaceholder(version.runnningValidatorVersion)}</div>
+                  <div><span className='font-semibold'>Validator Latest version:</span> {nullPlaceholder(version.activeShardeumVersion)}</div>
+                  <div><span className='font-semibold'>Validator Minimum version:</span> {nullPlaceholder(version.minShardeumVersion)}</div>
               </div>
           </div>
           <div className="flex flex-col items-stretch">
