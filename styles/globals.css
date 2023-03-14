@@ -20,7 +20,11 @@ a {
 }
 
 .disable-animate-input {
-  --animation-input: 0
+  --animation-input: 0;
+}
+
+.wrap-anywhere {
+  overflow-wrap: anywhere;
 }
 
 @media (prefers-color-scheme: dark) {

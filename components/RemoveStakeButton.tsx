@@ -5,9 +5,11 @@ import { ToastContext } from './ToastContextProvider';
 import { useTXLogs } from "../hooks/useTXLogs";
 import LoadingButton from './LoadingButton';
 import { ConfirmModalContext } from './ConfirmModalContextProvider';
+import { isMetaMaskError } from '../utils/isMetaMaskError';
+import { isEthersError } from '../utils/isEthersError';
 
 export default function RemoveStakeButton({nominee, force = false}: { nominee: string, force?: boolean }) {
-  const {showTemporarySuccessMessage} = useContext(ToastContext);
+  const {showTemporarySuccessMessage, showErrorMessage} = useContext(ToastContext);
   const {openModal} = useContext(ConfirmModalContext);
 
   const createUnstakeLog = (data: any, params: { data: any }, hash: string, sender: string) => {
@@ -64,14 +66,21 @@ export default function RemoveStakeButton({nominee, force = false}: { nominee: s
       showTemporarySuccessMessage('Remove stake successful!');
       setLoading(false);
     } catch (error) {
-      console.log(error);
-      setLoading(false);
+      console.error(error);
+      let errorMessage = (error as Error)?.message || String(error);
+
+      // 4001 is the error code for when a user rejects a transaction
+      if ((isMetaMaskError(error) && error.code === 4001)
+        || (isEthersError(error) && error.code === 'ACTION_REJECTED')) {
+        errorMessage = 'Transaction rejected by user';
+      }
+      showErrorMessage(errorMessage);
     }
+    setLoading(false);
   };
 
   const [haveMetamask, sethaveMetamask] = useState(false);
   const [accountAddress, setAccountAddress] = useState("");
-  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     // @ts-ignore
@@ -99,17 +108,13 @@ export default function RemoveStakeButton({nominee, force = false}: { nominee: s
       setAccountAddress(accounts[0]);
 
       console.log("Account2: ", accountAddress);
-      setIsConnected(true);
       await sendTransaction(accounts[0], nominee, force);
     } catch (error) {
-      setIsConnected(false);
       setLoading(false);
     }
   };
-  // const resultBox = useRef();
-  // const [signatures, setSignatures] = useState([]);
+
   const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState();
   const [data, setData] = useState({
     isInternalTx: true,
     internalTXType: 7,

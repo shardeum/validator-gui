@@ -4,6 +4,8 @@ import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { ToastContext } from './ToastContextProvider';
 import { useTXLogs } from "../hooks/useTXLogs";
 import LoadingButton from './LoadingButton';
+import { isMetaMaskError } from '../utils/isMetaMaskError';
+import { isEthersError } from '../utils/isEthersError';
 
 export default function SignMessage({
                                       nominator,
@@ -11,11 +13,11 @@ export default function SignMessage({
                                       stakeAmount,
                                       onStake
                                     }: { nominator: string, nominee: string, stakeAmount: string, onStake?: () => void }) {
-  const {showTemporarySuccessMessage} = useContext(ToastContext);
+  const {showTemporarySuccessMessage, showErrorMessage} = useContext(ToastContext);
 
   const requiredStake = ethers.utils.parseEther(stakeAmount).toString()
 
-  const createStakeLog = (data: any, params: {data: any}, hash: string, sender: string) => {
+  const createStakeLog = (data: any, params: { data: any }, hash: string, sender: string) => {
     params.data = JSON.parse(data)
     const logData = {
       tx: params,
@@ -61,14 +63,22 @@ export default function SignMessage({
       const txConfirmation = await wait();
       console.log("TX CONFRIMED: ", txConfirmation);
       showTemporarySuccessMessage('Stake successful!');
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      console.error(error);
+      let errorMessage = (error as Error)?.message || String(error);
+
+      // 4001 is the error code for when a user rejects a transaction
+      if ((isMetaMaskError(error) && error.code === 4001)
+        || (isEthersError(error) && error.code === 'ACTION_REJECTED')) {
+        errorMessage = 'Transaction rejected by user';
+      }
+      showErrorMessage(errorMessage);
     }
     setLoading(false);
     onStake?.();
   };
 
-  const signMessage = async ({setError, message}: any) => {
+  const signMessage = async ({message}: any) => {
     try {
       // @ts-ignore
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -86,12 +96,11 @@ export default function SignMessage({
         sig: signature
       };
     } catch (err: any) {
-      setError(err.message);
+      console.error(err)
     }
   };
 
   const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState();
   const [data, setData] = useState({
     isInternalTx: true,
     internalTXType: 6,
@@ -119,7 +128,6 @@ export default function SignMessage({
   });
 
   console.log("DATA: ", data);
-  let [isSigned, setSignedStatus] = useState(false);
 
   const handleSign = async (e: any) => {
     try {
@@ -127,11 +135,9 @@ export default function SignMessage({
       const formData = new FormData(e.target).get("message");
 
       const sign = await signMessage({
-        setError,
         message: formData
       });
       if (sign!.sig) {
-        setSignedStatus(true);
         // @ts-ignore
         setData({...data, sign});
         console.log("Data af Sig: ", data);
@@ -173,33 +179,33 @@ export default function SignMessage({
           name="stake"
           className="bg-white text-black p-3 mt-2 w-full border border-black"
           placeholder="Stake Amount (SHM)"
-          onChange={(e) =>{
-              try {
-                const newValue = e.target.value.toString();
+          onChange={(e) => {
+            try {
+              const newValue = e.target.value.toString();
 
-                if(!newValue) throw new Error("invalid value")
+              if (!newValue) throw new Error("invalid value")
 
-                const stake = ethers.utils
-                  .parseEther(newValue)
-                  .toString();
+              const stake = ethers.utils
+                .parseEther(newValue)
+                .toString();
 
-                setData({
-                  ...data,
-                  //@ts-ignore
-                  stake: stake,
-                  stakeOk: true,
-                })
-              } catch(e){
-                setData({
-                  ...data,
-                  stakeOk: false,
-                })
-              }
+              setData({
+                ...data,
+                //@ts-ignore
+                stake: stake,
+                stakeOk: true,
+              })
+            } catch (e) {
+              setData({
+                ...data,
+                stakeOk: false,
+              })
             }
           }
+          }
         />
-        <div className={"flex items-center mb-5 "+(!data.stakeOk ? "text-red-500" : "")}>
-           <div className="ml-2 font-semibold">Stake requirement: {stakeAmount}</div>
+        <div className={`flex items-center mb-5 ${!data.stakeOk ? "text-red-500" : ""}`}>
+          <div className="ml-2 font-semibold">Stake requirement: {stakeAmount}</div>
         </div>
       </form>
 
@@ -207,7 +213,7 @@ export default function SignMessage({
         <LoadingButton
           onClick={async (e) => sendTransaction(e, JSON.stringify(data))}
           isLoading={isLoading}
-          className={"btn btn-primary "+(isLoading || !data.stakeOk ? "btn-disabled" : "")}
+          className={`btn btn-primary ${isLoading || !data.stakeOk ? "btn-disabled" : ""}`}
         >
           Stake
           <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
