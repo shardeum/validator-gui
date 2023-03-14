@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { exec } from 'child_process'
+import { execFile } from 'child_process'
 import { badRequestResponse, cliStderrResponse, unautorizedResponse } from './handlers/util'
 import * as crypto from '@shardus/crypto-utils';
 const yaml = require('js-yaml')
@@ -12,7 +12,7 @@ export const loginHandler = (req: Request, res: Response) => {
   const password = req.body && req.body.password
   const hashedPass = crypto.hash(password);
   // Exec the CLI validator login command
-  exec(`operator-cli gui login "${hashedPass}"`, (err, stdout, stderr) => {
+  execFile('operator-cli', ['gui', 'login', hashedPass], (err, stdout, stderr) => {
     if (err) {
       cliStderrResponse(res, 'Unable to check login', err.message)
       return
