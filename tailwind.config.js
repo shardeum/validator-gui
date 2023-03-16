@@ -16,6 +16,7 @@ module.exports = {
                     "primary-focus": "#1d4ed8",
                     error: "#ef4444",
                     "--bc": '0 11.727% 30.608%',
+                    "base-100": "#000000",
 
                     '.btn': {
                         'text-transform': 'capitalize',

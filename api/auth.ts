@@ -1,11 +1,21 @@
 import { Request, Response, NextFunction } from 'express'
 import { execFile } from 'child_process'
-import { badRequestResponse, cliStderrResponse, unautorizedResponse } from './handlers/util'
+import { cliStderrResponse, unautorizedResponse } from './handlers/util'
 import * as crypto from '@shardus/crypto-utils';
 const yaml = require('js-yaml')
 const jwt = require('jsonwebtoken')
 
-const jwtSecret = process.env.JWT_SECRET || '0be8fca8ad922f4e485a10ab53836f99a8e0fc565b2c4bdd197f572278b28d2e'
+function isValidSecret(secret: unknown) {
+  return typeof secret === 'string' && secret.length >= 32;
+}
+
+function generateRandomSecret() {
+  return Buffer.from(crypto.randomBytes(32)).toString('hex');
+}
+
+const jwtSecret = (isValidSecret(process.env.JWT_SECRET))
+  ? process.env.JWT_SECRET
+  : generateRandomSecret();
 crypto.init('64f152869ca2d473e4ba64ab53f49ccdb2edae22da192c126850970e788af347');
 
 export const loginHandler = (req: Request, res: Response) => {
