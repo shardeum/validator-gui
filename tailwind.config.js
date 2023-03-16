@@ -10,20 +10,26 @@ module.exports = {
     daisyui: {
         themes: [
             {
-                black: {
-                    ...require("daisyui/src/colors/themes")["[data-theme=black]"],
+                forest: {
+                    ...require("daisyui/src/colors/themes")["[data-theme=forest]"],
                     primary: "#1d4ed8",
                     "primary-focus": "#1d4ed8",
                     error: "#ef4444",
+                    "--bc": '0 11.727% 30.608%',
 
                     '.btn': {
-                        'text-transform': 'capitalize'
+                        'text-transform': 'capitalize',
+                        'border-radius': '0',
                     },
                     '.btn-primary': {
                         color: 'white'
                     },
                     '.btn-error': {
                         color: 'white'
+                    },
+                    '.toggle': {
+                        "--tglbg": "#f3f4f6",
+                        "--bc": '0 11.727% 30.608%'
                     }
                 },
             },

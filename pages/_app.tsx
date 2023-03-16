@@ -10,6 +10,7 @@ import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public'
 import { connectorsForWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { injectedWallet, metaMaskWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
+import ConfirmModalContextProvider from '../components/ConfirmModalContextProvider';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactElement<any, any> | null
@@ -67,9 +68,11 @@ function App({Component, pageProps}: AppPropsWithLayout) {
       <WagmiConfig client={client}>
         <RainbowKitProvider chains={chains} modalSize="compact">
           <RouteGuard>
-            <ToastContextProvider>
-              {getLayout(<Component {...pageProps} />)}
-            </ToastContextProvider>
+            <ConfirmModalContextProvider>
+              <ToastContextProvider>
+                {getLayout(<Component {...pageProps} />)}
+              </ToastContextProvider>
+            </ConfirmModalContextProvider>
           </RouteGuard>
         </RainbowKitProvider>
       </WagmiConfig>

@@ -4,11 +4,13 @@ import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { ToastContext } from './ToastContextProvider';
 import { useTXLogs } from "../hooks/useTXLogs";
 import LoadingButton from './LoadingButton';
+import { ConfirmModalContext } from './ConfirmModalContextProvider';
 
-export default function RemoveStakeButton({nominee}: { nominee: string}) {
+export default function RemoveStakeButton({nominee, force = false}: { nominee: string, force?: boolean }) {
   const {showTemporarySuccessMessage} = useContext(ToastContext);
+  const {openModal} = useContext(ConfirmModalContext);
 
-  const createUnstakeLog = (data: any, params: {data: any}, hash: string, sender: string) => {
+  const createUnstakeLog = (data: any, params: { data: any }, hash: string, sender: string) => {
     params.data = data
     const logData = {
       tx: params,
@@ -19,7 +21,7 @@ export default function RemoveStakeButton({nominee}: { nominee: string}) {
     return logData
   }
 
-  const sendTransaction = async (nominator: string, nominee: string) => {
+  const sendTransaction = async (nominator: string, nominee: string, force: boolean) => {
     const {writeUnstakeLog} = useTXLogs()
     try {
       // @ts-ignore
@@ -37,6 +39,7 @@ export default function RemoveStakeButton({nominee}: { nominee: string}) {
         nominator,
         timestamp: Date.now(),
         nominee,
+        force
       };
       console.log("Unstake Data", unstakeData);
 
@@ -97,7 +100,7 @@ export default function RemoveStakeButton({nominee}: { nominee: string}) {
 
       console.log("Account2: ", accountAddress);
       setIsConnected(true);
-      await sendTransaction(accounts[0], nominee);
+      await sendTransaction(accounts[0], nominee, force);
     } catch (error) {
       setIsConnected(false);
       setLoading(false);
@@ -124,15 +127,36 @@ export default function RemoveStakeButton({nominee}: { nominee: string}) {
     await connectWallet();
   }
 
+  const handleRemoveStake = () => {
+    if (force) {
+      openModal({
+        header: 'Force Remove Stake',
+        modalBody: <>
+          You are about to force remove your staked funds. This can be used to retrieve stake that is otherwise
+          stuck.
+          <br/>
+          <span className='font-semibold'>WARNING</span>: Pending rewards can get lost when using this option!
+        </>,
+        onConfirm: () => removeStake()
+      });
+
+    } else {
+      removeStake()
+    }
+  }
+
   return (
     <>
       {haveMetamask ? (
-        <div>
-          <LoadingButton className="btn btn-primary" isLoading={isLoading} onClick={() => removeStake()}>
-            Remove Stake
-            <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
-          </LoadingButton>
-        </div>
+        <>
+          <div>
+            <LoadingButton className="btn btn-primary" isLoading={isLoading}
+                           onClick={() => handleRemoveStake()}>
+              Remove Stake
+              <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
+            </LoadingButton>
+          </div>
+        </>
       ) : (
         <div className="text-red-500">Please install a Web3 Wallet</div>
       )}

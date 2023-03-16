@@ -61,8 +61,9 @@ export default function Maintenance() {
   const [showStakeForm, setShowStakeForm] = useState<boolean>(false)
   const {chain} = useNetwork()
   const {switchNetwork} = useSwitchNetwork()
+  const [forceUnstake, setForceUnstake] = useState<boolean>(false)
 
-  const showStakeWarning = stakeInfo?.stake
+  const showStakeWarning = nodeStatus && stakeInfo?.stake
     && ethers.utils.parseEther(stakeInfo?.stake).lt(ethers.utils.parseEther(nodeStatus.stakeRequirement))
 
   return <>{!!(performance && version && nodeStatus) && <div>
@@ -176,11 +177,30 @@ export default function Maintenance() {
                       </div>
                   }
 
+                  {isConnected
+                    && chain?.id === CHAIN_ID
+                    && stakeInfo?.stake > '0.0' &&
+                      <div className="form-control items-end">
+                          <label className="label cursor-pointer">
+                              <div className="tooltip"
+                                   data-tip="Forcing remove stake can be used to remove funds that are stuck.
+                                      WARNING: Pending rewards can get lost when enabling this option.">
+                                  <span className="mr-2">Force Remove Stake</span>
+                              </div>
+                              <input type="checkbox"
+                                     className="toggle toggle-primary"
+                                     checked={forceUnstake}
+                                     onChange={() => setForceUnstake(!forceUnstake)}
+                              />
+                          </label>
+                      </div>
+                  }
+
                     <div className="flex justify-end">
                       {isConnected
                         && chain?.id === CHAIN_ID
                         && stakeInfo?.stake > '0.0' &&
-                          <RemoveStakeButton nominee={stakeInfo?.nominee}/>
+                          <RemoveStakeButton nominee={stakeInfo?.nominee} force={forceUnstake}/>
                       }
 
                       {isConnected
