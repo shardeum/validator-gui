@@ -27,9 +27,7 @@ const Login = () => {
     return authService
       .login(password)
       .then(() => {
-        // get return url from query parameters or default to '/'
-        const returnUrl = router.query.returnUrl?.toString() || '/'
-        router.push(returnUrl)
+        router.push('/')
       })
       .catch(error => {
         setApiError(error)
