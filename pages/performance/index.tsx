@@ -18,11 +18,11 @@ export default function Performance() {
               <h1 className="font-semibold mb-3">Version Info</h1>
               <div
                   className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                  <div><span className='font-semibold'>CLI/GUI Running version:</span> {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}</div>
-                  <div><span className='font-semibold'>CLI/GUI Latest version:</span> {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}</div>
-                  <div><span className='font-semibold'>Validator Running version:</span> {nullPlaceholder(version.runnningValidatorVersion)}</div>
-                  <div><span className='font-semibold'>Validator Latest version:</span> {nullPlaceholder(version.activeShardeumVersion)}</div>
-                  <div><span className='font-semibold'>Validator Minimum version:</span> {nullPlaceholder(version.minShardeumVersion)}</div>
+                  <div><span className='font-semibold'>CLI/GUI Running Version:</span> {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}</div>
+                  <div><span className='font-semibold'>CLI/GUI Latest Version:</span> {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}</div>
+                  <div><span className='font-semibold'>Validator Running Version:</span> {nullPlaceholder(version.runnningValidatorVersion)}</div>
+                  <div><span className='font-semibold'>Active Network Version:</span> {nullPlaceholder(version.activeShardeumVersion)}</div>
+                  <div><span className='font-semibold'>Validator Minimum Version:</span> {nullPlaceholder(version.minShardeumVersion)}</div>
               </div>
           </div>
           <div className="flex flex-col items-stretch">

@@ -281,19 +281,19 @@ export default function Maintenance() {
                   className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
                   <div><span
-                      className='font-semibold'>CLI/GUI Running version:</span> {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}
+                      className='font-semibold'>CLI/GUI Running Version:</span> {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}
                   </div>
                   <div><span
-                      className='font-semibold'>CLI/GUI Latest version:</span> {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}
+                      className='font-semibold'>CLI/GUI Latest Version:</span> {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}
                   </div>
                   <div><span
-                      className='font-semibold'>Validator Running version:</span> {nullPlaceholder(version.runnningValidatorVersion)}
+                      className='font-semibold'>Validator Running Version:</span> {nullPlaceholder(version.runnningValidatorVersion)}
                   </div>
                   <div><span
-                      className='font-semibold'>Validator Latest version:</span> {nullPlaceholder(version.activeShardeumVersion)}
+                      className='font-semibold'>Active Network Version:</span> {nullPlaceholder(version.activeShardeumVersion)}
                   </div>
                   <div><span
-                      className='font-semibold'>Validator Minimum version:</span> {nullPlaceholder(version.minShardeumVersion)}
+                      className='font-semibold'>Validator Minimum Version:</span> {nullPlaceholder(version.minShardeumVersion)}
                   </div>
                   <div className="flex-grow"/>
                 {versionWarning(version)}
