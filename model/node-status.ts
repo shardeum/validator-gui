@@ -15,6 +15,7 @@ export interface NodeStatus {
   currentRewards: string
   lastPayout: string
   lifetimeEarnings: string
+  lastRotationIndex: string
   nodeInfo: {
     appData: {
       activeVersion: string

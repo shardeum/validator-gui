@@ -80,6 +80,8 @@ export default function Maintenance() {
                   </div>
                   <div><span className='font-semibold'>Time last active:</span> {nullPlaceholder(nodeStatus.lastActive)}
                   </div>
+                  <div><span className='font-semibold'>Last rotation index:</span> {nullPlaceholder(nodeStatus.lastRotationIndex)}
+                  </div>
                 {nodeStatus.exitStatus != null &&
                     <div><span className='font-semibold'>Exit status:</span> {nullPlaceholder(nodeStatus.exitStatus)}
                     </div>}

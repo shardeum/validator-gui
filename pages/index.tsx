@@ -71,6 +71,7 @@ export default function Overview() {
                     <div className="capitalize"><span className='font-semibold'>Status:</span> {nodeStatus.state}</div>
                     <div><span className='font-semibold'>Total time validating:</span> {nullPlaceholder(nodeStatus.totalTimeValidating)}</div>
                     <div><span className='font-semibold'>Time last active:</span> {nullPlaceholder(nodeStatus.lastActive)}</div>
+                    <div><span className='font-semibold'>Last rotation index:</span> {nullPlaceholder(nodeStatus.lastRotationIndex)}</div>
                 </div>
             </div>
             <div className="flex flex-col items-stretch">
