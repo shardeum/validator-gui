@@ -3,7 +3,11 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  distDir: 'build'
-}
+  distDir: "build",
+  eslint: {
+    // We want to handle linting in the IDE, not during build
+    ignoreDuringBuilds: true,
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
