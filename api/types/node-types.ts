@@ -104,3 +104,7 @@ export type SettingsResponse = Settings | ErrorResponse
 export type StakeRequest = {
   amount: string
 }
+
+export type NodeSettings = {
+  autoRestart: boolean
+}

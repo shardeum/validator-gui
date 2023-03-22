@@ -1,9 +1,10 @@
-import { execFile } from 'child_process';
+import { execFile, ExecFileException } from 'child_process';
 import { Request, Response, Router } from 'express';
 import {
   NodeLogsResponse,
   NodeNetworkResponse,
   NodePerformanceResponse,
+  NodeSettings,
   NodeStatus,
   NodeStatusHistoryResponse,
   NodeStatusResponse,
@@ -30,7 +31,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
         cliStderrResponse(res, 'Unable to start validator', stderr)
         return
       }
-      res.status(200).json({status:"ok"})
+      res.status(200).json({status: "ok"})
     });
     console.log('executing operator-cli start...');
   });
@@ -46,7 +47,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
         cliStderrResponse(res, 'Unable to stop validator', stderr)
         res.end()
       }
-      res.status(200).json({status:"ok"})
+      res.status(200).json({status: "ok"})
     });
     console.log('executing operator-cli stop...');
   });
@@ -134,7 +135,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
 
   apiRouter.post(
     '/node/update',
-    async (req: Request<StakeRequest>, res: Response) => {
+    async (req: Request, res: Response) => {
       // Exec the CLI validator stake command
       const update = new Promise<void>((resolve, reject) => execFile('operator-cli', ['update'], (err, stdout, stderr) => {
         console.log('operator-cli update: ', err, stdout, stderr);
@@ -261,11 +262,11 @@ export default function configureNodeHandlers(apiRouter: Router) {
       execFile('operator-cli', ['network-stats'], (err, stdout, stderr) => {
         console.log('operator-cli network-stats: ', err, stdout, stderr);
         if (err) {
-          cliStderrResponse(res, 'Unable to fetch version', err.message)
+          cliStderrResponse(res, 'Unable to fetch network-stats', err.message)
           return
         }
         if (stderr) {
-          cliStderrResponse(res, 'Unable to fetch version', stderr)
+          cliStderrResponse(res, 'Unable to fetch network-stats', stderr)
           return
         }
         const yamlData = yaml.load(stdout);
@@ -275,23 +276,73 @@ export default function configureNodeHandlers(apiRouter: Router) {
     });
 
 
-  apiRouter.post(
-    '/node/settings',
-    (req: Request, res: Response<SettingsResponse>) => {
-      // Exec the CLI validator stop command
-      execFile('operator-cli', ['settings'], (err, stdout, stderr) => {
-        console.log('operator-cli settings: ', err, stdout, stderr);
-        // res.end();
-      });
-      console.log('executing operator-cli settings...');
-
-      // mock response
-      res.json({
-        rewardWalletAddress: "0xA206aB7db8EfB9ca23a869D34cDb332842D5F4ba",
-        stakeWalletAddress: "0xA206aB7db8EfB9ca23a869D34cDb332842D5F4cc",
-        alertEmail: "test@shardeum.com",
-        alertPhoneNumber: "+11231231234"
-      });
+  apiRouter.get('/settings', async (req: Request, res: Response<NodeSettings>) => {
+    try {
+      const settings = await getSettings()
+      res.json(settings);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        return cliStderrResponse(res, 'Unable to fetch node-settings', e.message)
+      } else if (typeof e === 'string') {
+        return cliStderrResponse(res, 'Unable to fetch node-settings', e)
+      }
+      throw e
     }
-  );
+  });
+
+  const getSettings = () => new Promise<NodeSettings>((resolve, reject) =>
+    execFile('operator-cli', ['node-settings'], (err, stdout, stderr) => {
+      console.log('operator-cli node-settings: ', err, stdout, stderr);
+      if (err) {
+        reject(err.message)
+        return
+      }
+      if (stderr) {
+        reject(stderr)
+        return
+      }
+      const yamlData = yaml.load(stdout);
+      resolve(yamlData)
+    })
+  )
+
+
+  apiRouter.post('/settings', async (req: Request<NodeSettings>, res: Response) => {
+    if (!req.body) {
+      badRequestResponse(res, 'Invalid body');
+      return;
+    }
+
+    try {
+      const currentSettings = await getSettings()
+      if (req.body.autoRestart != null && req.body.autoRestart != currentSettings.autoRestart) {
+        await updateAutoStart(req.body.autoRestart);
+      }
+      res.json(getSettings());
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        return cliStderrResponse(res, 'Unable to update node-settings', e.message)
+      } else if (typeof e === 'string') {
+        return cliStderrResponse(res, 'Unable to update node-settings', e)
+      }
+      throw e
+    }
+  });
+
+  function updateAutoStart(autoRestart: boolean) {
+    return new Promise<void>((resolve, reject) => execFile('operator-cli', ['set', 'auto_restart', autoRestart.toString()],
+      (errAutoRestart: ExecFileException | null, stdoutAutoRestart: string, stderrAutoRestart: string) => {
+        if (errAutoRestart) {
+          reject(errAutoRestart.message)
+          return
+        }
+        if (stderrAutoRestart) {
+          reject(stderrAutoRestart)
+          return
+        }
+        resolve();
+      })
+    );
+  }
+
 }
