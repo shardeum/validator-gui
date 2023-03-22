@@ -9,7 +9,9 @@ export const fetcher = (input: RequestInfo | URL, init?: RequestInit) => {
     ...(init ?? {})
   }).then(async res => {
     const data = await res.json()
-    if (!res.ok) {
+    if (res.status === 403) {
+      authService.logout()
+    } else if (!res.ok) {
       console.log(data.errorDetails)
       throw data.errorMessage
     }
