@@ -13,6 +13,7 @@ import {
 } from '../types/node-types';
 import { badRequestResponse, cliStderrResponse } from './util';
 import path from 'path';
+import { existsSync } from 'fs';
 
 const yaml = require('js-yaml')
 
@@ -80,8 +81,12 @@ export default function configureNodeHandlers(apiRouter: Router) {
   );
 
   apiRouter.get('/node/logs', (req: Request, res: Response<NodeLogsResponse>) => {
-    // Exec the CLI validator stop command
-    execFile('ls', ['-m'], {cwd: path.join(__dirname, '../../../cli/build/logs')}, (err, stdout, stderr) => {
+    let logsPath = path.join(__dirname, '../../../cli/build/logs');
+    if (!existsSync(logsPath)) {
+      res.json([])
+      return;
+    }
+    execFile('ls', ['-m'], {cwd: logsPath}, (err, stdout, stderr) => {
       if (err) {
         cliStderrResponse(res, 'Unable to get logs', err.message)
         res.end()
