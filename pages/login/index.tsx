@@ -25,7 +25,7 @@ const Login = () => {
     setApiError(null);
 
     return authService
-      .login(password)
+      .useLogin(password)
       .then(() => {
         router.push('/')
       })
