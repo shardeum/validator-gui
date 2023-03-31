@@ -17,7 +17,6 @@
   ],
   "ignorePatterns": [
     "**/utils/*.ts",
-    "**/hooks/*.ts",
     "**/api/**/*.ts"
   ],
   "rules": {

@@ -1,27 +1,29 @@
 import { fetcher } from './fetcher'
-import { useGlobals } from '../utils/globals';
+import { useGlobals } from '../utils/globals'
 
-export const useTXLogs = (): {
-  writeUnstakeLog: (data: { tx: any; sender: string; txHash: string }) => void
-  writeStakeLog: (data: { tx: any; sender: string; txHash: string }) => void
-} => {
-  const {apiBase} = useGlobals()
-  const writeStakeLog = async (data: { tx: any; sender: string; txHash: string }) => {
+type TXLogsResponse = {
+  writeUnstakeLog: Function
+  writeStakeLog: Function
+}
+
+export const useTXLogs = (): TXLogsResponse => {
+  const { apiBase } = useGlobals()
+  const writeStakeLog = async (data: string): Promise<void> => {
     try {
       await fetcher(`${apiBase}/api/log/stake`, {
         method: 'POST',
-        body: JSON.stringify(data),
+        body: data,
       })
     } catch (e) {
       console.error(e)
     }
   }
 
-  const writeUnstakeLog = async (data: { tx: any; sender: string; txHash: string }) => {
+  const writeUnstakeLog = async (data: string): Promise<void> => {
     try {
       await fetcher(`${apiBase}/api/log/unstake`, {
         method: 'POST',
-        body: JSON.stringify(data),
+        body: data,
       })
     } catch (e) {
       console.error(e)

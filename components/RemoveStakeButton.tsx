@@ -18,7 +18,7 @@ export default function RemoveStakeButton({nominee, force = false}: { nominee: s
       txHash: hash
     }
 
-    return logData
+    return JSON.stringify(logData)
   }
 
   const sendTransaction = async (nominator: string, nominee: string, force: boolean) => {

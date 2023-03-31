@@ -23,7 +23,7 @@ export default function SignMessage({
       txHash: hash
     }
 
-    return logData
+    return JSON.stringify(logData)
   }
 
   const sendTransaction = async (e: any, blobData: any) => {

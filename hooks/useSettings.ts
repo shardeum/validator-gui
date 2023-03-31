@@ -8,15 +8,15 @@ export type NodeSettings = {
 
 export type SettingsResult = {
   settings: NodeSettings | undefined,
-  updateSettings: (settings: NodeSettings) => Promise<void>
+  updateSettings: Function
 }
 
 export const useSettings = (): SettingsResult => {
   const {apiBase} = useGlobals()
   const {data, mutate} = useSWR<NodeSettings>(`${apiBase}/api/settings`, fetcher)
 
-  async function updateSettings(settings: NodeSettings) {
-    const newSettings = await fetcher(`${apiBase}/api/settings`, {method: 'POST', body: JSON.stringify(settings)})
+  async function updateSettings(settings: NodeSettings): Promise<void> {
+    const newSettings = await fetcher<NodeSettings>(`${apiBase}/api/settings`, {method: 'POST', body: JSON.stringify(settings)})
     await mutate(newSettings)
   }
 

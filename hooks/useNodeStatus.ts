@@ -1,19 +1,26 @@
 import useSWR from 'swr'
-import { fetcher } from './fetcher';
-import { NodeStatus } from '../model/node-status';
-import { useState } from 'react';
-import { useGlobals } from '../utils/globals';
+import { fetcher } from './fetcher'
+import { NodeStatus } from '../model/node-status'
+import { useState } from 'react'
+import { useGlobals } from '../utils/globals'
 
-export const useNodeStatus = (): { nodeStatus: NodeStatus, startNode: () => void, stopNode: () => void, isLoading: boolean } => {
-  const {apiBase} = useGlobals()
-  const nodeStatusApi = `${apiBase}/api/node/status`;
-  const {data, mutate} = useSWR(nodeStatusApi, fetcher, {refreshInterval: 1000})
+type NodeStatusResponse = {
+  nodeStatus: NodeStatus | undefined
+  startNode: Function
+  stopNode: Function
+  isLoading: boolean
+}
+
+export const useNodeStatus = (): NodeStatusResponse => {
+  const { apiBase } = useGlobals()
+  const nodeStatusApi = `${apiBase}/api/node/status`
+  const { data, mutate } = useSWR<NodeStatus>(nodeStatusApi, fetcher, { refreshInterval: 1000 })
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const startNode = async () => {
+  const startNode = async (): Promise<void> => {
     setIsLoading(true)
     try {
-      await fetcher(`${apiBase}/api/node/start`, {method: 'POST'})
+      await fetcher(`${apiBase}/api/node/start`, { method: 'POST' })
       await mutate(await fetcher(nodeStatusApi))
     } catch (e) {
       console.error(e)
@@ -21,10 +28,10 @@ export const useNodeStatus = (): { nodeStatus: NodeStatus, startNode: () => void
     setIsLoading(false)
   }
 
-  const stopNode = async () => {
+  const stopNode = async (): Promise<void> => {
     setIsLoading(true)
     try {
-      await fetcher(`${apiBase}/api/node/stop`, {method: 'POST'})
+      await fetcher(`${apiBase}/api/node/stop`, { method: 'POST' })
       await mutate(await fetcher(nodeStatusApi))
     } catch (e) {
       console.error(e)
@@ -36,6 +43,6 @@ export const useNodeStatus = (): { nodeStatus: NodeStatus, startNode: () => void
     nodeStatus: data,
     startNode,
     stopNode,
-    isLoading
+    isLoading,
   }
-};
+}

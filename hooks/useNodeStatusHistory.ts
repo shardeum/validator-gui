@@ -1,15 +1,21 @@
 import useSWR from 'swr'
-import { fetcher } from './fetcher';
-import { NodeStatusHistory } from '../model/node-status-history';
-import { useGlobals } from '../utils/globals';
+import { fetcher } from './fetcher'
+import { NodeStatusHistory } from '../model/node-status-history'
+import { useGlobals } from '../utils/globals'
 
-export const useNodeStatusHistory = (): { nodeStatusHistory: NodeStatusHistory, isLoading: boolean, isError: boolean } => {
-  const {apiBase} = useGlobals()
-  const {data, error, isLoading} = useSWR(`${apiBase}/api/node/status/history`, fetcher)
+type NodeStatusHistoryResult = {
+  nodeStatusHistory: NodeStatusHistory | undefined
+  isLoading: boolean
+  isError: boolean
+}
+
+export const useNodeStatusHistory = (): NodeStatusHistoryResult => {
+  const { apiBase } = useGlobals()
+  const { data, error } = useSWR<NodeStatusHistory, Error>(`${apiBase}/api/node/status/history`, fetcher)
 
   return {
     nodeStatusHistory: data,
-    isLoading: false,
-    isError: false
+    isLoading: !data && !error,
+    isError: !!error,
   }
-};
+}

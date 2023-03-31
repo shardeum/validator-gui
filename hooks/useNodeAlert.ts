@@ -1,15 +1,21 @@
 import useSWR from 'swr'
-import { fetcher } from './fetcher';
-import { NodeAlert } from '../model/node-alert';
-import { useGlobals } from '../utils/globals';
+import { fetcher } from './fetcher'
+import { NodeAlert } from '../model/node-alert'
+import { useGlobals } from '../utils/globals'
 
-export const useNodeAlerts = (): { alerts: NodeAlert[], isLoading: boolean, isError: boolean } => {
-  const {apiBase} = useGlobals()
-  const {data, error, isLoading} = useSWR(`${apiBase}/api/node/alerts`, fetcher)
+type NodeAlertsResponse = {
+  alerts: NodeAlert[] | undefined
+  isLoading: boolean
+  isError: boolean
+}
+
+export const useNodeAlerts = (): NodeAlertsResponse => {
+  const { apiBase } = useGlobals()
+  const { data, error } = useSWR<NodeAlert[], Error>(`${apiBase}/api/node/alerts`, fetcher)
 
   return {
     alerts: data,
-    isLoading: false,
-    isError: false
+    isLoading: !data && !error,
+    isError: !!error,
   }
-};
+}

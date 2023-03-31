@@ -1,13 +1,13 @@
-import { authService } from '../services/auth.service';
+import { authService } from '../services/auth.service'
 
-export const fetcher = (input: RequestInfo | URL, init?: RequestInit) => {
+export const fetcher = <T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> => {
   return fetch(input, {
-    headers:{
+    headers: {
       'Content-Type': 'application/json',
-      "X-Api-Token": authService.authToken!,
+      'X-Api-Token': authService.authToken!,
     },
-    ...(init ?? {})
-  }).then(async res => {
+    ...(init ?? {}),
+  }).then(async (res) => {
     const data = await res.json()
     if (res.status === 403) {
       authService.logout()
@@ -18,4 +18,3 @@ export const fetcher = (input: RequestInfo | URL, init?: RequestInit) => {
     return data
   })
 }
-
