@@ -165,7 +165,7 @@ export default function Maintenance() {
 
                   {isConnected
                     && chain?.id === CHAIN_ID
-                    && stakeInfo?.stake > '0.0'
+                    && (stakeInfo?.stake ?? '0.0') > '0.0'
                     && nodeStatus?.nomineeAddress != null
                     && stakeInfo?.nominee !== nodeStatus?.nomineeAddress &&
                       <div className="flex text-red-500 items-center">
@@ -181,7 +181,7 @@ export default function Maintenance() {
 
                   {isConnected
                     && chain?.id === CHAIN_ID
-                    && stakeInfo?.stake > '0.0' &&
+                    && (stakeInfo?.stake ?? '0.0') > '0.0' &&
                       <div className="form-control items-end">
                           <label className="label cursor-pointer">
                               <div className="tooltip"
@@ -201,7 +201,8 @@ export default function Maintenance() {
                     <div className="flex justify-end">
                       {isConnected
                         && chain?.id === CHAIN_ID
-                        && stakeInfo?.stake > '0.0' &&
+                        && stakeInfo?.nominee
+                        && (stakeInfo?.stake ?? '0.0') > '0.0' &&
                           <RemoveStakeButton nominee={stakeInfo?.nominee} force={forceUnstake}/>
                       }
 
