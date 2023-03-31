@@ -1,6 +1,7 @@
-import { ArcElement, Chart as ChartJS } from 'chart.js';
+import { ArcElement, Chart as ChartJS, DoughnutControllerDatasetOptions } from 'chart.js';
 
-export function mapToDoughnut(amount: number, dataSetOverrides?: any) {
+export function mapToDoughnut(amount: number,
+                              dataSetOverrides?: Partial<DoughnutControllerDatasetOptions>) {
   ChartJS.register(ArcElement);
   return {
     datasets: [{

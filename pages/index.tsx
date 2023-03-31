@@ -1,7 +1,6 @@
 import { useNodeStatus } from '../hooks/useNodeStatus';
 import { BarElement, CategoryScale, Chart as ChartJS, ChartOptions, LinearScale, Title, Tooltip } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { useNodeStatusHistory } from '../hooks/useNodeStatusHistory';
 import { nullPlaceholder } from '../utils/null-placerholder';
 
 export const options = {
@@ -48,8 +47,7 @@ const data = {
 };
 
 export default function Overview() {
-  const {nodeStatus, isLoading} = useNodeStatus()
-  const {nodeStatusHistory} = useNodeStatusHistory()
+  const {nodeStatus} = useNodeStatus()
 
   ChartJS.register(
     CategoryScale,
@@ -60,7 +58,6 @@ export default function Overview() {
   );
 
 
-  // @ts-ignore
   return <>
     {!!nodeStatus && <div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
