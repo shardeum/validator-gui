@@ -2,7 +2,6 @@ import { ReactElement, useState } from 'react'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { FieldValues, useForm } from 'react-hook-form'
-import Image from "next/image"
 import { ArrowPathIcon } from '@heroicons/react/20/solid'
 import { authService } from '../../services/auth.service';
 
@@ -35,7 +34,8 @@ const Login = () => {
   }
   return (
     <>
-        <Image src="logo.png" alt="Logo" className="w-40 mb-5 mt-20" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="logo.png" alt="Logo" className="w-40 mb-5 mt-20" />
         <div className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 max-w-xl">
           <h1 className="text-black font-semibold text-2xl">Connect to Validator Dashboard</h1>
           <p>
