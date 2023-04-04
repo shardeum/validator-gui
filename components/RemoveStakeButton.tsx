@@ -7,12 +7,16 @@ import LoadingButton from './LoadingButton';
 import { ConfirmModalContext } from './ConfirmModalContextProvider';
 import { isMetaMaskError } from '../utils/isMetaMaskError';
 import { isEthersError } from '../utils/isEthersError';
+import { Address } from 'wagmi';
+import { ExternalProvider } from '@ethersproject/providers';
 
 export default function RemoveStakeButton({nominee, force = false}: { nominee: string, force?: boolean }) {
   const {showTemporarySuccessMessage, showErrorMessage} = useContext(ToastContext);
+  const {writeUnstakeLog} = useTXLogs()
   const {openModal} = useContext(ConfirmModalContext);
+  const ethereum = window.ethereum;
 
-  const createUnstakeLog = (data: any, params: { data: any }, hash: string, sender: string) => {
+  const createUnstakeLog = (data: unknown, params: { data: unknown }, hash: string, sender: string) => {
     params.data = data
     const logData = {
       tx: params,
@@ -24,10 +28,11 @@ export default function RemoveStakeButton({nominee, force = false}: { nominee: s
   }
 
   const sendTransaction = async (nominator: string, nominee: string, force: boolean) => {
-    const {writeUnstakeLog} = useTXLogs()
+    if (!ethereum) {
+      throw new Error('MetaMask not found');
+    }
     try {
-      // @ts-ignore
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new ethers.providers.Web3Provider(ethereum as ExternalProvider);
       const signer = provider.getSigner();
       const [gasPrice, from, nonce] = await Promise.all([
         signer.getGasPrice(),
@@ -83,24 +88,20 @@ export default function RemoveStakeButton({nominee, force = false}: { nominee: s
   const [accountAddress, setAccountAddress] = useState("");
 
   useEffect(() => {
-    // @ts-ignore
-    const {ethereum} = window;
     const checkMetamaskAvailability = async () => {
       if (!ethereum) {
         sethaveMetamask(false);
       } else sethaveMetamask(true);
     };
     checkMetamaskAvailability();
-  }, []);
+  }, [ethereum]);
 
   const connectWallet = async () => {
     try {
-      // @ts-ignore
-      const {ethereum} = window;
       if (!ethereum) {
         sethaveMetamask(false);
+        return;
       }
-      // @ts-ignore
       const accounts = await ethereum.request({
         method: "eth_requestAccounts"
       });
@@ -122,8 +123,7 @@ export default function RemoveStakeButton({nominee, force = false}: { nominee: s
     timestamp: Date.now()
   });
 
-  // @ts-ignore
-  window.ethereum?.on("accountsChanged", (accounts: any) => {
+  ethereum?.on?.("accountsChanged", (accounts: Address[]) => {
     setData({...data, nominator: accounts[0]});
   });
 

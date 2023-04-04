@@ -12,7 +12,7 @@ export const options = {
   scales: {
     y: {
       ticks: {
-        callback: function (value: number, index: number, ticks: number) {
+        callback: function (value: number) {
           if (value === 0) return 'Offline'
           if (value === 1) return 'Online'
           if (value === 2) return 'Validating'
@@ -20,7 +20,7 @@ export const options = {
       }
     }
   }
-} as any as ChartOptions;
+} as unknown as ChartOptions;
 
 const labels = [
   'January', '', '', '', '', '', '', '', '', '',

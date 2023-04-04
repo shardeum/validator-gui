@@ -4,6 +4,7 @@ import { PropsWithChildren } from 'react';
 import { useRouter } from 'next/router';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';
 import { authService } from '../services/auth.service';
+import Image from "next/image";
 
 export default function Layout({children}: PropsWithChildren) {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function Layout({children}: PropsWithChildren) {
         <nav className="text-gray-400 py-2">
           {/* Logo */}
           <div className="flex">
-            <img src="logo.png" alt="Logo" className="w-40"/>
+            <Image src="logo.png" alt="Logo" className="w-40"/>
             <span className="flex-grow"></span>
           </div>
 

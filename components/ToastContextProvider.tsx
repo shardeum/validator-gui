@@ -19,8 +19,10 @@ export const ToastContext = createContext<{
   severity: "alert-success",
   setSeverity: () => "alert-success",
   showTemporarySuccessMessage: () => {
+    return;
   },
   showErrorMessage: () => {
+    return;
   }
 })
 

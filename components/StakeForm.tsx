@@ -1,0 +1,192 @@
+import React, { useContext, useEffect, useState } from "react";
+import { ethers } from "ethers";
+import { ArrowRightIcon } from '@heroicons/react/20/solid';
+import { ToastContext } from './ToastContextProvider';
+import { useTXLogs } from "../hooks/useTXLogs";
+import LoadingButton from './LoadingButton';
+import { isMetaMaskError } from '../utils/isMetaMaskError';
+import { isEthersError } from '../utils/isEthersError';
+import { ExternalProvider } from '@ethersproject/providers';
+
+interface StakeData {
+  isInternalTx: boolean,
+  internalTXType: number,
+  nominator: string,
+  nominee: string,
+  stake: string,
+  timestamp: number,
+  stakeOk: boolean,
+}
+
+type StakeFormProps = { nominator: string, nominee: string, stakeAmount: string, onStake?: () => void };
+
+export default function StakeForm({
+                                    nominator,
+                                    nominee,
+                                    stakeAmount,
+                                    onStake
+                                  }: StakeFormProps) {
+  const {showTemporarySuccessMessage, showErrorMessage} = useContext(ToastContext);
+  const requiredStake = ethers.utils.parseEther(stakeAmount).toString()
+  const ethereum = window.ethereum;
+  const {writeStakeLog} = useTXLogs()
+  const [isLoading, setLoading] = useState(false);
+  const [data, setData] = useState<StakeData>({
+    isInternalTx: true,
+    internalTXType: 6,
+    nominator: nominator.toLowerCase(),
+    nominee,
+    stake: requiredStake,
+    timestamp: Date.now(),
+    stakeOk: true,
+  });
+
+
+  const createStakeLog = (_data: string, params: { data: unknown }, hash: string, sender: string) => {
+    params.data = JSON.parse(_data)
+    const logData = {
+      tx: params,
+      sender,
+      txHash: hash
+    }
+
+    return JSON.stringify(logData)
+  }
+
+  const sendTransaction = async (stakeData: StakeData) => {
+    setLoading(true);
+    try {
+      const blobData: string = JSON.stringify(stakeData);
+      const provider = new ethers.providers.Web3Provider(ethereum as ExternalProvider);
+      const signer = provider.getSigner();
+      const [gasPrice, from, nonce] = await Promise.all([
+        signer.getGasPrice(),
+        signer.getAddress(),
+        signer.getTransactionCount()
+      ]);
+
+      console.log("BLOB: ", blobData);
+
+      const value = ethers.BigNumber.from(JSON.parse(blobData).stake);
+
+      const params = {
+        from,
+        to: "0x0000000000000000000000000000000000000001",
+        gasPrice,
+        gasLimit: 30000000,
+        value,
+        data: ethers.utils.hexlify(ethers.utils.toUtf8Bytes(blobData)),
+        nonce
+      };
+      console.log("Params: ", params);
+
+      const {hash, data, wait} = await signer.sendTransaction(params);
+      console.log("TX RECEIPT: ", {hash, data});
+      await writeStakeLog(createStakeLog(blobData, params, hash, from))
+
+      const txConfirmation = await wait();
+      console.log("TX CONFRIMED: ", txConfirmation);
+      showTemporarySuccessMessage('Stake successful!');
+    } catch (error: unknown) {
+      console.error(error);
+      let errorMessage = (error as Error)?.message || String(error);
+
+      // 4001 is the error code for when a user rejects a transaction
+      if ((isMetaMaskError(error) && error.code === 4001)
+        || (isEthersError(error) && error.code === 'ACTION_REJECTED')) {
+        errorMessage = 'Transaction rejected by user';
+      }
+      showErrorMessage(errorMessage);
+    }
+    setLoading(false);
+    onStake?.();
+  };
+
+  useEffect(() => {
+      setData({
+        ...data,
+        nominator: nominator.toLowerCase(),
+        nominee,
+        stake: requiredStake,
+      });
+    },
+    [nominator, nominee, data, requiredStake]
+  )
+
+  ethereum?.on?.("accountsChanged", (accounts: string[]) => {
+    setData({...data, nominator: accounts[0].toLowerCase()});
+  });
+
+  console.log("DATA: ", data);
+
+  return (
+    <div>
+      <label htmlFor="rewardWallet" className="block">Stake Wallet Address</label>
+      <input id="rewardWallet" value={data.nominator} type="text"
+             className="bg-white text-black p-3 mt-2 w-full block border border-black"
+             disabled/>
+      <label className="block mt-4">
+        Nominee Public Key
+      </label>
+      <input
+        required
+        type="text"
+        name="nominee"
+        className="bg-white text-black p-3 mt-2 w-full block border border-black"
+        placeholder="Nominee Public Key"
+        value={data.nominee}
+        onChange={(e) =>
+          setData({...data, nominee: e.target.value.toLowerCase()})
+        }
+      />
+      <label className="block mt-4">
+        Stake Amount (SHM)
+      </label>
+      <input
+        required
+        type="text"
+        name="stake"
+        className="bg-white text-black p-3 mt-2 w-full border border-black"
+        placeholder="Stake Amount (SHM)"
+        onChange={(e) => {
+          try {
+            const newValue = e.target.value.toString();
+
+            if (!newValue) throw new Error("invalid value")
+
+            const stake = ethers.utils
+              .parseEther(newValue)
+              .toString();
+
+            setData({
+              ...data,
+              stake: stake,
+              stakeOk: true,
+            })
+          } catch (e) {
+            setData({
+              ...data,
+              stakeOk: false,
+            })
+          }
+        }
+        }
+      />
+      <div className={`flex items-center mb-5 ${!data.stakeOk ? "text-red-500" : ""}`}>
+        <div className="ml-2 font-semibold">Stake requirement: {stakeAmount}</div>
+      </div>
+
+      <div className="mt-5 float-right">
+        <LoadingButton
+          onClick={async () => sendTransaction(data)}
+          isLoading={isLoading}
+          className={`btn btn-primary ${isLoading || !data.stakeOk ? "btn-disabled" : ""}`}
+        >
+          Stake
+          <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
+        </LoadingButton>
+      </div>
+    </div>
+  )
+    ;
+}

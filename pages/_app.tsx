@@ -5,15 +5,15 @@ import Layout from '../components/Layout';
 import React, { ReactElement } from 'react';
 import { NextPage } from 'next';
 import ToastContextProvider from '../components/ToastContextProvider';
-import { RouteGuard } from '../components/RouteGuard';
 import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public'
 import { connectorsForWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { injectedWallet, metaMaskWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
 import ConfirmModalContextProvider from '../components/ConfirmModalContextProvider';
+import RouteGuard from '../components/RouteGuard';
 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactElement<any, any> | null
+export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactElement | null
 }
 
 type AppPropsWithLayout = AppProps & {

@@ -13,7 +13,7 @@ import { nullPlaceholder } from '../../utils/null-placerholder';
 import { useNodePerformance } from '../../hooks/useNodePerformance';
 import { NodeVersion } from '../../model/node-version';
 import React, { useState } from 'react';
-import SignMessage from '../../components/SignMessage';
+import StakeForm from '../../components/StakeForm';
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccountStakeInfo } from '../../hooks/useAccountStakeInfo';
@@ -126,10 +126,10 @@ export default function Maintenance() {
             {showStakeForm &&
                 <div
                     className="bg-white text-stone-500	rounded-xl p-8 text-sm relative">
-                    <SignMessage nominator={address!}
-                                 nominee={nodeStatus?.nomineeAddress}
-                                 stakeAmount={nodeStatus.stakeRequirement}
-                                 onStake={() => setShowStakeForm(false)}/>
+                    <StakeForm nominator={address!}
+                               nominee={nodeStatus?.nomineeAddress}
+                               stakeAmount={nodeStatus.stakeRequirement}
+                               onStake={() => setShowStakeForm(false)}/>
                     <button className="btn btn-primary btn-outline mr-2 absolute bottom-8"
                             onClick={() => setShowStakeForm(false)}>
                         <ArrowLeftIcon className="h-5 w-5 inline mr-2"/>

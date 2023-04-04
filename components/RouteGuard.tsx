@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { authService } from '../services/auth.service';
 
-export { RouteGuard };
-
-function RouteGuard({ children }:any) {
+export default function RouteGuard({ children }: { children: ReactNode }) {
     const router = useRouter();
     const [authorized, setAuthorized] = useState(false);
 
@@ -43,5 +41,5 @@ function RouteGuard({ children }:any) {
         }
     }
 
-    return (authorized && children);
+  return <>{authorized && children}</>;
 }
