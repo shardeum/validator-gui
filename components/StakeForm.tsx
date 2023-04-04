@@ -103,6 +103,10 @@ export default function StakeForm({
   };
 
   useEffect(() => {
+      ethereum?.on?.("accountsChanged", (accounts: string[]) => {
+        setData({...data, nominator: accounts[0].toLowerCase()});
+      });
+
       setData({
         ...data,
         nominator: nominator.toLowerCase(),
@@ -110,14 +114,8 @@ export default function StakeForm({
         stake: requiredStake,
       });
     },
-    [nominator, nominee, data, requiredStake]
+    [nominator, nominee, data, requiredStake, ethereum]
   )
-
-  ethereum?.on?.("accountsChanged", (accounts: string[]) => {
-    setData({...data, nominator: accounts[0].toLowerCase()});
-  });
-
-  console.log("DATA: ", data);
 
   return (
     <div>
@@ -187,6 +185,5 @@ export default function StakeForm({
         </LoadingButton>
       </div>
     </div>
-  )
-    ;
+  );
 }
