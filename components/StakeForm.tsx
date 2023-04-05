@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { ToastContext } from './ToastContextProvider';
@@ -53,10 +53,10 @@ export default function StakeForm({
     return JSON.stringify(logData)
   }
 
-  const sendTransaction = async (stakeData: StakeData) => {
+  async function sendTransaction() {
     setLoading(true);
     try {
-      const blobData: string = JSON.stringify(stakeData);
+      const blobData: string = JSON.stringify(data);
       const provider = new ethers.providers.Web3Provider(ethereum as ExternalProvider);
       const signer = provider.getSigner();
       const [gasPrice, from, nonce] = await Promise.all([
@@ -67,7 +67,7 @@ export default function StakeForm({
 
       console.log("BLOB: ", blobData);
 
-      const value = ethers.BigNumber.from(JSON.parse(blobData).stake);
+      const value = ethers.BigNumber.from(data.stake);
 
       const params = {
         from,
@@ -80,8 +80,8 @@ export default function StakeForm({
       };
       console.log("Params: ", params);
 
-      const {hash, data, wait} = await signer.sendTransaction(params);
-      console.log("TX RECEIPT: ", {hash, data});
+      const {hash, data: resultData, wait} = await signer.sendTransaction(params);
+      console.log("TX RECEIPT: ", {hash, resultData});
       await writeStakeLog(createStakeLog(blobData, params, hash, from))
 
       const txConfirmation = await wait();
@@ -100,7 +100,7 @@ export default function StakeForm({
     }
     setLoading(false);
     onStake?.();
-  };
+  }
 
   useEffect(() => {
       ethereum?.on?.("accountsChanged", (accounts: string[]) => {
@@ -116,6 +116,26 @@ export default function StakeForm({
     },
     [nominator, nominee, data, requiredStake, ethereum]
   )
+
+  function handleStakeChange(e: ChangeEvent<HTMLInputElement>) {
+    try {
+      const newValue = e.target.value.toString();
+      const stake = ethers.utils
+        .parseEther(newValue)
+        .toString();
+      setData({
+        ...data,
+        stake,
+        stakeOk: true,
+      })
+    } catch (e) {
+      console.error(e)
+      setData({
+        ...data,
+        stakeOk: false,
+      })
+    }
+  }
 
   return (
     <div>
@@ -133,9 +153,7 @@ export default function StakeForm({
         className="bg-white text-black p-3 mt-2 w-full block border border-black"
         placeholder="Nominee Public Key"
         value={data.nominee}
-        onChange={(e) =>
-          setData({...data, nominee: e.target.value.toLowerCase()})
-        }
+        onChange={(e) => setData({...data, nominee: e.target.value.toLowerCase()})}
       />
       <label className="block mt-4">
         Stake Amount (SHM)
@@ -146,29 +164,7 @@ export default function StakeForm({
         name="stake"
         className="bg-white text-black p-3 mt-2 w-full border border-black"
         placeholder="Stake Amount (SHM)"
-        onChange={(e) => {
-          try {
-            const newValue = e.target.value.toString();
-
-            if (!newValue) throw new Error("invalid value")
-
-            const stake = ethers.utils
-              .parseEther(newValue)
-              .toString();
-
-            setData({
-              ...data,
-              stake: stake,
-              stakeOk: true,
-            })
-          } catch (e) {
-            setData({
-              ...data,
-              stakeOk: false,
-            })
-          }
-        }
-        }
+        onChange={(e) => handleStakeChange(e)}
       />
       <div className={`flex items-center mb-5 ${!data.stakeOk ? "text-red-500" : ""}`}>
         <div className="ml-2 font-semibold">Stake requirement: {stakeAmount}</div>
@@ -176,10 +172,9 @@ export default function StakeForm({
 
       <div className="mt-5 float-right">
         <LoadingButton
-          onClick={async () => sendTransaction(data)}
+          onClick={async () => sendTransaction()}
           isLoading={isLoading}
-          className={`btn btn-primary ${isLoading || !data.stakeOk ? "btn-disabled" : ""}`}
-        >
+          className={`btn btn-primary ${isLoading || !data.stakeOk ? "btn-disabled" : ""}`}>
           Stake
           <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
         </LoadingButton>
