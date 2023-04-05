@@ -8,9 +8,7 @@ import {
   NodeStatus,
   NodeStatusHistoryResponse,
   NodeStatusResponse,
-  NodeVersionResponse,
-  SettingsResponse,
-  StakeRequest
+  NodeVersionResponse
 } from '../types/node-types';
 import { badRequestResponse, cliStderrResponse } from './util';
 import path from 'path';
@@ -38,7 +36,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
 
   apiRouter.post('/node/stop', (req: Request, res: Response) => {
     // Exec the CLI validator stop command
-    execFile('operator-cli', ['stop'], (err, stdout, stderr) => {
+    execFile('operator-cli', ['stop', '-f'], (err, stdout, stderr) => {
       if (err) {
         cliStderrResponse(res, 'Unable to stop validator', err.message)
         res.end()

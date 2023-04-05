@@ -12,7 +12,7 @@ import RemoveStakeButton from '../../components/RemoveStakeButton';
 import { nullPlaceholder } from '../../utils/null-placerholder';
 import { useNodePerformance } from '../../hooks/useNodePerformance';
 import { NodeVersion } from '../../model/node-version';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import StakeForm from '../../components/StakeForm';
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -21,6 +21,7 @@ import { CHAIN_ID } from '../_app';
 import LoadingButton from '../../components/LoadingButton';
 import NodeExitStatus from '../../components/NodeExitStatus';
 import { ethers } from 'ethers';
+import { ConfirmModalContext } from '../../components/ConfirmModalContextProvider';
 
 const versionWarning = (version: NodeVersion) => {
   if (version.runningCliVersion < version.minimumCliVersion
@@ -62,9 +63,26 @@ export default function Maintenance() {
   const {chain} = useNetwork()
   const {switchNetwork} = useSwitchNetwork()
   const [forceUnstake, setForceUnstake] = useState<boolean>(false)
+  const {openModal} = useContext(ConfirmModalContext);
 
   const showStakeWarning = nodeStatus && stakeInfo?.stake
     && ethers.utils.parseEther(stakeInfo?.stake).lt(ethers.utils.parseEther(nodeStatus.stakeRequirement))
+
+  const stopNodeHandler = async () => {
+    if (nodeStatus?.state === 'standby'
+      || nodeStatus?.state === 'need-stake') {
+      stopNode()
+    } else {
+      openModal({
+        header: 'Force Stop Node',
+        modalBody: <>
+          The node is active and stopping it could result in losing the stake amount.
+          Confirm if you would like to force the node to stop.
+        </>,
+        onConfirm: () => stopNode()
+      });
+    }
+  }
 
   return <>{!!(performance && version && nodeStatus) && <div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 auto-rows-auto">
@@ -80,7 +98,8 @@ export default function Maintenance() {
                   </div>
                   <div><span className='font-semibold'>Time last active:</span> {nullPlaceholder(nodeStatus.lastActive)}
                   </div>
-                  <div><span className='font-semibold'>Last rotation index:</span> {nullPlaceholder(nodeStatus.lastRotationIndex)}
+                  <div><span
+                      className='font-semibold'>Last rotation index:</span> {nullPlaceholder(nodeStatus.lastRotationIndex)}
                   </div>
                 {nodeStatus.exitStatus != null &&
                     <div><span className='font-semibold'>Exit status:</span> {nullPlaceholder(nodeStatus.exitStatus)}
@@ -101,10 +120,10 @@ export default function Maintenance() {
                   <NodeExitStatus nodeStatus={nodeStatus}/>
 
                   <div className="flex justify-end">
-                    {(nodeStatus.state === 'active' || nodeStatus.state === 'standby') &&
+                    {(nodeStatus.state && nodeStatus.state !== 'stopped') &&
                         <LoadingButton className="btn btn-error"
                                        isLoading={isLoading}
-                                       onClick={() => stopNode()}>
+                                       onClick={() => stopNodeHandler()}>
                             Stop Node
                             <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
                         </LoadingButton>
