@@ -104,10 +104,10 @@ export default function StakeForm({
 
   useEffect(() => {
       ethereum?.on?.("accountsChanged", (accounts: string[]) => {
-        setData(d => ({...d, nominator: accounts[0].toLowerCase()}));
+        setData(currentData => ({...currentData, nominator: accounts[0].toLowerCase()}));
       });
-      setData(d => ({
-        ...d,
+      setData(currentData => ({
+        ...currentData,
         stake: requiredStake,
       }));
     },
