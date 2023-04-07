@@ -13,9 +13,9 @@ function useLogin(password: string): Promise<void> {
     const data = await res.json()
     if (!res.ok) {
       if (res.status === 403) {
-        throw 'Invalid password!'
+        throw new Error('Invalid password!')
       }
-      throw 'Error executing login'
+      throw new Error('Error executing login')
     }
 
     localStorage.setItem(tokenKey, data.accessToken)
