@@ -1,7 +1,8 @@
-import { Request, Response, NextFunction } from 'express'
+import express, { Request, Response, NextFunction } from 'express'
 import { execFile } from 'child_process'
 import { cliStderrResponse, unautorizedResponse } from './handlers/util'
 import * as crypto from '@shardus/crypto-utils';
+import rateLimit from 'express-rate-limit';
 const yaml = require('js-yaml')
 const jwt = require('jsonwebtoken')
 
@@ -43,6 +44,15 @@ export const loginHandler = (req: Request, res: Response) => {
   })
   console.log('executing operator-cli gui login...')
 }
+
+export const apiLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 1500, // Limit each IP to 1500 requests per windowMs
+  message: 'Too many requests from this IP, please try again after 10 minutes',
+});
+
+export const httpBodyLimiter = express.json({ limit: '100kb' })
+
 
 export const jwtMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const token = req.headers['x-api-token']

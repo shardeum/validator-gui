@@ -20,6 +20,7 @@
     "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
     "express": "^4.18.2",
+    "express-rate-limit": "^6.7.0",
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.0",
     "next": "13.0.6",
@@ -33,22 +34,16 @@
     "wagmi": "^0.9.6"
   },
   "devDependencies": {
-    "prettier": "^2.8.1",
     "@types/express": "^4.17.14",
     "@types/js-yaml": "^4.0.5",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "^16.18.4",
-    "autoprefixer": "^10.4.13",
-    "postcss": "^8.4.20",
-    "tailwindcss": "^3.2.4",
-    "gts": "^3.1.1",
-    "typescript": "^4.9.4",
-    "typescript-estree": "^18.1.0",
     "@typescript-eslint/eslint-plugin": "^5.48.0",
     "@typescript-eslint/parser": "^5.48.0",
+    "autoprefixer": "^10.4.13",
     "eslint": "^8.31.0",
-    "eslint-config-prettier": "^8.6.0",
     "eslint-config-next": "13.0.6",
+    "eslint-config-prettier": "^8.6.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.19.1",
     "eslint-plugin-no-unsanitized": "^4.0.2",
@@ -57,6 +52,12 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-security": "^1.7.1",
     "eslint-plugin-standard": "^4.0.1",
-    "eslint-plugin-xss": "^0.1.12"
+    "eslint-plugin-xss": "^0.1.12",
+    "gts": "^3.1.1",
+    "postcss": "^8.4.20",
+    "prettier": "^2.8.1",
+    "tailwindcss": "^3.2.4",
+    "typescript": "^4.9.4",
+    "typescript-estree": "^18.1.0"
   }
 }

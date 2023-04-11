@@ -1,5 +1,5 @@
 import apiRouter from './api'
-import { jwtMiddleware, loginHandler } from './auth'
+import { apiLimiter, httpBodyLimiter, jwtMiddleware, loginHandler } from './auth'
 import * as https from 'https';
 import * as fs from 'fs';
 import path from 'path';
@@ -16,7 +16,8 @@ if (dev) {
   const nextHandler = nextApp.getRequestHandler()
   nextApp.prepare().then(() => {
     const app = express()
-    app.use(express.json());
+    app.use(httpBodyLimiter)
+    app.use(apiLimiter)
     app.post('/auth/login', loginHandler)
     app.use('/api', jwtMiddleware, apiRouter)
     app.get('*', (req: any, res: any) => nextHandler(req, res))
@@ -28,7 +29,8 @@ if (dev) {
   })
 } else {
   const app = express();
-  app.use(express.json());
+  app.use(httpBodyLimiter)
+  app.use(apiLimiter)
   app.post('/auth/login', loginHandler)
   app.use('/api', jwtMiddleware, apiRouter)
   app.use(express.static(path.join(__dirname, "..", "out"), {extensions: ['html']}));
