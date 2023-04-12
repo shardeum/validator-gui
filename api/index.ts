@@ -6,6 +6,7 @@ import path from 'path';
 import express from 'express';
 import next from 'next';
 import dotenv from 'dotenv';
+import { cacheStaticFiles, preventBrowserCacheForDynamicContent, setSecurityHeaders } from './security-headers';
 
 dotenv.config()
 const port = process.env.PORT ? +process.env.PORT : 8080
@@ -31,8 +32,11 @@ if (dev) {
   const app = express();
   app.use(httpBodyLimiter)
   app.use(apiLimiter)
+  setSecurityHeaders(app);
   app.post('/auth/login', loginHandler)
   app.use('/api', jwtMiddleware, apiRouter)
+  app.use(cacheStaticFiles);
+  app.use(preventBrowserCacheForDynamicContent);
   app.use(express.static(path.join(__dirname, "..", "out"), {extensions: ['html']}));
   const privateKey = fs.readFileSync(path.join(__dirname, '../selfsigned.key'), 'utf8');
   const certificate = fs.readFileSync(path.join(__dirname, '../selfsigned.crt'), 'utf8');

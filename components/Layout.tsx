@@ -12,6 +12,7 @@ export default function Layout({children}: PropsWithChildren) {
       <Head>
         <title>Shardeum Dashboard</title>
         <meta name="description" content="Dashboard to configure a Shardeum validator"/>
+        <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
         <link rel="icon" href="/favicon.ico"/>
       </Head>
 
