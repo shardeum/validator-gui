@@ -25,6 +25,7 @@ function getDefaultLayout(page: ReactElement) {
 }
 
 export const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL ?? 'https://sphinx.shardeum.org/';
+export const EXPLORER_URL = process.env.NEXT_EXPLORER_URL ?? 'https://explorer-sphinx.shardeum.org/';
 export const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID ? +process.env.NEXT_PUBLIC_CHAIN_ID : 8082;
 
 export const devnet: Chain = {
@@ -38,7 +39,8 @@ export const devnet: Chain = {
   },
   rpcUrls: {
     default: {http: [RPC_URL]},
-  }
+  },
+  blockExplorers: {default: { name: 'Sphinx Explorer', url: EXPLORER_URL }},
 }
 
 const {chains, provider} = configureChains([devnet], [publicProvider()])
