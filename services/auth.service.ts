@@ -1,14 +1,16 @@
 import Router from 'next/router'
 import { useGlobals } from '../utils/globals'
+import { hashSha256 } from '../utils/sha256-hash';
 
 const tokenKey = 'shmguitk'
 
-function useLogin(password: string): Promise<void> {
+async function useLogin(password: string): Promise<void> {
   const { apiBase } = useGlobals()
+  const sha256digest = await hashSha256(password)
   return fetch(`${apiBase}/auth/login`, {
     headers: { 'Content-Type': 'application/json' },
     method: 'POST',
-    body: JSON.stringify({ password }),
+    body: JSON.stringify({ password: sha256digest }),
   }).then(async (res) => {
     const data = await res.json()
     if (!res.ok) {
