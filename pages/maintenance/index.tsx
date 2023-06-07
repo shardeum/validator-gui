@@ -22,6 +22,7 @@ import LoadingButton from '../../components/LoadingButton';
 import NodeExitStatus from '../../components/NodeExitStatus';
 import { ethers } from 'ethers';
 import { ConfirmModalContext } from '../../components/ConfirmModalContextProvider';
+import { useSettings } from '../../hooks/useSettings';
 
 const versionWarning = (version: NodeVersion) => {
   if (version.runningCliVersion < version.minimumCliVersion
@@ -63,10 +64,15 @@ export default function Maintenance() {
   const {chain} = useNetwork()
   const {switchNetwork} = useSwitchNetwork()
   const [forceUnstake, setForceUnstake] = useState<boolean>(false)
+  const {settings, updateSettings, isLoading: updateSettingsLoading} = useSettings()
   const {openModal} = useContext(ConfirmModalContext);
 
   const showStakeWarning = nodeStatus && stakeInfo?.stake
     && ethers.utils.parseEther(stakeInfo?.stake).lt(ethers.utils.parseEther(nodeStatus.stakeRequirement))
+
+  const toggleAutoRestart = async () => {
+    await updateSettings({...settings, autoRestart: !settings?.autoRestart})
+  }
 
   const stopNodeHandler = async () => {
     if (nodeStatus?.state === 'standby'
@@ -120,8 +126,31 @@ export default function Maintenance() {
                   <NodeExitStatus nodeStatus={nodeStatus}/>
 
                   <div className="flex justify-end">
+
+                    {(settings?.autoRestart && (nodeStatus.state === 'active' || nodeStatus.state === 'syncing')) &&
+                        <div className="tooltip"
+                             data-tip="Stop node once it has been terminated/rotated out of the network.">
+                            <LoadingButton className="btn btn-error btn-outline"
+                                           isLoading={updateSettingsLoading}
+                                           onClick={() => toggleAutoRestart()}>
+                                Stop Node Later
+                                <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
+                            </LoadingButton>
+                        </div>
+                    }
+                    {(!settings?.autoRestart && (nodeStatus.state === 'active' || nodeStatus.state === 'syncing')) &&
+                        <div className="tooltip"
+                             data-tip="Start node automatically once it has been terminated/rotated out of the network.">
+                            <LoadingButton className="btn btn-primary btn-outline ml-2"
+                                           isLoading={updateSettingsLoading}
+                                           onClick={() => toggleAutoRestart()}>
+                                Enable Auto-Restart
+                                <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
+                            </LoadingButton>
+                        </div>
+                    }
                     {(nodeStatus.state && nodeStatus.state !== 'stopped') &&
-                        <LoadingButton className="btn btn-error"
+                        <LoadingButton className="btn btn-error ml-2"
                                        isLoading={isLoading}
                                        onClick={() => stopNodeHandler()}>
                             Stop Node
@@ -129,7 +158,7 @@ export default function Maintenance() {
                         </LoadingButton>
                     }
                     {(nodeStatus.state === 'stopped') &&
-                        <LoadingButton className="btn btn-primary"
+                        <LoadingButton className="btn btn-primary ml-2"
                                        isLoading={isLoading}
                                        onClick={() => startNode()}>
                             Start Node
