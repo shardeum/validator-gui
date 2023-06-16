@@ -1,7 +1,8 @@
 import { useNodeLogs } from '../../hooks/useNodeLogs';
 import { ArrowDownTrayIcon } from '@heroicons/react/20/solid';
 import { useSettings } from '../../hooks/useSettings';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import ResetPasswordForm from '../../components/ResetPasswordForm';
 
 export default function Settings() {
   const {logs, downloadLog} = useNodeLogs()
@@ -28,6 +29,7 @@ export default function Settings() {
         />
       </label>
     </div>
+    <ResetPasswordForm/>
     {logs && logs.length > 0 && <>
         <h1 className="font-semibold mb-3 text-lg mt-6">Logs</h1>
       {logs?.map((logName, index) =>

@@ -9,6 +9,7 @@ export const ToastContext = createContext<{
   severity: ToastSeverity,
   setSeverity: (severity: ToastSeverity) => void,
   showTemporarySuccessMessage: (message: string) => void,
+  showTemporaryErrorMessage: (message: string) => void,
   showErrorMessage: (message: string) => void
 }>
 ({
@@ -19,6 +20,9 @@ export const ToastContext = createContext<{
   severity: "alert-success",
   setSeverity: () => "alert-success",
   showTemporarySuccessMessage: () => {
+    return;
+  },
+  showTemporaryErrorMessage: () => {
     return;
   },
   showErrorMessage: () => {
@@ -48,6 +52,11 @@ export default function ToastContextProvider({children}: { children: ReactNode }
     setOpen(true);
   }
 
+  function showTemporaryErrorMessage(message: string) {
+    showErrorMessage(message);
+    setTimeout(() => setOpen(false), 6000);
+  }
+
   return <>
     {open && <div className="toast toast-top toast-center">
         <div className={`alert ${severity} rounded-lg max-w-[45rem] flex`}>
@@ -64,6 +73,7 @@ export default function ToastContextProvider({children}: { children: ReactNode }
         severity,
         setSeverity,
         showTemporarySuccessMessage,
+        showTemporaryErrorMessage,
         showErrorMessage
       }}>
       {children}

@@ -8,7 +8,7 @@ export function badRequestResponse(res: Response, msg: string) {
   res.end()
 }
 
-export function cliStderrResponse(res: Response, msg: string, details: string) {
+export function cliStderrResponse(res: Response, msg: string, details: string | undefined) {
   console.log(`ERROR HTTP 400: ${msg}`)
   res.status(400).json({
     errorMessage: msg,

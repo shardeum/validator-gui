@@ -1,4 +1,4 @@
-import { execFile, ExecFileException } from 'child_process';
+import { execFile, ExecFileException, execFileSync } from 'child_process';
 import { Request, Response, Router } from 'express';
 import {
   NodeLogsResponse,
@@ -13,6 +13,8 @@ import {
 import { badRequestResponse, cliStderrResponse } from './util';
 import path from 'path';
 import { existsSync } from 'fs';
+import { ExecFileSyncError } from '../types/error';
+import * as crypto from '@shardus/crypto-utils';
 
 const yaml = require('js-yaml')
 
@@ -271,6 +273,39 @@ export default function configureNodeHandlers(apiRouter: Router) {
         res.json(yamlData);
       });
       console.log('executing operator-cli network-stats');
+    });
+
+  apiRouter.post(
+    '/password',
+    (req: Request<{
+      currentPassword: string;
+      newPassword: string;
+    }>, res: Response) => {
+
+      try {
+        const password = req.body && req.body.currentPassword
+        const hashedPass = crypto.hash(password);
+        const stdout = execFileSync('operator-cli', ['gui', 'login', hashedPass]);
+        const cliResponse = yaml.load(stdout);
+
+        if (cliResponse.login !== 'authorized') {
+          badRequestResponse(res, 'Current password does not match');
+          return;
+        }
+
+        execFileSync('operator-cli', ['gui', 'set', 'password', '-h', req.body.newPassword]);
+        res.status(200).json({status: "ok"})
+      } catch (err) {
+        const execError = err as ExecFileSyncError;
+        if (execError.stdout || execError.stderr) {
+          const output = execError.stdout ? execError.stdout.toString() : execError.stderr?.toString();
+          cliStderrResponse(res, 'Error on login', output);
+          return;
+        }
+        cliStderrResponse(res, 'Error on login', execError.message);
+        return;
+      }
+
     });
 
 
