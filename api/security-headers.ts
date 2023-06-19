@@ -61,7 +61,7 @@ export function preventBrowserCacheForDynamicContent(req: Request, res: Response
       contentType &&
       contentType.startsWith('application/json')
     ) {
-      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     }
 
 }
