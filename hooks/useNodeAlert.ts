@@ -1,7 +1,8 @@
 import useSWR from 'swr'
-import { fetcher } from './fetcher'
 import { NodeAlert } from '../model/node-alert'
 import { useGlobals } from '../utils/globals'
+import { FetcherContext } from '../components/FetcherContextProvider';
+import { useContext } from 'react';
 
 type NodeAlertsResponse = {
   alerts: NodeAlert[] | undefined
@@ -11,6 +12,7 @@ type NodeAlertsResponse = {
 
 export const useNodeAlerts = (): NodeAlertsResponse => {
   const { apiBase } = useGlobals()
+  const fetcher = useContext(FetcherContext);
   const { data, error } = useSWR<NodeAlert[], Error>(`${apiBase}/api/node/alerts`, fetcher)
 
   return {

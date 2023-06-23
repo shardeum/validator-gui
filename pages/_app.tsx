@@ -11,6 +11,7 @@ import { connectorsForWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit
 import { injectedWallet, metaMaskWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
 import ConfirmModalContextProvider from '../components/ConfirmModalContextProvider';
 import RouteGuard from '../components/RouteGuard';
+import FetcherContextProvider from '../components/FetcherContextProvider';
 
 export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactElement | null
@@ -40,7 +41,7 @@ export const devnet: Chain = {
   rpcUrls: {
     default: {http: [RPC_URL]},
   },
-  blockExplorers: {default: { name: 'Sphinx Explorer', url: EXPLORER_URL }},
+  blockExplorers: {default: {name: 'Sphinx Explorer', url: EXPLORER_URL}},
 }
 
 const {chains, provider} = configureChains([devnet], [publicProvider()])
@@ -72,7 +73,9 @@ function App({Component, pageProps}: AppPropsWithLayout) {
           <RouteGuard>
             <ConfirmModalContextProvider>
               <ToastContextProvider>
-                {getLayout(<Component {...pageProps} />)}
+                <FetcherContextProvider>
+                  {getLayout(<Component {...pageProps} />)}
+                </FetcherContextProvider>
               </ToastContextProvider>
             </ConfirmModalContextProvider>
           </RouteGuard>

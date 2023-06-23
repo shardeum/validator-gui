@@ -1,7 +1,8 @@
 import useSWR from 'swr'
-import { fetcher } from './fetcher'
 import { NodeStatusHistory } from '../model/node-status-history'
 import { useGlobals } from '../utils/globals'
+import { useContext } from 'react';
+import { FetcherContext } from '../components/FetcherContextProvider';
 
 type NodeStatusHistoryResult = {
   nodeStatusHistory: NodeStatusHistory | undefined
@@ -11,6 +12,7 @@ type NodeStatusHistoryResult = {
 
 export const useNodeStatusHistory = (): NodeStatusHistoryResult => {
   const { apiBase } = useGlobals()
+  const fetcher = useContext(FetcherContext);
   const { data, error } = useSWR<NodeStatusHistory, Error>(`${apiBase}/api/node/status/history`, fetcher)
 
   return {

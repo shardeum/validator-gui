@@ -1,8 +1,10 @@
 import useSWR from 'swr'
 import { fetcher } from './fetcher'
 import { NodeStatus } from '../model/node-status'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useGlobals } from '../utils/globals'
+import { FetcherContext } from '../components/FetcherContextProvider';
+import { ToastContext } from '../components/ToastContextProvider';
 
 type NodeStatusResponse = {
   nodeStatus: NodeStatus | undefined
@@ -14,14 +16,16 @@ type NodeStatusResponse = {
 export const useNodeStatus = (): NodeStatusResponse => {
   const { apiBase } = useGlobals()
   const nodeStatusApi = `${apiBase}/api/node/status`
-  const { data, mutate } = useSWR<NodeStatus>(nodeStatusApi, fetcher, { refreshInterval: 1000 })
+  const fetcherWithContext = useContext(FetcherContext);
+  const { showErrorMessage } = useContext(ToastContext);
+  const { data, mutate } = useSWR<NodeStatus>(nodeStatusApi, fetcherWithContext, { refreshInterval: 1000 })
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const startNode = async (): Promise<void> => {
     setIsLoading(true)
     try {
-      await fetcher(`${apiBase}/api/node/start`, { method: 'POST' })
-      await mutate(await fetcher(nodeStatusApi))
+      await fetcher(`${apiBase}/api/node/start`, { method: 'POST' }, showErrorMessage)
+      await mutate(await fetcher(nodeStatusApi, {}, showErrorMessage))
     } catch (e) {
       console.error(e)
     }
@@ -31,8 +35,8 @@ export const useNodeStatus = (): NodeStatusResponse => {
   const stopNode = async (): Promise<void> => {
     setIsLoading(true)
     try {
-      await fetcher(`${apiBase}/api/node/stop`, { method: 'POST' })
-      await mutate(await fetcher(nodeStatusApi))
+      await fetcher(`${apiBase}/api/node/stop`, { method: 'POST' }, showErrorMessage)
+      await mutate(await fetcher(nodeStatusApi, {}, showErrorMessage))
     } catch (e) {
       console.error(e)
     }

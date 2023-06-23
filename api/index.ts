@@ -7,13 +7,14 @@ import express from 'express';
 import next from 'next';
 import dotenv from 'dotenv';
 import { cacheStaticFiles, preventBrowserCacheForDynamicContent, setSecurityHeaders } from './security-headers';
+import { errorMiddleware } from './error-middleware';
 
 dotenv.config()
 const port = process.env.PORT ? +process.env.PORT : 8080
-const dev = process.env.NODE_ENV === 'development'
+const isDev = process.env.NODE_ENV === 'development'
 
-if (dev) {
-  const nextApp = next({dev, port})
+if (isDev) {
+  const nextApp = next({dev: isDev, port})
   const nextHandler = nextApp.getRequestHandler()
   nextApp.prepare().then(() => {
     const app = express()
@@ -22,6 +23,7 @@ if (dev) {
     app.post('/auth/login', loginHandler)
     app.use('/api', jwtMiddleware, apiRouter)
     app.get('*', (req: any, res: any) => nextHandler(req, res))
+    app.use(errorMiddleware(isDev))
 
     app.listen(port, () => {
       console.log(`STARTED SERVER IN DEVELOPMENT MODE`)
@@ -35,6 +37,7 @@ if (dev) {
   setSecurityHeaders(app);
   app.post('/auth/login', loginHandler)
   app.use('/api', jwtMiddleware, apiRouter)
+  app.use(errorMiddleware(isDev))
   app.use(cacheStaticFiles);
   app.use(preventBrowserCacheForDynamicContent);
   app.use(express.static(path.join(__dirname, "..", "out"), {extensions: ['html']}));

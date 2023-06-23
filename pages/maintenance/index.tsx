@@ -347,6 +347,7 @@ export default function Maintenance() {
                       className='font-semibold'>Validator Minimum Version:</span> {nullPlaceholder(version.minShardeumVersion)}
                   </div>
                   <div className="flex-grow"/>
+
                 {versionWarning(version)}
                 {(version.latestCliVersion > version.runningCliVersion || version.latestCliVersion > version.runningCliVersion) &&
                     <div className="flex justify-end">

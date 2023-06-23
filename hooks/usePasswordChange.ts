@@ -12,6 +12,7 @@ export type ChangePasswordResult = {
 export const usePassword = (): ChangePasswordResult => {
   const {apiBase} = useGlobals()
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const { showErrorMessage } = useContext(ToastContext);
   const {showTemporarySuccessMessage, showTemporaryErrorMessage} = useContext(ToastContext);
 
   async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
@@ -22,7 +23,7 @@ export const usePassword = (): ChangePasswordResult => {
       await fetcher(`${apiBase}/api/password`, {
         method: 'POST',
         body: JSON.stringify({currentPassword: currentPwSha256digest, newPassword: newPwSha256digest})
-      })
+      }, showErrorMessage)
       showTemporarySuccessMessage('Password changed successfully!')
     } catch (e) {
       console.error(e)

@@ -2,6 +2,9 @@ import useSWR from 'swr'
 import { fetcher } from './fetcher'
 import { NodeVersion } from '../model/node-version'
 import { useGlobals } from '../utils/globals'
+import { useContext } from 'react';
+import { FetcherContext } from '../components/FetcherContextProvider';
+import { ToastContext } from '../components/ToastContextProvider';
 
 type NodeVersionResult = {
   isLoading: boolean
@@ -12,10 +15,12 @@ type NodeVersionResult = {
 
 export const useNodeVersion = (): NodeVersionResult => {
   const { apiBase } = useGlobals()
-  const { data, error } = useSWR<NodeVersion, Error>(`${apiBase}/api/node/version`, fetcher)
+  const fetcherWithContext = useContext(FetcherContext);
+  const { showErrorMessage } = useContext(ToastContext);
+  const { data, error } = useSWR<NodeVersion, Error>(`${apiBase}/api/node/version`, fetcherWithContext)
 
   const update = (): Promise<Response> => {
-    return fetcher<Response>(`${apiBase}/api/node/update`, { method: 'POST' })
+    return fetcher<Response>(`${apiBase}/api/node/update`, { method: 'POST' }, showErrorMessage)
   }
 
   return {

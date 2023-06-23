@@ -1,7 +1,8 @@
 import useSWR from 'swr'
-import { fetcher } from './fetcher'
 import { authService } from '../services/auth.service'
 import { useGlobals } from '../utils/globals'
+import { useContext } from 'react';
+import { FetcherContext } from '../components/FetcherContextProvider';
 
 type NodeLogsResponse = {
   isLoading: boolean
@@ -12,6 +13,7 @@ type NodeLogsResponse = {
 
 export const useNodeLogs = (): NodeLogsResponse => {
   const { apiBase } = useGlobals()
+  const fetcher = useContext(FetcherContext);
 
   const { data, error } = useSWR<string[], Error>(`${apiBase}/api/node/logs`, fetcher)
 
