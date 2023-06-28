@@ -5,7 +5,7 @@ import Layout from '../components/Layout';
 import React, { ReactElement } from 'react';
 import { NextPage } from 'next';
 import ToastContextProvider from '../components/ToastContextProvider';
-import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
+import { Chain, configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public'
 import { connectorsForWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { injectedWallet, metaMaskWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
@@ -40,26 +40,27 @@ export const devnet: Chain = {
   },
   rpcUrls: {
     default: {http: [RPC_URL]},
+    public: {http: [RPC_URL]},
   },
   blockExplorers: {default: {name: 'Sphinx Explorer', url: EXPLORER_URL}},
 }
 
-const {chains, provider} = configureChains([devnet], [publicProvider()])
+const {chains, publicClient} = configureChains([devnet], [publicProvider()])
 
 const connectors = connectorsForWallets([
   {
     groupName: 'Recommended',
     wallets: [
       injectedWallet({chains}),
-      metaMaskWallet({chains}),
-      walletConnectWallet({chains}),
+      metaMaskWallet({chains, projectId: 'shm-dashboard'}),
+      walletConnectWallet({chains, projectId: 'shm-dashboard'}),
     ],
   },
 ]);
 
-const client = createClient({
+const config = createConfig({
   autoConnect: true,
-  provider,
+  publicClient,
   connectors,
 });
 
@@ -68,7 +69,7 @@ function App({Component, pageProps}: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? getDefaultLayout
   return (
     <>
-      <WagmiConfig client={client}>
+      <WagmiConfig config={config}>
         <RainbowKitProvider chains={chains} modalSize="compact">
           <RouteGuard>
             <ConfirmModalContextProvider>
