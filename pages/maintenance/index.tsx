@@ -23,6 +23,7 @@ import NodeExitStatus from '../../components/NodeExitStatus';
 import { ethers } from 'ethers';
 import { ConfirmModalContext } from '../../components/ConfirmModalContextProvider';
 import { useSettings } from '../../hooks/useSettings';
+import StatusBadge from '../../components/StatusBadge';
 
 const versionWarning = (version: NodeVersion) => {
   if (version.runningCliVersion < version.minimumCliVersion
@@ -98,7 +99,7 @@ export default function Maintenance() {
                   className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow"/>
                   <div className="capitalize"><span
-                      className='font-semibold'>Status:</span> {nullPlaceholder(nodeStatus.state)}</div>
+                      className='font-semibold'>Status:</span> {nullPlaceholder(nodeStatus.state)}  <StatusBadge status={nodeStatus.state}/></div>
                   <div><span
                       className='font-semibold'>Total time validating:</span> {nullPlaceholder(nodeStatus.totalTimeValidating)}
                   </div>
