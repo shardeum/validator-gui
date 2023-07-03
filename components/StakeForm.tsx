@@ -71,7 +71,7 @@ export default function StakeForm({
 
       const params = {
         from,
-        to: "0x0000000000000000000000000000000000000001",
+        to: '0x0000000000000000000000000000000000010000',
         gasPrice,
         value,
         data: ethers.utils.hexlify(ethers.utils.toUtf8Bytes(blobData)),
