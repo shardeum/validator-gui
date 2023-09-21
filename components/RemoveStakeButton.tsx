@@ -54,7 +54,6 @@ export default function RemoveStakeButton({nominee, force = false}: { nominee: s
         from,
         to: "0x0000000000000000000000000000000000000001",
         gasPrice,
-        gasLimit: 30000000,
         data: ethers.utils.hexlify(
           ethers.utils.toUtf8Bytes(JSON.stringify(unstakeData))
         ),
