@@ -252,7 +252,7 @@ export default function Maintenance() {
                         && chain?.id === CHAIN_ID
                         && stakeInfo?.nominee
                         && (stakeInfo?.stake ?? '0.0') > '0.0' &&
-                          <RemoveStakeButton nominee={stakeInfo?.nominee} force={forceUnstake}/>
+                          <RemoveStakeButton nominee={stakeInfo?.nominee} force={forceUnstake} nodeStatus={nodeStatus.state}/>
                       }
 
                       {isConnected

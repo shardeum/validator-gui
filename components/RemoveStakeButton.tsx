@@ -9,8 +9,9 @@ import { isMetaMaskError } from '../utils/isMetaMaskError';
 import { isEthersError } from '../utils/isEthersError';
 import { Address } from 'wagmi';
 import { ExternalProvider } from '@ethersproject/providers';
+import { NodeStatus } from '../model/node-status'
 
-export default function RemoveStakeButton({nominee, force = false}: { nominee: string, force?: boolean }) {
+export default function RemoveStakeButton({nominee, force = false, nodeStatus}: { nominee: string, force?: boolean, nodeStatus: NodeStatus['state'] }) {
   const {showTemporarySuccessMessage, showErrorMessage} = useContext(ToastContext);
   const {writeUnstakeLog} = useTXLogs()
   const {openModal} = useContext(ConfirmModalContext);
@@ -154,7 +155,9 @@ export default function RemoveStakeButton({nominee, force = false}: { nominee: s
       {haveMetamask ? (
         <>
           <div>
-            <LoadingButton className="btn btn-primary" isLoading={isLoading}
+            <LoadingButton className="btn btn-primary"
+                           isLoading={isLoading}
+                           disabled={!force && (nodeStatus === 'standby' || nodeStatus === 'syncing' || nodeStatus === 'active')}
                            onClick={() => handleRemoveStake()}>
               Remove Stake
               <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
