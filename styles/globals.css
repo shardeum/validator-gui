@@ -45,6 +45,10 @@ li.li-right{
   animation: rotateMe 2s infinite;
 }
 
+.btn-disabled, .btn-disabled:hover, .btn[disabled], .btn[disabled]:hover {
+  color: white;
+  background-color: rgb(212, 212, 216)
+}
 
 @keyframes rotateMe {
   0% {
