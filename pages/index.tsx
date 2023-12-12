@@ -66,7 +66,9 @@ export default function Overview() {
                 <h1 className="font-semibold mb-3">Node Status</h1>
                 <div
                     className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                    <div className="capitalize"><span className='font-semibold'>Status:</span> {nodeStatus.state} <StatusBadge status={nodeStatus.state}/></div>
+                    <div className="capitalize"><span className='font-semibold'>Status:</span>{" "} {nodeStatus.state  === "active" ? 
+                        "Validating" : nullPlaceholder(nodeStatus.state)}{" "} <StatusBadge status={nodeStatus.state}/>
+                    </div>
                     <div><span className='font-semibold'>Total time validating:</span> {nullPlaceholder(nodeStatus.totalTimeValidating)}</div>
                     <div><span className='font-semibold'>Time last active:</span> {nullPlaceholder(nodeStatus.lastActive)}</div>
                     <div><span className='font-semibold'>Last rotation index:</span> {nullPlaceholder(nodeStatus.lastRotationIndex)}</div>
