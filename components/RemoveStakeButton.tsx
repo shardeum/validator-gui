@@ -12,7 +12,7 @@ import { ExternalProvider } from '@ethersproject/providers';
 import { NodeStatus } from '../model/node-status'
 
 export default function RemoveStakeButton({nominee, force = false, nodeStatus}: { nominee: string, force?: boolean, nodeStatus: NodeStatus['state'] }) {
-  const {showTemporarySuccessMessage, showErrorMessage} = useContext(ToastContext);
+  const {showTemporarySuccessMessage, showErrorDetails} = useContext(ToastContext);
   const {writeUnstakeLog} = useTXLogs()
   const {openModal} = useContext(ConfirmModalContext);
   const ethereum = window.ethereum;
@@ -75,11 +75,11 @@ export default function RemoveStakeButton({nominee, force = false, nodeStatus}: 
       let errorMessage = (error as Error)?.message || String(error);
 
       // 4001 is the error code for when a user rejects a transaction
-      if ((isMetaMaskError(error) && error.code === 4001)
-        || (isEthersError(error) && error.code === 'ACTION_REJECTED')) {
+      if ((isMetaMaskError(error) && error.code === 4001) 
+      || (isEthersError(error) && error.code === 'ACTION_REJECTED')) {
         errorMessage = 'Transaction rejected by user';
       }
-      showErrorMessage(errorMessage);
+      showErrorDetails(errorMessage);
     }
     setLoading(false);
   };
@@ -136,15 +136,16 @@ export default function RemoveStakeButton({nominee, force = false, nodeStatus}: 
     if (force) {
       openModal({
         header: 'Force Remove Stake',
-        modalBody: <>
-          You are about to force remove your staked funds. This can be used to retrieve stake that is otherwise
-          stuck.
-          <br/>
-          <span className='font-semibold'>WARNING</span>: Pending rewards can get lost when using this option!
-        </>,
+        modalBody: (
+          <>
+            You are about to force remove your staked funds. This can be used to retrieve stake that is otherwise
+             stuck.
+            <br/>
+            <span className='font-semibold'>WARNING</span>: Pending rewards can get lost when using this option!
+          </>
+        ),
         onConfirm: () => removeStake()
       });
-
     } else {
       removeStake()
     }
@@ -156,9 +157,9 @@ export default function RemoveStakeButton({nominee, force = false, nodeStatus}: 
         <>
           <div>
             <LoadingButton className="btn btn-primary"
-                           isLoading={isLoading}
-                           disabled={!force && (nodeStatus === 'standby' || nodeStatus === 'syncing' || nodeStatus === 'active')}
-                           onClick={() => handleRemoveStake()}>
+              isLoading={isLoading}
+              disabled={!force && (nodeStatus === 'standby' || nodeStatus === 'syncing' || nodeStatus === 'active')}
+              onClick={() => handleRemoveStake()}>
               Remove Stake
               <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
             </LoadingButton>

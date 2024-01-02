@@ -21,12 +21,12 @@ interface StakeData {
 type StakeFormProps = { nominator: string, nominee: string, stakeAmount: string, onStake?: () => void };
 
 export default function StakeForm({
-                                    nominator,
-                                    nominee,
-                                    stakeAmount,
-                                    onStake
-                                  }: StakeFormProps) {
-  const {showTemporarySuccessMessage, showErrorMessage} = useContext(ToastContext);
+  nominator,
+  nominee,
+  stakeAmount,
+  onStake
+}: StakeFormProps) {
+  const {showTemporarySuccessMessage, showErrorDetails} = useContext(ToastContext);
   const requiredStake = ethers.utils.parseEther(stakeAmount).toString()
   const ethereum = window.ethereum;
   const {writeStakeLog} = useTXLogs()
@@ -92,25 +92,25 @@ export default function StakeForm({
 
       // 4001 is the error code for when a user rejects a transaction
       if ((isMetaMaskError(error) && error.code === 4001)
-        || (isEthersError(error) && error.code === 'ACTION_REJECTED')) {
+       || (isEthersError(error) && error.code === 'ACTION_REJECTED')) {
         errorMessage = 'Transaction rejected by user';
       }
-      showErrorMessage(errorMessage);
+      showErrorDetails(errorMessage);
     }
     setLoading(false);
     onStake?.();
   }
 
   useEffect(() => {
-      ethereum?.on?.("accountsChanged", (accounts: string[]) => {
-        setData(currentData => ({...currentData, nominator: accounts[0].toLowerCase()}));
-      });
-      setData(currentData => ({
-        ...currentData,
-        stake: requiredStake,
-      }));
-    },
-    [requiredStake, ethereum]
+    ethereum?.on?.("accountsChanged", (accounts: string[]) => {
+      setData(currentData => ({...currentData, nominator: accounts[0].toLowerCase()}));
+    });
+    setData(currentData => ({
+      ...currentData,
+      stake: requiredStake,
+    }));
+  }, 
+  [requiredStake, ethereum]
   )
 
   function handleStakeChange(e: ChangeEvent<HTMLInputElement>) {
@@ -137,11 +137,11 @@ export default function StakeForm({
     <div>
       <label htmlFor="rewardWallet" className="block">Stake Wallet Address</label>
       <input id="rewardWallet" value={data.nominator} type="text"
-             className="bg-white text-black p-3 mt-2 w-full block border border-black"
-             disabled/>
+        className="bg-white text-black p-3 mt-2 w-full block border border-black"
+        disabled/>
       <label className="block mt-4">
         Nominee Public Key
-      </label>
+        </label>
       <input
         required
         type="text"
@@ -153,7 +153,7 @@ export default function StakeForm({
       />
       <label className="block mt-4">
         Stake Amount (SHM)
-      </label>
+        </label>
       <input
         required
         type="text"
