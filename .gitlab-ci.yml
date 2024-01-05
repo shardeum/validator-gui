@@ -19,7 +19,7 @@ build-job:
   script:
     - echo "Compiling the code..."
     - npm install --silent
-    - npm run compile
+    - npm run build
     - echo "Compile complete."
 
 lint-job:
