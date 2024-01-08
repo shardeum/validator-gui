@@ -64,11 +64,12 @@ export default function StakeForm({
         signer.getAddress(),
         signer.getTransactionCount()
       ]);
-
       console.log("BLOB: ", blobData);
 
       const value = ethers.BigNumber.from(data.stake);
-
+      if(data.stake === '0'){
+        throw new Error("Stake Amount field required!");
+      }
       const params = {
         from,
         to: '0x0000000000000000000000000000000000010000',
@@ -107,7 +108,7 @@ export default function StakeForm({
     });
     setData(currentData => ({
       ...currentData,
-      stake: requiredStake,
+      stake: '0',
     }));
   }, 
   [requiredStake, ethereum]
