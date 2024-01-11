@@ -1,27 +1,28 @@
 import Router from 'next/router'
-import { useGlobals } from '../utils/globals'
-import { hashSha256 } from '../utils/sha256-hash';
+import {useGlobals} from '../utils/globals'
+import {hashSha256} from '../utils/sha256-hash';
+import {useCallback} from "react";
 
 const tokenKey = 'shmguitk'
 
-async function useLogin(password: string): Promise<void> {
-  const { apiBase } = useGlobals()
-  const sha256digest = await hashSha256(password)
-  return fetch(`${apiBase}/auth/login`, {
-    headers: { 'Content-Type': 'application/json' },
-    method: 'POST',
-    body: JSON.stringify({ password: sha256digest }),
-  }).then(async (res) => {
-    const data = await res.json()
+function useLogin() {
+  const { apiBase } = useGlobals();
+
+  return useCallback(async (password: string) => {
+    const sha256digest = await hashSha256(password);
+    const res = await fetch(`${apiBase}/auth/login`, {
+      headers: {'Content-Type': 'application/json'},
+      method: 'POST',
+      body: JSON.stringify({password: sha256digest}),
+    });
+    const data = await res.json();
     if (!res.ok) {
       if (res.status === 403) {
-        throw new Error('Invalid password!')
+        throw new Error('Invalid password!');
       }
-      throw new Error('Error executing login')
     }
-
-    localStorage.setItem(tokenKey, data.accessToken)
-  })
+    localStorage.setItem(tokenKey, data.accessToken);
+  }, [apiBase]);
 }
 
 function logout(): void {

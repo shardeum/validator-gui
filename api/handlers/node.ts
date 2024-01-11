@@ -202,9 +202,16 @@ export default function configureNodeHandlers(apiRouter: Router) {
       return;
     }
 
+    const autoRestart:string = req.body.autoRestart.toString().toLowerCase()
+
+    if (autoRestart != "true" && autoRestart != "false") {
+      badRequestResponse(res, 'Invalid body');
+      return;
+    }
+
     const currentSettings = getSettings()
-    if (req.body.autoRestart != null && req.body.autoRestart != currentSettings.autoRestart) {
-      execFileSync('operator-cli', ['set', 'auto_restart', req.body.autoRestart.toString()]);
+    if (autoRestart != currentSettings.autoRestart) {
+      execFileSync('operator-cli', ['set', 'auto_restart', autoRestart]);
     }
     res.json(getSettings());
   }));
