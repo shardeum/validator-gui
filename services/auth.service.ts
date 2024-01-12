@@ -24,7 +24,8 @@ function useLogin() {
     else if(res.ok && data?.block){
       throw new Error("IpAddress has been blocked for too many failed Attempts")
     }
-    else{      localStorage.setItem(tokenKey, data.accessToken);
+    else{
+      localStorage.setItem(isLoggedInKey, 'true');
     }
 
   }, [apiBase]);
