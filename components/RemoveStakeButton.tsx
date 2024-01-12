@@ -158,7 +158,7 @@ export default function RemoveStakeButton({nominee, force = false, nodeStatus}: 
           <div>
             <LoadingButton className="btn btn-primary"
               isLoading={isLoading}
-              disabled={!force && (nodeStatus === 'standby' || nodeStatus === 'syncing' || nodeStatus === 'active')}
+              disabled={!force && (nodeStatus === 'waiting-for-network' || nodeStatus === 'standby' || nodeStatus === 'syncing' || nodeStatus === 'active')}
               onClick={() => handleRemoveStake()}>
               Remove Stake
               <ArrowRightIcon className="h-5 w-5 inline ml-2"/>
