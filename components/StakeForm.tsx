@@ -97,6 +97,10 @@ export default function StakeForm({
         errorMessage = 'Transaction rejected by user';
       }
       showErrorDetails(errorMessage);
+      if(errorMessage === "Stake Amount field required!"){
+        setLoading(false);
+        return;
+      }
     }
     setLoading(false);
     onStake?.();
