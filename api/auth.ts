@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express'
+import express, { Request, Response, NextFunction, response } from 'express'
 import { execFile } from 'child_process'
 import { cliStderrResponse, unautorizedResponse } from './handlers/util'
 import * as crypto from '@shardus/crypto-utils';
@@ -19,11 +19,12 @@ const jwtSecret = (isValidSecret(process.env.JWT_SECRET))
   : generateRandomSecret();
 crypto.init('64f152869ca2d473e4ba64ab53f49ccdb2edae22da192c126850970e788af347');
 
-export const loginHandler = (req: Request, res: Response) => {
+export const loginHandler =async (req: Request, res: Response) => {
   const password = req.body && req.body.password
   const hashedPass = crypto.hash(password);
+  const ip = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress);
   // Exec the CLI validator login command
-  execFile('operator-cli', ['gui', 'login', hashedPass], (err, stdout, stderr) => {
+  execFile('operator-cli', ['gui', 'login', hashedPass,ip], (err, stdout, stderr) => {
     if (err) {
       cliStderrResponse(res, 'Unable to check login', err.message)
       return
@@ -34,7 +35,10 @@ export const loginHandler = (req: Request, res: Response) => {
     }
 
     const cliResponse = yaml.load(stdout)
-
+    if(cliResponse.login === 'blocked'){
+      res.send({block:true})
+      return;
+    }
     if (cliResponse.login !== 'authorized') {
       unautorizedResponse(req, res)
       return
