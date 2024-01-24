@@ -22,7 +22,8 @@ crypto.init('64f152869ca2d473e4ba64ab53f49ccdb2edae22da192c126850970e788af347');
 export const loginHandler =async (req: Request, res: Response) => {
   const password = req.body && req.body.password
   const hashedPass = crypto.hash(password);
-  const ip = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress);
+  const ip = String(req.socket.remoteAddress);
+  
   // Exec the CLI validator login command
   execFile('operator-cli', ['gui', 'login', hashedPass,ip], (err, stdout, stderr) => {
     if (err) {
