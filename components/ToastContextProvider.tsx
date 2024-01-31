@@ -121,7 +121,7 @@ export default function ToastContextProvider({children}: { children: ReactNode }
       {open && (
         <div className="toast toast-top toast-center">
           <div className={`alert ${severity} rounded-lg max-w-[45rem] flex`}>
-            <span className="flex-grow max-w-[80vw] w-max wrap-anywhere">{message}</span>
+            <span className="flex-grow max-w-[80vw] w-max wrap-anywhere" dangerouslySetInnerHTML={{__html: message}}/>
             {detailedMessage && message !== detailedMessage && (
               <button onClick={() => alert(detailedMessage)}>
                 <InformationCircleIcon className="h-5 w-5 inline ml-2" />
