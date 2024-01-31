@@ -2,6 +2,8 @@ import { useNodeStatus } from '../hooks/useNodeStatus';
 import { BarElement, CategoryScale, Chart as ChartJS, ChartOptions, LinearScale, Title, Tooltip } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { nullPlaceholder } from '../utils/null-placerholder';
+import { useNodeVersion } from '../hooks/useNodeVersion';
+
 import StatusBadge from '../components/StatusBadge';
 
 export const options = {
@@ -49,6 +51,7 @@ const data = {
 
 export default function Overview() {
   const {nodeStatus} = useNodeStatus()
+  const {version} = useNodeVersion()
 
   ChartJS.register(
     CategoryScale,
@@ -61,7 +64,7 @@ export default function Overview() {
 
   return <>
     {!!nodeStatus && <div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex flex-col items-stretch">
                 <h1 className="font-semibold mb-3">Node Status</h1>
                 <div
@@ -95,6 +98,19 @@ export default function Overview() {
                         earnings:</span> {nodeStatus.lifetimeEarnings ? nodeStatus.lifetimeEarnings + ' SHM' : '-'}</div>
                 </div>
             </div>
+            {version && 
+              <div className="flex flex-col items-stretch">
+                <h1 className="font-semibold mb-3">Version Info</h1>
+                <div
+                    className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                    <div><span className='font-semibold'>CLI/GUI Running Version:</span> {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}</div>
+                    <div><span className='font-semibold'>CLI/GUI Latest Version:</span> {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}</div>
+                    <div><span className='font-semibold'>Validator Running Version:</span> {nullPlaceholder(version.runnningValidatorVersion)}</div>
+                    <div><span className='font-semibold'>Active Network Version:</span> {nullPlaceholder(version.activeShardeumVersion)}</div>
+                    <div><span className='font-semibold'>Validator Minimum Version:</span> {nullPlaceholder(version.minShardeumVersion)}</div>
+                </div>
+              </div>
+            }
         </div>
 
         <h1 className="font-semibold mb-3 py-10">Node Status</h1>
