@@ -18,13 +18,14 @@ interface StakeData {
   stakeOk: boolean,
 }
 
-type StakeFormProps = { nominator: string, nominee: string, stakeAmount: string, onStake?: () => void };
+type StakeFormProps = { nominator: string, nominee: string, stakeAmount: string, onStake?: () => void,totalStaked:number };
 
 export default function StakeForm({
   nominator,
   nominee,
   stakeAmount,
-  onStake
+  onStake,
+  totalStaked
 }: StakeFormProps) {
   const {showTemporarySuccessMessage, showErrorDetails} = useContext(ToastContext);
   const requiredStake = ethers.utils.parseEther(stakeAmount).toString()
@@ -67,7 +68,8 @@ export default function StakeForm({
       console.log("BLOB: ", blobData);
 
       const value = ethers.BigNumber.from(data.stake);
-      if(data.stake === '0'){
+      console.log(Number(data.stake),totalStaked);
+      if(totalStaked < 10 && Number(data.stake) < 10000000000000000000){
         throw new Error("Stake Amount field required!");
       }
       const params = {
