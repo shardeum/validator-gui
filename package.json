@@ -13,6 +13,7 @@
     "@rainbow-me/rainbowkit": "1.0.7",
     "@shardus/crypto-utils": "4.1.1",
     "chart.js": "4.3.0",
+    "cookie-parser": "^1.4.6",
     "daisyui": "2.52.0",
     "dotenv": "16.3.1",
     "ethers": "5.7.2",

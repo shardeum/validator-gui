@@ -1,5 +1,5 @@
 import apiRouter from './api'
-import { apiLimiter, httpBodyLimiter, jwtMiddleware, loginHandler } from './auth'
+import { apiLimiter, httpBodyLimiter, jwtMiddleware, loginHandler, logoutHandler } from './auth'
 import * as https from 'https';
 import * as fs from 'fs';
 import path from 'path';
@@ -12,6 +12,7 @@ import { errorMiddleware } from './error-middleware';
 dotenv.config()
 const port = process.env.PORT ? +process.env.PORT : 8080
 const isDev = process.env.NODE_ENV === 'development'
+const cookieParser = require('cookie-parser')
 
 if (isDev) {
   const nextApp = next({dev: isDev, port})
@@ -20,7 +21,9 @@ if (isDev) {
     const app = express()
     app.use(httpBodyLimiter)
     app.use(apiLimiter)
+    app.use(cookieParser());
     app.post('/auth/login', loginHandler)
+    app.post('/auth/logout', logoutHandler)
     app.use('/api', jwtMiddleware, apiRouter)
     app.get('*', (req: any, res: any) => nextHandler(req, res))
     app.use(errorMiddleware(isDev))
@@ -34,8 +37,10 @@ if (isDev) {
   const app = express();
   app.use(httpBodyLimiter)
   app.use(apiLimiter)
+  app.use(cookieParser());
   setSecurityHeaders(app);
   app.post('/auth/login', loginHandler)
+  app.post('/auth/logout', logoutHandler)
   app.use('/api', jwtMiddleware, apiRouter)
   app.use(errorMiddleware(isDev))
   app.use(cacheStaticFiles);

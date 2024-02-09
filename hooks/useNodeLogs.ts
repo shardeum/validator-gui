@@ -25,7 +25,7 @@ export const useNodeLogs = (): NodeLogsResponse => {
   const downloadLog = (logName: string): void => {
     fetch(`${apiBase}/api/node/logs/${logName}`, {
       method: "GET",
-      headers: { "X-Api-Token": authService.authToken! },
+      credentials: 'include'
     })
       .then((response) => response.blob())
       .then((blob) => {
@@ -48,7 +48,7 @@ export const useNodeLogs = (): NodeLogsResponse => {
         try {
           const response = await fetch(`${apiBase}/api/node/logs/${logName}`, {
             method: "GET",
-            headers: { "X-Api-Token": authService.authToken! },
+            credentials: 'include'
           });
 
           if (!response.ok) {

@@ -3,7 +3,7 @@ import {useGlobals} from '../utils/globals'
 import {hashSha256} from '../utils/sha256-hash';
 import {useCallback} from "react";
 
-const tokenKey = 'shmguitk'
+const isLoggedInKey = 'isLoggedIn'
 
 function useLogin() {
   const { apiBase } = useGlobals();
@@ -15,27 +15,31 @@ function useLogin() {
       method: 'POST',
       body: JSON.stringify({password: sha256digest}),
     });
-    const data = await res.json();
+    await res.json();
     if (!res.ok) {
       if (res.status === 403) {
         throw new Error('Invalid password!');
       }
     }
-    localStorage.setItem(tokenKey, data.accessToken);
+    localStorage.setItem(isLoggedInKey, 'true');
   }, [apiBase]);
 }
 
-function logout(): void {
-  localStorage.removeItem(tokenKey)
+async function logout(apiBase : string) {
+  const res = await fetch(`${apiBase}/auth/logout`, {
+    headers: {'Content-Type': 'application/json'},
+    method: 'POST',
+  })
+  if (res.status != 200) {
+    throw new Error('Error logging out!');
+  }
+  localStorage.removeItem(isLoggedInKey)
   Router.push('/login')
 }
 
 export const authService = {
   get isLogged(): boolean {
-    return !!localStorage.getItem(tokenKey)
-  },
-  get authToken(): string | null {
-    return localStorage.getItem(tokenKey)
+    return !!localStorage.getItem(isLoggedInKey)
   },
   useLogin,
   logout,

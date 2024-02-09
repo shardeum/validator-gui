@@ -4,9 +4,12 @@ import { PropsWithChildren } from 'react';
 import { useRouter } from 'next/router';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/20/solid';
 import { authService } from '../services/auth.service';
+import { useGlobals } from '../utils/globals';
 
 export default function Layout({children}: PropsWithChildren) {
   const router = useRouter();
+  const { apiBase } = useGlobals();
+  
   return (
     <>
       <Head>
@@ -50,8 +53,8 @@ export default function Layout({children}: PropsWithChildren) {
                 className={router.pathname == "/settings" ? "border-b-2 border-b-white px-5 -mb-0.5 text-white" : "px-5"}>
                 <Link href='/settings'>Settings</Link></li>
             </ul>
-            <button title='Logout' className="hover:text-stone-200" onClick={() => authService.logout()}>
-                 <ArrowRightOnRectangleIcon className='h-5 w-5 inline ml-2' onClick={()=>authService.logout()}/></button>
+            <button title='Logout' className="hover:text-stone-200" onClick={async () => await authService.logout(apiBase)}>
+                 <ArrowRightOnRectangleIcon className='h-5 w-5 inline ml-2' onClick={async () => await authService.logout(apiBase)}/></button>
           </div>
 
         </nav>
