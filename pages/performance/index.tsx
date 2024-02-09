@@ -55,9 +55,9 @@ export default function Performance() {
               <div
                   className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div><span className='font-semibold'>Node
-                      throughput:</span> {network?.txApplied ? network?.txApplied + ' TPS' : '-'}</div>
-                  <div><span className='font-semibold'>Transaction processed:</span> {nullPlaceholder(nodeStatus.performance?.transactionsCount)}</div>
-                  <div><span className='font-semibold'>State storage usage:</span> {nullPlaceholder(nodeStatus.performance?.stateStorage)}</div>
+                      throughput:</span> {Number.isFinite(network?.txApplied) ? network?.txApplied + ' TPS' : '-'}</div>
+                  <div><span className='font-semibold'>Transaction processed:</span> {Number.isFinite(network?.txProcessed) ? network?.txProcessed : '-'}</div>
+                  {/* <div><span className='font-semibold'>State storage usage:</span> {nullPlaceholder(nodeStatus.performance?.stateStorage)}</div> */}
               </div>
           </div>
       </div>
