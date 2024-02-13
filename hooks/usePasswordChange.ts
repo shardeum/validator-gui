@@ -17,6 +17,11 @@ export const usePassword = (): ChangePasswordResult => {
 
   async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
     setIsLoading(true)
+    if(currentPassword === newPassword){
+      showTemporaryErrorMessage("The new password must differ from the existing password.")
+      setIsLoading(false)
+      return;
+    }
     try {
       const currentPwSha256digest = await hashSha256(currentPassword)
       const newPwSha256digest = await hashSha256(newPassword)
