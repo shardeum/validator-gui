@@ -56,6 +56,7 @@ export default function StakeForm({
 
   async function sendTransaction() {
     setLoading(true);
+    let errorFlag = false;
     try {
       const blobData: string = JSON.stringify(data);
       const provider = new ethers.providers.Web3Provider(ethereum as ExternalProvider);
@@ -66,11 +67,12 @@ export default function StakeForm({
         signer.getTransactionCount()
       ]);
       console.log("BLOB: ", blobData);
-
       const value = ethers.BigNumber.from(data.stake);
-      console.log(Number(data.stake),totalStaked);
-      if(totalStaked < 10 && Number(data.stake) < 10000000000000000000){
-        throw new Error("Stake Amount field required!");
+      const bigIntStakeAmount = String(Number(stakeAmount)) + '000000000000000000'
+      console.log(Number(data.stake),bigIntStakeAmount);
+      if(totalStaked < Number(stakeAmount) && Number(data.stake) < Number(bigIntStakeAmount)){
+        errorFlag = true;
+        throw new Error("Stake Amount should be greater than the required stake");
       }
       const params = {
         from,
@@ -99,7 +101,7 @@ export default function StakeForm({
         errorMessage = 'Transaction rejected by user';
       }
       showErrorDetails(errorMessage);
-      if(errorMessage === "Stake Amount field required!"){
+      if(errorFlag){
         setLoading(false);
         return;
       }
