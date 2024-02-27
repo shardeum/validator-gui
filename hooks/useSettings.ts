@@ -23,7 +23,7 @@ export const useSettings = (): SettingsResult => {
   async function updateSettings(settings: NodeSettings): Promise<void> {
     setIsLoading(true)
     try {
-      const newSettings = await fetcher<NodeSettings>(`${apiBase}/api/settings`, {method: 'POST', body: JSON.stringify(settings)}, showErrorMessage)
+      const newSettings = await fetcher<NodeSettings>(`${apiBase}/api/settings`, {method: 'POST', body: JSON.stringify(settings)}, showErrorMessage, 'updating your settings')
       await mutate(newSettings)
     } catch (e) {
       console.error(e)

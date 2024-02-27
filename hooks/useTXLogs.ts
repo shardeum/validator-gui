@@ -16,7 +16,8 @@ export const useTXLogs = (): TXLogsResponse => {
       await fetcher(`${apiBase}/api/log/stake`, {
         method: 'POST',
         body: data,
-      }, showErrorMessage)
+      }, showErrorMessage, 
+      'processing your stake request')
     } catch (e) {
       console.error(e)
     }
@@ -24,10 +25,15 @@ export const useTXLogs = (): TXLogsResponse => {
 
   const writeUnstakeLog = async (data: string): Promise<void> => {
     try {
-      await fetcher(`${apiBase}/api/log/unstake`, {
-        method: 'POST',
-        body: data,
-      }, showErrorMessage)
+      await fetcher(
+        `${apiBase}/api/log/unstake`, 
+        {
+          method: 'POST',
+          body: data,
+        }, 
+        showErrorMessage,
+        'processing your unstake request'
+      )
     } catch (e) {
       console.error(e)
     }

@@ -25,10 +25,15 @@ export const usePassword = (): ChangePasswordResult => {
     try {
       const currentPwSha256digest = await hashSha256(currentPassword)
       const newPwSha256digest = await hashSha256(newPassword)
-      await fetcher(`${apiBase}/api/password`, {
-        method: 'POST',
-        body: JSON.stringify({currentPassword: currentPwSha256digest, newPassword: newPwSha256digest})
-      }, showErrorMessage)
+      await fetcher(
+        `${apiBase}/api/password`, 
+        {
+          method: 'POST',
+          body: JSON.stringify({currentPassword: currentPwSha256digest, newPassword: newPwSha256digest}),
+        }, 
+        showErrorMessage, 
+        'changing your password'
+      )
       showTemporarySuccessMessage('Password changed successfully!')
     } catch (e) {
       console.error(e)

@@ -1,11 +1,14 @@
 import { authService } from '../services/auth.service'
 import { useGlobals } from '../utils/globals'
+import { isDev } from '../utils/is-dev'
 
 const { apiBase } = useGlobals()
 
 export const fetcher = <T>(input: RequestInfo | URL,
                            init: RequestInit,
-                           showToast: (msg: string) => void): Promise<T> => {
+                           showToast: (msg: string) => void,
+                           contextDescription: string = 'fetching data'
+): Promise<T> => {
   return fetch(input, {
     headers: {
       'Content-Type': 'application/json',
@@ -17,7 +20,14 @@ export const fetcher = <T>(input: RequestInfo | URL,
     if (res.status === 403) {
       authService.logout(apiBase);
     } else if (res.status === 500) {
-      showToast('<span>Sorry, something went wrong. Please report this issue to our support team so we can investigate and resolve the problem. [<a href="https://github.com/Shardeum/shardeum-bug-reporting/issues" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">Report Issue</a>]</span>');
+      // Environment check to ensure detailed logging is done only in development
+      if (isDev()) {
+        console.error('Server Error (500) encountered for request:', input, 'with init:', init);
+      }
+      // Generate a simple timestamp as an error identifier.
+      const errorId = new Date().toISOString();
+
+      showToast(`<span>Error ${res.status}: An unexpected error occurred while ${contextDescription}. Please report this issue to our support team and include this error code: ${errorId}. [<a href="https://github.com/Shardeum/shardeum-bug-reporting/issues" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">Report Issue</a>]<span>`);
       return;
     } else if (!res.ok) {
       console.log(data.errorDetails);

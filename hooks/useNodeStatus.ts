@@ -24,8 +24,8 @@ export const useNodeStatus = (): NodeStatusResponse => {
   const startNode = async (): Promise<void> => {
     setIsLoading(true)
     try {
-      await fetcher(`${apiBase}/api/node/start`, { method: 'POST' }, showErrorMessage)
-      await mutate(await fetcher(nodeStatusApi, {}, showErrorMessage))
+      await fetcher(`${apiBase}/api/node/start`, { method: 'POST' }, showErrorMessage, 'starting node')
+      await mutate(await fetcher(nodeStatusApi, {}, showErrorMessage, 'starting node'))
     } catch (e) {
       console.error(e)
     }
@@ -35,8 +35,8 @@ export const useNodeStatus = (): NodeStatusResponse => {
   const stopNode = async (): Promise<void> => {
     setIsLoading(true)
     try {
-      await fetcher(`${apiBase}/api/node/stop`, { method: 'POST' }, showErrorMessage)
-      await mutate(await fetcher(nodeStatusApi, {}, showErrorMessage))
+      await fetcher(`${apiBase}/api/node/stop`, { method: 'POST' }, showErrorMessage, 'stopping node')
+      await mutate(await fetcher(nodeStatusApi, {}, showErrorMessage, 'stopping node'))
     } catch (e) {
       console.error(e)
     }

@@ -20,7 +20,7 @@ export const useNodeVersion = (): NodeVersionResult => {
   const { data, error } = useSWR<NodeVersion, Error>(`${apiBase}/api/node/version`, fetcherWithContext)
 
   const update = (): Promise<Response> => {
-    return fetcher<Response>(`${apiBase}/api/node/update`, { method: 'POST' }, showErrorMessage)
+    return fetcher<Response>(`${apiBase}/api/node/update`, { method: 'POST' }, showErrorMessage, 'updating node')
   }
 
   return {
