@@ -46,6 +46,6 @@ export const fetcher = <T>(input: RequestInfo | URL,
   }).catch((error) => {
     // Handle network errors or other errors that prevented the request from completing
     console.error('Fetch error:', error)
-    showErrorToast(showToast, 0, input) // You might want to customize the status code or message for network errors
+    showErrorToast(showToast, 0, input) 
   })
 };
