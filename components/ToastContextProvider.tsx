@@ -1,19 +1,23 @@
-import { createContext, ReactNode, useState } from 'react';
-import { XMarkIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
+import { createContext, ReactNode, useState } from "react";
+import {
+  XMarkIcon,
+  InformationCircleIcon,
+  BugAntIcon,
+} from "@heroicons/react/24/outline";
+import { useNodeLogs } from "../hooks/useNodeLogs";
 
 export const ToastContext = createContext<{
-  open: boolean,
-  setOpen: (open: boolean) => void,
-  message: string,
-  setMessage: (message: string) => void,
-  severity: ToastSeverity,
-  setSeverity: (severity: ToastSeverity) => void,
-  showTemporarySuccessMessage: (message: string) => void,
-  showTemporaryErrorMessage: (message: string) => void,
-  showErrorMessage: (message: string) => void,
-  showErrorDetails: (errorDetails: string) => void,
-}>
-({
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  message: string;
+  setMessage: (message: string) => void;
+  severity: ToastSeverity;
+  setSeverity: (severity: ToastSeverity) => void;
+  showTemporarySuccessMessage: (message: string) => void;
+  showTemporaryErrorMessage: (message: string) => void;
+  showErrorMessage: (message: string) => void;
+  showErrorDetails: (errorDetails: string) => void;
+}>({
   open: false,
   setOpen: () => false,
   message: "",
@@ -34,14 +38,23 @@ export const ToastContext = createContext<{
   },
 });
 
-type ToastSeverity = "alert-success" | "alert-error" | "alert-warning" | "alert-info";
+type ToastSeverity =
+  | "alert-success"
+  | "alert-error"
+  | "alert-warning"
+  | "alert-info";
 
-
-export default function ToastContextProvider({children}: { children: ReactNode }) {
+export default function ToastContextProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<ToastSeverity>("alert-success");
   const [detailedMessage, setDetailMessage] = useState<string | null>(null);
+  const [isButtonPressed, setIsButtonPressed] = useState<boolean>(false);
+  const { downloadAllLogs } = useNodeLogs();
 
   function handleClose() {
     setOpen(false);
@@ -49,7 +62,7 @@ export default function ToastContextProvider({children}: { children: ReactNode }
   }
 
   function showTemporarySuccessMessage(message: string) {
-    setSeverity('alert-success');
+    setSeverity("alert-success");
     setMessage(message);
     setOpen(true);
     setTimeout(() => setOpen(false), 6000);
@@ -57,7 +70,7 @@ export default function ToastContextProvider({children}: { children: ReactNode }
 
   // todo: right now we can only display one message at a time. if need arises to queue multiple messages, we can do that
   function showErrorMessage(message: string) {
-    setSeverity('alert-error');
+    setSeverity("alert-error");
     setMessage(message);
     setOpen(true);
   }
@@ -119,14 +132,43 @@ export default function ToastContextProvider({children}: { children: ReactNode }
   return (
     <>
       {open && (
-        <div className="toast toast-top toast-center">
-          <div className={`alert ${severity} rounded-lg max-w-[45rem] flex`}>
-            <span className="flex-grow max-w-[80vw] w-max wrap-anywhere" dangerouslySetInnerHTML={{__html: message}}/>
-            {detailedMessage && message !== detailedMessage && (
-              <button onClick={() => alert(detailedMessage)}>
-                <InformationCircleIcon className="h-5 w-5 inline ml-2" />
-              </button>
-            )}
+        <div className="alert toast toast-top toast-center mt-2 bg-transparent">
+          <div className={`${severity} rounded-lg max-w-[45rem] flex p-4`}>
+            <div>
+              <span
+                className="flex-grow max-w-[80vw] w-max wrap-anywhere"
+                dangerouslySetInnerHTML={{ __html: message }}
+              />
+              {detailedMessage && message !== detailedMessage && (
+                <button onClick={() => alert(detailedMessage)}>
+                  <InformationCircleIcon className="h-5 w-5 inline ml-2" />
+                </button>
+              )}
+              {severity === "alert-error" && (
+                <div>
+                  <button
+                    className="btn-link text-white hover:text-slate-400"
+                    disabled={isButtonPressed}
+                    onClick={() => {
+                      setIsButtonPressed(true);
+                      downloadAllLogs()
+                        .then(() => {
+                          setIsButtonPressed(false);
+                          window.open(
+                            "https://github.com/Shardeum/shardeum-bug-reporting/issues"
+                          );
+                        })
+                        .catch(() => {
+                          setIsButtonPressed(false);
+                        });
+                    }}
+                  >
+                    <BugAntIcon className="text-sm h-5 inline mr-2" />
+                    Report Bug
+                  </button>
+                </div>
+              )}
+            </div>
             <button onClick={handleClose}>
               <XMarkIcon className="h-5 w-5 inline ml-2" />
             </button>

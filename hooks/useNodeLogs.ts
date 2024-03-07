@@ -25,7 +25,7 @@ export const useNodeLogs = (): NodeLogsResponse => {
   const downloadLog = (logName: string): void => {
     fetch(`${apiBase}/api/node/logs/${logName}`, {
       method: "GET",
-      credentials: 'include'
+      credentials: 'include',
     })
       .then((response) => response.blob())
       .then((blob) => {
@@ -40,42 +40,60 @@ export const useNodeLogs = (): NodeLogsResponse => {
   };
 
   const downloadAllLogs = async (): Promise<void> => {
-    const zip = new JSZip();
-    let fileName = "allLogs.zip";
-
-    if (data && data.length > 0) {
-      for (const logName of data) {
-        try {
-          const response = await fetch(`${apiBase}/api/node/logs/${logName}`, {
-            method: "GET",
-            credentials: 'include'
-          });
-
-          if (!response.ok) {
-            // Handle unsuccessful fetch by adding a log with the "downloaderror" prefix
-            const errorLogName = `downloaderror_${logName}`;
-            const errorText = `Failed to download ${logName}: ${response.statusText}`;
-            zip.file(errorLogName, errorText);
-          } else {
-            const blob = await response.blob();
-            zip.file(logName, blob, { binary: true });
-          }
-        } catch (error) {
-          console.error(`Error while fetching ${logName}:`, error);
+    try {
+      let logsData = data;
+      if (!logsData || logsData.length == 0 || error) {
+        const response = await fetch(`${apiBase}/api/node/logs`, {
+          method: "GET",
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          throw new Error(response.statusText);
         }
+        logsData = await response.json();
       }
+      const zip = new JSZip();
+      let fileName = "allLogs.zip";
 
-      // Generate the zip file
-      const zipBlob = await zip.generateAsync({ type: "blob" });
+      if (logsData && logsData.length > 0) {
+        for (const logName of logsData) {
+          try {
+            const response = await fetch(
+              `${apiBase}/api/node/logs/${logName}`,
+              {
+                method: "GET",
+                credentials: 'include',
+              }
+            );
 
-      // Trigger the download of the zip file
-      const zipUrl = window.URL.createObjectURL(zipBlob);
-      const zipLink = document.createElement("a");
-      zipLink.href = zipUrl;
-      zipLink.setAttribute("download", fileName);
-      document.body.appendChild(zipLink);
-      zipLink.click();
-      zipLink.parentNode?.removeChild(zipLink);
+            if (!response.ok) {
+              // Handle unsuccessful fetch by adding a log with the "downloaderror" prefix
+              const errorLogName = `downloaderror_${logName}`;
+              const errorText = `Failed to download ${logName}: ${response.statusText}`;
+              zip.file(errorLogName, errorText);
+            } else {
+              const blob = await response.blob();
+              zip.file(logName, blob, { binary: true });
+            }
+          } catch (error) {
+            console.error(`Error while fetching ${logName}:`, error);
+          }
+        }
+
+        // Generate the zip file
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+
+        // Trigger the download of the zip file
+        const zipUrl = window.URL.createObjectURL(zipBlob);
+        const zipLink = document.createElement("a");
+        zipLink.href = zipUrl;
+        zipLink.setAttribute("download", fileName);
+        document.body.appendChild(zipLink);
+        zipLink.click();
+        zipLink.parentNode?.removeChild(zipLink);
+      }
+    } catch (error) {
+      console.error("Error while downloading all logs:", error);
     }
   };
 
