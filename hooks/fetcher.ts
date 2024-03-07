@@ -82,6 +82,7 @@ export const fetcher = async <T>(
           `Error encountered for request:`, input, "with init:", init, "Error:", error
         )
       }
+      // handle 403 errors without retries
       if (
         error instanceof FetchError &&
         error.status === 403
