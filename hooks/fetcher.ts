@@ -2,17 +2,17 @@ import { authService } from "../services/auth.service"
 import { useGlobals } from "../utils/globals"
 import { isDev } from "../utils/is-dev"
 
-const { apiBase } = useGlobals();
+const { apiBase } = useGlobals()
 
 function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 class FetchError extends Error {
-  status: number;
+  status: number
   constructor(message: string, status: number) {
-    super(message);
-    this.status = status;
+    super(message)
+    this.status = status
   }
 }
 
@@ -31,15 +31,15 @@ function showErrorToast(
       : input.href;
   const url = new URL(urlString);
   const lastSegment =
-    url.pathname.split("/").filter(Boolean).pop() || "resource";
+    url.pathname.split("/").filter(Boolean).pop() || "resource"
 
   // Construct the base message, including the status if it is not undefined or null
   const baseMessage = `Error${
     status !== undefined && status !== null ? ` (${status})` : ""
-  }: An error occurred while retrieving ${lastSegment}.`;
-  const reportLink = `Please report this issue to our support team if the problem persists. [<a href="https://github.com/Shardeum/shardeum-bug-reporting/issues" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">Report Issue</a>]`;
+  }: An error occurred while retrieving ${lastSegment}.`
+  const reportLink = `Please report this issue to our support team if the problem persists. [<a href="https://github.com/Shardeum/shardeum-bug-reporting/issues" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">Report Issue</a>]`
 
-  showToast(`<span>${baseMessage} ${reportLink}</span>`);
+  showToast(`<span>${baseMessage} ${reportLink}</span>`)
 }
 
 export const fetcher = async <T>(
@@ -70,7 +70,7 @@ export const fetcher = async <T>(
 
       if (!res.ok) {
         if (data.errorDetails) {
-          console.log(data.errorDetails);
+          console.log(data.errorDetails)
         }
         throw new FetchError("Server Error", res.status)
       }
@@ -82,7 +82,7 @@ export const fetcher = async <T>(
           `Error encountered for request:`, input, "with init:", init, "Error:", error
         )
       }
-      // handle 403 errors without retries
+      // handle 403 errors without retries and show error toast
       if (
         error instanceof FetchError &&
         error.status === 403
@@ -91,14 +91,17 @@ export const fetcher = async <T>(
         throw error
       }
 
+      // Check if this is the final attempt
       const isFinalAttempt = attempt === retries - 1
       const statusCode = error instanceof FetchError ? error.status : 0
 
+      // Show error toast on final attempt
       if (isFinalAttempt) {
         showErrorToast(showToast, statusCode, input)
         throw error
       }
-
+      
+      // Retry the fetch
       await delay(retryDelay)
       attempt++
     }
