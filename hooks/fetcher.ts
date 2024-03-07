@@ -28,8 +28,8 @@ function showErrorToast(
       ? input.url
       : typeof input === "string"
       ? input
-      : input.href;
-  const url = new URL(urlString);
+      : input.href
+  const url = new URL(urlString)
   const lastSegment =
     url.pathname.split("/").filter(Boolean).pop() || "resource"
 
@@ -37,9 +37,9 @@ function showErrorToast(
   const baseMessage = `Error${
     status !== undefined && status !== null ? ` (${status})` : ""
   }: An error occurred while retrieving ${lastSegment}.`
-  const reportLink = `Please report this issue to our support team if the problem persists. [<a href="https://github.com/Shardeum/shardeum-bug-reporting/issues" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">Report Issue</a>]`
+  const reportMessage = `Please report this issue to our support team if the problem persists.`
 
-  showToast(`<span>${baseMessage} ${reportLink}</span>`)
+  showToast(`<span>${baseMessage} ${reportMessage}</span>`)
 }
 
 export const fetcher = async <T>(
@@ -75,7 +75,7 @@ export const fetcher = async <T>(
         throw new FetchError("Server Error", res.status)
       }
 
-      return data; // Successful fetch
+      return data // Successful fetch
     } catch (error) {
       if (isDev()) {
         console.error(
