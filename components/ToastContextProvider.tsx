@@ -132,7 +132,7 @@ export default function ToastContextProvider({
   return (
     <>
       {open && (
-        <div className="alert toast toast-top toast-center mt-2 bg-transparent">
+        <div className="alert toast toast-top toast-center mt-2 bg-transparent z-50">
           <div className={`${severity} rounded-lg max-w-[45rem] flex p-4`}>
             <div>
               <span
