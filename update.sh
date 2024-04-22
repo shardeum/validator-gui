@@ -26,7 +26,7 @@ dry_run() {
   rm -rf tmp
   mkdir tmp
   cd tmp || exit
-  git clone https://gitlab.com/shardeum/validator/gui.git
+  git clone https://github.com/shardeum/validator-gui.git
   cd gui || exit
   if npm install && npm run build; then
     echo 'Dry run update successful'
