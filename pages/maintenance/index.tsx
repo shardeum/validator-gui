@@ -239,6 +239,7 @@ export default function Maintenance() {
                     nominee={nodeStatus?.nomineeAddress}
                     stakeAmount={nodeStatus.stakeRequirement}
                     onStake={() => setShowStakeForm(false)}
+                    totalStaked = {stakeInfo?.stake? Number(stakeInfo.stake): 0}
                   />
                   <button
                     className="btn btn-primary btn-outline mr-2 absolute bottom-8"
