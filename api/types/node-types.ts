@@ -59,7 +59,6 @@ type NodeNetwork = {
     active: number
     standBy: number
     desired: number
-    joining: number
     syncing: number
   }
   load: {

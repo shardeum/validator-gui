@@ -13,7 +13,7 @@ export default function Network() {
                   <div>Active validators: {nullPlaceholder(network.active)}</div>
                   <div>Standby validators: {nullPlaceholder(network.standby)}</div>
                   <div>Desired network size: {nullPlaceholder(network.desired)}</div>
-                  <div>Joining / Syncing: {nullPlaceholder(network.joining)} / {nullPlaceholder(network.syncing)}</div>
+                  <div>Syncing: {nullPlaceholder(network.syncing)}</div>
               </div>
           </div>
           <div className="flex flex-col items-stretch">
