@@ -1,6 +1,6 @@
-import { authService } from "../services/auth.service"
-import { useGlobals } from "../utils/globals"
-import { isDev } from "../utils/is-dev"
+import { authService } from '../services/auth.service'
+import { useGlobals } from '../utils/globals'
+import { isDev } from '../utils/is-dev'
 
 const { apiBase } = useGlobals()
 

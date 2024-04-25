@@ -2,9 +2,9 @@ import useSWR from 'swr'
 import { fetcher } from './fetcher'
 import { NodeVersion } from '../model/node-version'
 import { useGlobals } from '../utils/globals'
-import { useContext } from 'react'
-import { FetcherContext } from '../components/FetcherContextProvider'
-import { ToastContext } from '../components/ToastContextProvider'
+import { useContext } from 'react';
+import { FetcherContext } from '../components/FetcherContextProvider';
+import { ToastContext } from '../components/ToastContextProvider';
 
 type NodeVersionResult = {
   isLoading: boolean
