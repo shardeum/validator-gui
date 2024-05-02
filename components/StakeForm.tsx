@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useContext, useEffect, useState } from "react";
+import React, {ChangeEvent, useContext, useEffect, useState} from "react";
 import { ethers } from "ethers";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { ToastContext } from "./ToastContextProvider";
@@ -6,7 +6,8 @@ import { useTXLogs } from "../hooks/useTXLogs";
 import LoadingButton from "./LoadingButton";
 import { isMetaMaskError } from "../utils/isMetaMaskError";
 import { isEthersError } from "../utils/isEthersError";
-import { ExternalProvider } from "@ethersproject/providers";
+import { useAccount } from "wagmi";
+import {replacer} from "../utils/bigIntReplacer";
 
 interface StakeData {
   isInternalTx: boolean;
@@ -18,7 +19,6 @@ interface StakeData {
 }
 
 type StakeFormProps = {
-  nominator: string;
   nominee: string;
   stakeAmount: string;
   onStake?: () => void;
@@ -26,7 +26,6 @@ type StakeFormProps = {
 };
 
 export default function StakeForm({
-  nominator,
   nominee,
   stakeAmount,
   onStake,
@@ -34,15 +33,16 @@ export default function StakeForm({
 }: StakeFormProps) {
   const { showTemporarySuccessMessage, showErrorDetails } =
     useContext(ToastContext);
-  const requiredStake = ethers.utils.parseEther(stakeAmount).toString();
+  const requiredStake = ethers.parseEther(stakeAmount).toString() ?? '0';
   const ethereum = window.ethereum;
   const { writeStakeLog } = useTXLogs();
   const [isLoading, setLoading] = useState(false);
   const [isStakeOk, setStakeOk] = useState(true);
+  const { address } = useAccount();
   const [data, setData] = useState<StakeData>({
     isInternalTx: true,
     internalTXType: 6,
-    nominator: nominator.toLowerCase(),
+    nominator: address?.toLowerCase() ?? '',
     nominee,
     stake: requiredStake,
     timestamp: Date.now(),
@@ -61,32 +61,35 @@ export default function StakeForm({
       txHash: hash,
     };
 
-    return JSON.stringify(logData);
+    return JSON.stringify(logData, replacer);
   };
+
+  function setDataWithNominator(data: StakeData): void {
+    return setData({
+      ...data,
+      nominator: address?.toLowerCase() ?? '',
+    });
+  }
 
   async function sendTransaction() {
     setLoading(true);
     let errorFlag = false;
     try {
-      const blobData: string = JSON.stringify(data);
-      const provider = new ethers.providers.Web3Provider(
-        ethereum as ExternalProvider
-      );
-      const signer = provider.getSigner();
-      const [gasPrice, from, nonce] = await Promise.all([
-        signer.getGasPrice(),
-        signer.getAddress(),
-        signer.getTransactionCount(),
-      ]);
+      const dataWithNominator = {...data, nominator: address}
+      const blobData: string = JSON.stringify(dataWithNominator);
+      const provider = new ethers.BrowserProvider(ethereum!);
+      const signer = await provider.getSigner();
+      const from = await signer.getAddress()
+      const nonce = await provider.getTransactionCount(from, 'latest');
       console.log("BLOB: ", blobData);
       console.log(stakeAmount,totalStaked);
-      const value = ethers.BigNumber.from(data.stake);
+      const value = BigInt(data.stake);
 
-      const totalStakeBigNumber = ethers.BigNumber.from(totalStaked);
-      const stakeAmountBigNumber = ethers.utils.parseUnits(stakeAmount, "ether")
+      const totalStakeBigNumber = BigInt(totalStaked);
+      const stakeAmountBigNumber = ethers.parseUnits(stakeAmount, "ether")
 
       console.log(totalStakeBigNumber, stakeAmountBigNumber)
-      if (totalStakeBigNumber.lt(stakeAmountBigNumber) && value.lt(stakeAmountBigNumber)) {
+      if (totalStakeBigNumber < stakeAmountBigNumber && value < stakeAmountBigNumber) {
         errorFlag = true;
         throw new Error(
           "Stake Amount should be greater than the required stake"
@@ -95,22 +98,17 @@ export default function StakeForm({
       const params = {
         from,
         to: "0x0000000000000000000000000000000000010000",
-        gasPrice,
         value,
-        data: ethers.utils.hexlify(ethers.utils.toUtf8Bytes(blobData)),
+        data: ethers.hexlify(ethers.toUtf8Bytes(blobData)),
         nonce,
       };
       console.log("Params: ", params);
 
-      const {
-        hash,
-        data: resultData,
-        wait,
-      } = await signer.sendTransaction(params);
-      console.log("TX RECEIPT: ", { hash, resultData });
-      await writeStakeLog(createStakeLog(blobData, params, hash, from));
+      const txResponse = await signer.sendTransaction(params);
+      console.log("TX RECEIPT: ", { hash: txResponse.hash, resultData: txResponse.data });
+      await writeStakeLog(createStakeLog(blobData, params, txResponse.hash, from));
 
-      const txConfirmation = await wait();
+      const txConfirmation = await txResponse.wait();
       console.log("TX CONFRIMED: ", txConfirmation);
       showTemporarySuccessMessage("Stake successful!");
     } catch (error: unknown) {
@@ -134,31 +132,18 @@ export default function StakeForm({
     onStake?.();
   }
 
-  useEffect(() => {
-    ethereum?.on?.("accountsChanged", (accounts: string[]) => {
-      setData((currentData) => ({
-        ...currentData,
-        nominator: accounts[0].toLowerCase(),
-      }));
-    });
-    setData((currentData) => ({
-      ...currentData,
-      stake: "0",
-    }));
-  }, [requiredStake, ethereum]);
-
   function handleStakeChange(e: ChangeEvent<HTMLInputElement>) {
     try {
       const newValue = e.target.value.toString();
-      const stake = ethers.utils.parseEther(newValue).toString();
-      setData({
+      const stake = ethers.parseEther(newValue).toString();
+      setDataWithNominator({
         ...data,
         stake,
       });
       setStakeOk(true)
     } catch (e) {
       console.error(e);
-      setData({
+      setDataWithNominator({
         ...data,
       });
       setStakeOk(false)
@@ -172,7 +157,7 @@ export default function StakeForm({
       </label>
       <input
         id="rewardWallet"
-        value={data.nominator}
+        value={address}
         type="text"
         className="bg-white text-black p-3 mt-2 w-full block border border-black"
         disabled
@@ -186,7 +171,7 @@ export default function StakeForm({
         placeholder="Nominee Public Key"
         value={data.nominee}
         onChange={(e) =>
-          setData({ ...data, nominee: e.target.value.toLowerCase() })
+          setDataWithNominator({ ...data, nominee: e.target.value.toLowerCase() })
         }
       />
       <label className="block mt-4">Stake Amount (SHM)</label>
