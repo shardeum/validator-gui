@@ -5,13 +5,13 @@ import Layout from '../components/Layout';
 import React, { ReactElement } from 'react';
 import { NextPage } from 'next';
 import ToastContextProvider from '../components/ToastContextProvider';
-import { Chain, configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { publicProvider } from 'wagmi/providers/public'
-import { connectorsForWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import {createConfig, http, WagmiProvider} from 'wagmi';
+import {Chain, connectorsForWallets, RainbowKitProvider} from '@rainbow-me/rainbowkit';
 import { injectedWallet, metaMaskWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
 import ConfirmModalContextProvider from '../components/ConfirmModalContextProvider';
 import RouteGuard from '../components/RouteGuard';
 import FetcherContextProvider from '../components/FetcherContextProvider';
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
 export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactElement | null
@@ -32,7 +32,7 @@ export const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID ? +process.env.NEXT_PUB
 export const devnet: Chain = {
   id: CHAIN_ID,
   name: 'Shardeum',
-  network: 'shardeum_devnet',
+  // network: 'shardeum_devnet',
   nativeCurrency: {
     decimals: 18,
     name: 'Shardeum',
@@ -45,23 +45,28 @@ export const devnet: Chain = {
   blockExplorers: {default: {name: 'Sphinx Explorer', url: EXPLORER_URL}},
 }
 
-const {chains, publicClient} = configureChains([devnet], [publicProvider()])
-
 const connectors = connectorsForWallets([
   {
     groupName: 'Recommended',
     wallets: [
-      injectedWallet({chains}),
-      metaMaskWallet({chains, projectId: 'shm-dashboard'}),
-      walletConnectWallet({chains, projectId: 'shm-dashboard'}),
+      injectedWallet,
+      metaMaskWallet,
+      walletConnectWallet,
     ],
   },
-]);
+], {
+  appName: 'Shardeum Validator Dashboard',
+  projectId: 'SHM_DASHBOARD',
+});
+
+const queryClient = new QueryClient();
 
 const config = createConfig({
-  autoConnect: true,
-  publicClient,
+  chains: [devnet],
   connectors,
+  transports: {
+    [devnet.id]: http(RPC_URL),
+  },
 });
 
 
@@ -69,19 +74,21 @@ function App({Component, pageProps}: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? getDefaultLayout
   return (
     <>
-      <WagmiConfig config={config}>
-        <RainbowKitProvider chains={chains} modalSize="compact">
-          <RouteGuard>
-            <ConfirmModalContextProvider>
-              <ToastContextProvider>
-                <FetcherContextProvider>
-                  {getLayout(<Component {...pageProps} />)}
-                </FetcherContextProvider>
-              </ToastContextProvider>
-            </ConfirmModalContextProvider>
-          </RouteGuard>
-        </RainbowKitProvider>
-      </WagmiConfig>
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          <RainbowKitProvider initialChain={devnet} modalSize="compact">
+            <RouteGuard>
+              <ConfirmModalContextProvider>
+                <ToastContextProvider>
+                  <FetcherContextProvider>
+                    {getLayout(<Component {...pageProps} />)}
+                  </FetcherContextProvider>
+                </ToastContextProvider>
+              </ConfirmModalContextProvider>
+            </RouteGuard>
+          </RainbowKitProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
     </>
   )
 }
