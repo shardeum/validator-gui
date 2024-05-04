@@ -20,7 +20,6 @@ module.exports = {
 
                     '.btn': {
                         'text-transform': 'capitalize',
-                        'border-radius': '0',
                     },
                     '.btn-primary': {
                         color: 'white'

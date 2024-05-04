@@ -68,7 +68,7 @@ export default function Overview() {
             <div className="flex flex-col items-stretch">
                 <h1 className="font-semibold mb-3">Node Status</h1>
                 <div
-                    className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                    className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                     <div className="capitalize"><span className='font-semibold'>Status:</span>{" "} {nodeStatus.state  === "active" ? 
                         "Validating" : nullPlaceholder(nodeStatus.state)}{" "} <StatusBadge status={nodeStatus.state}/>
                     </div>
@@ -80,7 +80,7 @@ export default function Overview() {
             <div className="flex flex-col items-stretch">
                 <h1 className="font-semibold mb-3">Staked SHM</h1>
                 <div
-                    className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                    className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                     <div><span className='font-semibold'>SHM staked:</span>  {nodeStatus.lockedStake ? nodeStatus.lockedStake + ' SHM' : '-'}</div>
                     <div className="overflow-hidden text-ellipsis"><span className='font-semibold'>Stake
                         address:</span> {nullPlaceholder(nodeStatus.nominatorAddress)}</div>
@@ -91,7 +91,7 @@ export default function Overview() {
             <div className="flex flex-col items-stretch">
                 <h1 className="font-semibold mb-3">Reward SHM</h1>
                 <div
-                    className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                    className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                     <div><span className='font-semibold'>Earnings:</span> {nodeStatus.currentRewards ? nodeStatus.currentRewards?.substring(0, 6) + ' SHM' : '-'} </div>
                     <div><span className='font-semibold'>Last payout:</span> {nullPlaceholder(nodeStatus.lastPayout)}</div>
                     <div><span className='font-semibold'>Lifetime
@@ -102,7 +102,7 @@ export default function Overview() {
               <div className="flex flex-col items-stretch">
                 <h1 className="font-semibold mb-3">Version Info</h1>
                 <div
-                    className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                    className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                     <div><span className='font-semibold'>CLI/GUI Running Version:</span> {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}</div>
                     <div><span className='font-semibold'>CLI/GUI Latest Version:</span> {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}</div>
                     <div><span className='font-semibold'>Validator Running Version:</span> {nullPlaceholder(version.runnningValidatorVersion)}</div>
@@ -114,7 +114,7 @@ export default function Overview() {
         </div>
 
         <h1 className="font-semibold mb-3 py-10">Node Status</h1>
-        <div className="h-60">
+        <div className="h-40 sm:h-60">
             <Bar options={options} data={data}/>
         </div>
     </div>

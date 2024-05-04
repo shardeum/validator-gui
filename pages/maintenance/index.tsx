@@ -114,7 +114,7 @@ export default function Maintenance() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 auto-rows-auto">
             <div className="flex flex-col items-stretch">
               <h1 className="font-semibold mb-3">Start / Stop Node</h1>
-              <div className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+              <div className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                 <div className="flex-grow" />
                 <div className="capitalize">
                   <span className="font-semibold">Status:</span>{" "}
@@ -197,7 +197,7 @@ export default function Maintenance() {
                         data-tip="Start node automatically once it has been terminated/rotated out of the network."
                       >
                         <LoadingButton
-                          className="btn btn-primary btn-outline ml-2"
+                          className="btn btn-primary btn-outline rounded-lg ml-2"
                           isLoading={updateSettingsLoading}
                           onClick={() => toggleAutoRestart()}
                         >
@@ -218,7 +218,7 @@ export default function Maintenance() {
                   )}
                   {nodeStatus.state === "stopped" && (
                     <LoadingButton
-                      className="btn btn-primary ml-2"
+                      className="btn btn-primary rounded-lg ml-2"
                       isLoading={isLoading}
                       onClick={() => startNode()}
                     >
@@ -233,7 +233,7 @@ export default function Maintenance() {
             <div className="flex flex-col items-stretch">
               <h1 className="font-semibold mb-3">Add / Remove Stake</h1>
               {showStakeForm && (
-                <div className="bg-white text-stone-500	rounded-xl p-8 text-sm relative">
+                <div className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm relative">
                   <StakeForm
                     nominator={address!}
                     nominee={nodeStatus?.nomineeAddress}
@@ -242,7 +242,7 @@ export default function Maintenance() {
                     totalStaked = {stakeInfo?.stake? Number(stakeInfo.stake): 0}
                   />
                   <button
-                    className="btn btn-primary btn-outline mr-2 absolute bottom-8"
+                    className="btn btn-primary btn-outline rounded-lg mr-2 absolute bottom-8"
                     onClick={() => setShowStakeForm(false)}
                   >
                     <ArrowLeftIcon className="h-5 w-5 inline mr-2" />
@@ -251,7 +251,7 @@ export default function Maintenance() {
                 </div>
               )}
               {!showStakeForm && (
-                <div className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                <div className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex-grow" />
                   <div>
                     <span className="font-semibold">SHM staked:</span>{" "}
@@ -335,7 +335,7 @@ export default function Maintenance() {
                       chain?.id === CHAIN_ID &&
                       nodeStatus?.state !== "stopped" && (
                         <button
-                          className="btn btn-primary ml-2"
+                          className="btn btn-primary rounded-lg ml-2"
                           onClick={() => setShowStakeForm(true)}
                         >
                           Add Stake
@@ -345,7 +345,7 @@ export default function Maintenance() {
 
                     {isConnected && chain?.id !== CHAIN_ID && (
                       <button
-                        className="btn btn-primary ml-2"
+                        className="btn btn-primary rounded-lg ml-2"
                         onClick={() => switchNetwork?.(CHAIN_ID)}
                       >
                         Switch Network
@@ -361,7 +361,7 @@ export default function Maintenance() {
 
             <div className="flex flex-col items-stretch">
               <h1 className="font-semibold mb-3">Benchmark Node</h1>
-              <div className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+              <div className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                 <div className="flex-grow" />
                 <div className="flex justify-between h-7">
                   <div>
@@ -415,7 +415,7 @@ export default function Maintenance() {
                 <div className="flex-grow" />
                 <div className="flex justify-end">
                   <div className="tooltip" data-tip="Coming Soon!">
-                    <button className="btn btn-primary btn-disabled">
+                    <button className="btn btn-primary btn-disabled rounded-lg">
                       Benchmark
                       <ArrowRightIcon className="h-5 w-5 inline ml-2" />
                     </button>
@@ -426,7 +426,7 @@ export default function Maintenance() {
 
             <div className="flex flex-col items-stretch">
               <h1 className="font-semibold mb-3">Update Version</h1>
-              <div className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+              <div className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                 <div className="flex-grow" />
                 <div>
                   <span className="font-semibold">
