@@ -27,10 +27,10 @@ const ResetPasswordForm = () => {
     <>
       <h1 className="font-semibold mb-3 mt-4 text-lg">Change Password</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-[21rem]">
-        <div className="flex justify-between mt-2">
+        <div className="flex flex-col sm:flex-row justify-between mt-2">
           <label htmlFor="currentPassword">Current Password</label>
           <input
-            className="bg-white text-black border px-1"
+            className="bg-white text-black rounded border px-1"
             id="currentPassword"
             type="password"
             {...register("currentPassword", {required: "This field is required"})}
@@ -40,10 +40,10 @@ const ResetPasswordForm = () => {
         {errors.currentPassword && <p>{errors.currentPassword.message}</p>}
       </span>
 
-        <div className="flex justify-between mt-2">
+        <div className="flex flex-col sm:flex-row justify-between mt-2">
           <label htmlFor="newPassword">New Password</label>
           <input
-            className="bg-white text-black border px-1"
+            className="bg-white text-black rounded border px-1"
             id="newPassword"
             type="password"
             {...register("newPassword", {required: "This field is required"})}
@@ -53,10 +53,10 @@ const ResetPasswordForm = () => {
         {errors.newPassword && <p>{errors.newPassword.message}</p>}
       </span>
 
-        <div className="flex justify-between mt-2">
+        <div className="flex flex-col sm:flex-row justify-between mt-2">
           <label htmlFor="confirmNewPassword">Confirm Password</label>
           <input
-            className="bg-white text-black border px-1"
+            className="bg-white text-black rounded border px-1"
             id="confirmNewPassword"
             type="password"
             {...register("confirmNewPassword", {
@@ -71,7 +71,7 @@ const ResetPasswordForm = () => {
       </span>
 
         <div className="flex justify-end mt-2">
-          <LoadingButton className="btn btn-primary"
+          <LoadingButton className="btn btn-primary rounded-lg"
                          isLoading={isLoading}
                          disabled={!isValid}
                          type="submit">

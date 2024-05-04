@@ -17,7 +17,7 @@ export default function Performance() {
           <div className="flex flex-col items-stretch">
               <h1 className="font-semibold mb-3">Version Info</h1>
               <div
-                  className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                  className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div><span className='font-semibold'>CLI/GUI Running Version:</span> {nullPlaceholder(version.runningCliVersion)} / {nullPlaceholder(version.runningGuiVersion)}</div>
                   <div><span className='font-semibold'>CLI/GUI Latest Version:</span> {nullPlaceholder(version.latestCliVersion)} / {nullPlaceholder(version.latestGuiVersion)}</div>
                   <div><span className='font-semibold'>Validator Running Version:</span> {nullPlaceholder(version.runnningValidatorVersion)}</div>
@@ -28,7 +28,7 @@ export default function Performance() {
           <div className="flex flex-col items-stretch">
               <h1 className="font-semibold mb-3">Performance</h1>
               <div
-                  className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                  className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div className="flex justify-between h-7">
                       <div><span className='font-semibold'>CPU usage AVG:</span> {nodeStatus.performance?.cpuPercentage.toFixed(2)}%</div>
                       <Doughnut data={mapToDoughnut(nodeStatus.performance?.cpuPercentage, {spacing: 2})}
@@ -53,7 +53,7 @@ export default function Performance() {
           <div className="flex flex-col items-stretch">
               <h1 className="font-semibold mb-3">TPS Overview</h1>
               <div
-                  className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                  className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div><span className='font-semibold'>Node
                       throughput:</span> {Number.isFinite(network?.txApplied) ? network?.txApplied + ' TPS' : '-'}</div>
                   <div><span className='font-semibold'>Transaction processed:</span> {Number.isFinite(network?.txProcessed) ? network?.txProcessed : '-'}</div>

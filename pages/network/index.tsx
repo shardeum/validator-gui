@@ -9,7 +9,7 @@ export default function Network() {
           <div className="flex flex-col items-stretch">
               <h1 className="font-semibold mb-3">Network Size</h1>
               <div
-                  className="bg-white text-stone-500 rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                  className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div>Active validators: {nullPlaceholder(network.active)}</div>
                   <div>Standby validators: {nullPlaceholder(network.standby)}</div>
                   <div>Desired network size: {nullPlaceholder(network.desired)}</div>
@@ -19,7 +19,7 @@ export default function Network() {
           <div className="flex flex-col items-stretch">
               <h1 className="font-semibold mb-3">Network Load - Coming Soon</h1>
               <div
-                  className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                  className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div>Max TPS: {nullPlaceholder(null)}</div>
                   <div>Avg TPS: {nullPlaceholder(null)}</div>
                   <div>Total TXs processed: {nullPlaceholder(null)}</div>
@@ -29,7 +29,7 @@ export default function Network() {
           <div className="flex flex-col items-stretch">
               <h1 className="font-semibold mb-3">Network Health - Coming Soon</h1>
               <div
-                  className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                  className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div>Current A:S Ratio: {network.active/network.standby * 100}%</div>
                   <div>Target A:S Ratio: {nullPlaceholder(null)}</div>
                   <div>Network health: {nullPlaceholder(null)}%
@@ -39,7 +39,7 @@ export default function Network() {
           <div className="flex flex-col items-stretch">
               <h1 className="font-semibold mb-3">Network Reward - Coming Soon</h1>
               <div
-                  className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                  className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div>Current daily issuance: {nullPlaceholder(null)}</div>
                   <div>Average daily issuance: {nullPlaceholder(null)}</div>
                   <div>Average daily node reward: {nullPlaceholder(null)}</div>
@@ -48,7 +48,7 @@ export default function Network() {
           <div className="flex flex-col items-stretch">
               <h1 className="font-semibold mb-3">Average APR - Coming Soon</h1>
               <div
-                  className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
+                  className="bg-white text-stone-500 rounded-xl p-4 sm:p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
                   <div>Your APR: {nullPlaceholder(null)}%</div>
                   <div>Network average APR: {nullPlaceholder(null)}</div>
               </div>

@@ -36,12 +36,12 @@ export default function ConfirmModalContextProvider({children}: { children: Reac
           {config?.modalBody}
         </p>
         <div className="modal-action">
-          <label className="btn btn-outline"
+          <label className="btn btn-outline rounded-lg"
                  onClick={() => {
                    toggleOpen()
                    config?.onCancel?.()
                  }}>Cancel</label>
-          <label className="btn btn-primary"
+          <label className="btn btn-primary rounded-lg"
                  onClick={() => {
                    toggleOpen()
                    config?.onConfirm?.()
