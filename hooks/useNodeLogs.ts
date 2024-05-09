@@ -1,5 +1,4 @@
 import useSWR from "swr";
-import { authService } from "../services/auth.service";
 import { useGlobals } from "../utils/globals";
 import { useContext } from "react";
 import { FetcherContext } from "../components/FetcherContextProvider";
@@ -10,6 +9,7 @@ type NodeLogsResponse = {
   isError: boolean;
   logs: string[] | undefined;
   downloadLog: Function;
+  clearAllLogs: Function;
   downloadAllLogs: Function;
 };
 
@@ -22,22 +22,34 @@ export const useNodeLogs = (): NodeLogsResponse => {
     fetcher
   );
 
-  const downloadLog = (logName: string): void => {
-    fetch(`${apiBase}/api/node/logs/${logName}`, {
+  const downloadLog = async (logName: string, getBlobOnly = false): Promise<Blob> => {
+    const response = await fetch(`${apiBase}/api/node/logs/${logName}`, {
       method: "GET",
       credentials: 'include',
     })
-      .then((response) => response.blob())
-      .then((blob) => {
-        const url = window.URL.createObjectURL(new Blob([blob]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", logName);
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode?.removeChild(link);
-      });
+    const blob = await response.blob();
+
+    if (getBlobOnly) {
+      return blob;
+    }
+    else {
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", logName);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+      return new Blob();
+    }
   };
+
+  const clearAllLogs = async (): Promise<void> => {
+    const response = await fetch(`${apiBase}/api/node/logs`, {
+      method: "DELETE",
+      credentials: 'include',
+    })
+  }
 
   const downloadAllLogs = async (): Promise<void> => {
     try {
@@ -102,6 +114,7 @@ export const useNodeLogs = (): NodeLogsResponse => {
     isLoading: !data && !error,
     isError: !!error,
     downloadLog,
+    clearAllLogs,
     downloadAllLogs,
   };
 };

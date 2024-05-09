@@ -1,13 +1,17 @@
 import * as express from 'express'
 
 import configureNodeHandlers from './handlers/node'
-import { exec } from 'child_process'
 import fs from 'fs'
 import path from 'path'
+import { Request, Response } from 'express';
+import asyncRouteHandler from './handlers/async-router-handler'
 const yaml = require('js-yaml')
 
-const apiRouter = express.Router()
+const ACCOUNT_INFO_URL = process.env.ACCOUNT_INFO_URL ?? "https://explorer-sphinx.shardeum.org/api/account";
+const FAUCET_CLAIM_URL =
+  process.env.FAUCET_CLAIM_URL ?? "https://api.shardeum.org/api/transfer";
 
+const apiRouter = express.Router()
 configureNodeHandlers(apiRouter)
 
 // app.get('/node/status', (req, res) => {
@@ -24,34 +28,22 @@ configureNodeHandlers(apiRouter)
 //   });
 // });
 
-apiRouter.get('/node/status/history', (req, res) => {
+apiRouter.get('/node/status/history', async (req, res) => {
   console.log('fetching node history')
-  // @ts-ignore
-  if (req.params['from']) {
-    res.send([
-      {
-        state: 'active',
-        stakeAmount: '40000000000000000000',
-        stakeRequirement: '20000000000000000000',
-        lifetimeEarnings: '200000000000000000',
-        date: '2011-05-02T11:52:23.24Z',
+  const { address: accountAddress } = req.query;
+
+  const accInfoResponse = await fetch(
+    `${ACCOUNT_INFO_URL}?address=${accountAddress}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      {
-        state: 'active',
-        stakeAmount: '40000000000000000000',
-        stakeRequirement: '20000000000000000000',
-        date: '2011-05-04T11:52:23.24Z',
-      },
-    ])
-    // @ts-ignore
-  } else if (req.params['latest']) {
-    res.send({
-      state: 'active',
-      stakeAmount: '40000000000000000000',
-      stakeRequirement: '20000000000000000000',
-      date: '2011-07-04T11:52:23.24Z',
-    })
-  }
+    }
+  );
+  const data = await accInfoResponse.json();
+  res.status(200).json(data?.accounts?.[0]?.account?.operatorAccountInfo?.operatorStats || {})
 })
 
 apiRouter.get('/node/performance', (req, res) => {
@@ -97,5 +89,23 @@ apiRouter.post('/log/unstake', (req, res) => {
   })
   res.status(200).json({ status: 'ok' })
 })
+
+apiRouter.post(
+  '/claim-tokens',
+  asyncRouteHandler(async (req: Request, res: Response) => {
+    const { address: accountAddress } = req.query;
+    const claimResponse = await fetch(
+      `${FAUCET_CLAIM_URL}?address=${accountAddress}`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await claimResponse.json();
+    res.status(200).json(data)
+  }));
 
 export default apiRouter

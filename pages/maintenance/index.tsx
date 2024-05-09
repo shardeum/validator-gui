@@ -13,7 +13,7 @@ import RemoveStakeButton from "../../components/RemoveStakeButton";
 import { nullPlaceholder } from "../../utils/null-placerholder";
 import { useNodePerformance } from "../../hooks/useNodePerformance";
 import { NodeVersion } from "../../model/node-version";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import StakeForm from "../../components/StakeForm";
 import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -25,6 +25,7 @@ import { ethers } from "ethers";
 import { ConfirmModalContext } from "../../components/ConfirmModalContextProvider";
 import { useSettings } from "../../hooks/useSettings";
 import StatusBadge from "../../components/StatusBadge";
+import { useRouter } from "next/router";
 
 const versionWarning = (version: NodeVersion) => {
   if (
@@ -63,6 +64,11 @@ const versionWarning = (version: NodeVersion) => {
 };
 
 export default function Maintenance() {
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/dashboard");
+  }, [router]);
+
   const { version, update } = useNodeVersion();
   const { nodeStatus, isLoading, startNode, stopNode } = useNodeStatus();
   const { address, isConnected } = useAccount();
@@ -239,7 +245,7 @@ export default function Maintenance() {
                     nominee={nodeStatus?.nomineeAddress}
                     stakeAmount={nodeStatus.stakeRequirement}
                     onStake={() => setShowStakeForm(false)}
-                    totalStaked = {stakeInfo?.stake? Number(stakeInfo.stake): 0}
+                    totalStaked={stakeInfo?.stake ? Number(stakeInfo.stake) : 0}
                   />
                   <button
                     className="btn btn-primary btn-outline mr-2 absolute bottom-8"
