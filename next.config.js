@@ -8,6 +8,10 @@ const nextConfig = {
     // We want to handle linting in the IDE, not during build
     ignoreDuringBuilds: true,
   },
+  images: {
+    unoptimized: true,
+  },
+  transpilePackages: ["geist"],
 };
 
 module.exports = nextConfig;
