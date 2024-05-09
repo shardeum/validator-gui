@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+#__next,
+body {
+  @apply h-full;
+}
+
+::-moz-selection {
+  /* Code for Firefox */
+  color: black;
+  font: small-caption;
+  letter-spacing: 1rem;
+  background-color: #777;
+}
+
+::selection {
+  color: black;
+  font: small-caption;
+  letter-spacing: 1rem;
+  background-color: #777;
+}
+
+input[type="password"] {
+  color: black;
+  font-family: Verdana;
+  letter-spacing: 0.125em;
+}
+
 html,
 body {
   padding: 0;
@@ -27,27 +53,29 @@ a {
   overflow-wrap: anywhere;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  }
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #aaa;
+  -webkit-box-shadow: none;
+  box-shadow: inset 0 0 20px 20px #fff;
 }
 
-li.li-right{
+li.li-right {
   float: right;
 }
 
-.spinner{
+.spinner {
   animation: rotateMe 2s infinite;
 }
 
-.btn-disabled, .btn-disabled:hover, .btn[disabled], .btn[disabled]:hover {
+.btn-disabled,
+.btn-disabled:hover,
+.btn[disabled],
+.btn[disabled]:hover {
   color: white;
-  background-color: rgb(212, 212, 216)
+  background-color: rgb(212, 212, 216);
 }
 
 @keyframes rotateMe {
