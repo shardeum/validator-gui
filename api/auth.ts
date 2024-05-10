@@ -46,7 +46,7 @@ export const loginHandler = (req: Request, res: Response) => {
       secure: true,
       sameSite: "strict",
     });
-    res.send({ status : 'ok' })
+    res.send({ status: 'ok' })
   })
   console.log('executing operator-cli gui login...')
 }

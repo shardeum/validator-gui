@@ -8,6 +8,7 @@ import next from 'next';
 import dotenv from 'dotenv';
 import { cacheStaticFiles, preventBrowserCacheForDynamicContent, setSecurityHeaders } from './security-headers';
 import { errorMiddleware } from './error-middleware';
+import { nodeVersionHandler } from './handlers/node';
 
 dotenv.config()
 const port = process.env.PORT ? +process.env.PORT : 8080
@@ -15,7 +16,7 @@ const isDev = process.env.NODE_ENV === 'development'
 const cookieParser = require('cookie-parser')
 
 if (isDev) {
-  const nextApp = next({dev: isDev, port})
+  const nextApp = next({ dev: isDev, port })
   const nextHandler = nextApp.getRequestHandler()
   nextApp.prepare().then(() => {
     const app = express()
@@ -25,6 +26,7 @@ if (isDev) {
     app.post('/auth/login', loginHandler)
     app.post('/auth/logout', logoutHandler)
     app.use('/api', jwtMiddleware, apiRouter)
+    app.get('/node/version', nodeVersionHandler)
     app.get('*', (req: any, res: any) => nextHandler(req, res))
     app.use(errorMiddleware(isDev))
 
@@ -42,13 +44,14 @@ if (isDev) {
   app.post('/auth/login', loginHandler)
   app.post('/auth/logout', logoutHandler)
   app.use('/api', jwtMiddleware, apiRouter)
+  app.get('/node/version', nodeVersionHandler)
   app.use(errorMiddleware(isDev))
   app.use(cacheStaticFiles);
   app.use(preventBrowserCacheForDynamicContent);
-  app.use(express.static(path.join(__dirname, "..", "out"), {extensions: ['html']}));
+  app.use(express.static(path.join(__dirname, "..", "out"), { extensions: ['html'] }));
   const privateKey = fs.readFileSync(path.join(__dirname, '../selfsigned.key'), 'utf8');
   const certificate = fs.readFileSync(path.join(__dirname, '../selfsigned.crt'), 'utf8');
-  const credentials = {key: privateKey, cert: certificate};
+  const credentials = { key: privateKey, cert: certificate };
 
   https.createServer(credentials, app)
     .listen(port, () => {
