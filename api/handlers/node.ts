@@ -18,49 +18,57 @@ import * as crypto from '@shardus/crypto-utils';
 
 const yaml = require('js-yaml')
 
+export const nodeVersionHandler = asyncRouteHandler(async (req: Request, res: Response<NodeVersionResponse>) => {
+  // Exec the CLI dashboard version command
+  console.log('executing operator-cli version...');
+  const output = execFileSync('operator-cli', ['version'], { encoding: 'utf8' })
+  const yamlData: NodeVersionResponse = yaml.load(output);
+  res.json(yamlData);
+})
+
 export default function configureNodeHandlers(apiRouter: Router) {
   let lastActiveNodeState: NodeStatus;
   apiRouter.post('/node/start', asyncRouteHandler(async (req: Request, res: Response) => {
     // Exec the CLI validator start command
     console.log('executing operator-cli start...');
     execFileSync('operator-cli', ['start']);
-    res.status(200).json({status: "ok"})
+    res.status(200).json({ status: "ok" })
   }));
 
   apiRouter.post('/node/stop', asyncRouteHandler(async (req: Request, res: Response) => {
     // Exec the CLI validator stop command
     console.log('executing operator-cli stop...');
     execFileSync('operator-cli', ['stop', '-f'])
-    res.status(200).json({status: "ok"})
+    res.status(200).json({ status: "ok" })
   }));
 
   apiRouter.get(
     '/node/status',
     asyncRouteHandler(async (req: Request, res: Response<NodeStatusResponse>) => {
-        // Exec the CLI validator stop command
-        execFile('operator-cli', ['status'], (err, stdout, stderr) => {
-          console.log('operator-cli status: ', err, stdout, stderr);
-          if (err) {
-            cliStderrResponse(res, 'Unable to fetch status', err.message)
-            return
+      // Exec the CLI validator stop command
+      execFile('operator-cli', ['status'], (err, stdout, stderr) => {
+        console.log('operator-cli status: ', err, stdout, stderr);
+        if (err) {
+          cliStderrResponse(res, 'Unable to fetch status', err.message)
+          return
+        }
+        if (stderr) {
+          cliStderrResponse(res, 'Unable to fetch status', stderr)
+          return
+        }
+        let yamlData: NodeStatus = yaml.load(stdout);
+        if (yamlData.state === 'active') {
+          lastActiveNodeState = yamlData;
+        } else if (yamlData.state === 'stopped') {
+          yamlData = {
+            ...yamlData,
+            nodeInfo: lastActiveNodeState?.nodeInfo
           }
-          if (stderr) {
-            cliStderrResponse(res, 'Unable to fetch status', stderr)
-            return
-          }
-          let yamlData: NodeStatus = yaml.load(stdout);
-          if (yamlData.state === 'active') {
-            lastActiveNodeState = yamlData;
-          } else if (yamlData.state === 'stopped') {
-            yamlData = {
-              ...yamlData,
-              nodeInfo: lastActiveNodeState?.nodeInfo
-            }
-          }
-          res.json(yamlData);
-        });
-        console.log('executing operator-cli status...');
-      }
+        }
+        res.json(yamlData);
+      });
+      console.log('executing operator-cli status...');
+    }
     ));
 
   apiRouter.get('/node/logs', asyncRouteHandler(async (req: Request, res: Response<NodeLogsResponse>) => {
@@ -69,7 +77,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
       res.json([])
       return;
     }
-    execFile('ls', ['-m'], {cwd: logsPath}, (err, stdout, stderr) => {
+    execFile('ls', ['-m'], { cwd: logsPath }, (err, stdout, stderr) => {
       if (err) {
         throw new Error('Unable to get logs', err)
       }
@@ -97,7 +105,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
         return;
       }
       console.log('executing operator-cli status...');
-      const output = execFileSync('operator-cli', ['stake_info', address], {encoding: 'utf8'})
+      const output = execFileSync('operator-cli', ['stake_info', address], { encoding: 'utf8' })
       const yamlData = yaml.load(output);
       res.json(yamlData);
     })
@@ -143,23 +151,14 @@ export default function configureNodeHandlers(apiRouter: Router) {
     })
   );
 
-  apiRouter.get(
-    '/node/version',
-    asyncRouteHandler(async (req: Request, res: Response<NodeVersionResponse>) => {
-      // Exec the CLI dashboard version command
-      console.log('executing operator-cli version...');
-      const output = execFileSync('operator-cli', ['version'], {encoding: 'utf8'})
-      const yamlData: NodeVersionResponse = yaml.load(output);
-      res.json(yamlData);
-    })
-  );
+  apiRouter.get('/node/version', nodeVersionHandler);
 
   apiRouter.get(
     '/node/network',
     asyncRouteHandler(async (req: Request, res: Response<NodeNetworkResponse>) => {
       // Exec the CLI validator stop command
       console.log('executing operator-cli network-stats');
-      const output = execFileSync('operator-cli', ['network-stats'], {encoding: 'utf8'})
+      const output = execFileSync('operator-cli', ['network-stats'], { encoding: 'utf8' })
       const yamlData = yaml.load(output);
       res.json(yamlData);
     }));
@@ -172,7 +171,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
     }>, res: Response) => {
       const password = req.body && req.body.currentPassword
       const hashedPass = crypto.hash(password);
-      const stdout = execFileSync('operator-cli', ['gui', 'login', hashedPass], {encoding: 'utf8'});
+      const stdout = execFileSync('operator-cli', ['gui', 'login', hashedPass], { encoding: 'utf8' });
       const cliResponse = yaml.load(stdout);
 
       if (cliResponse.login !== 'authorized') {
@@ -181,7 +180,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
       }
 
       execFileSync('operator-cli', ['gui', 'set', 'password', '-h', req.body.newPassword]);
-      res.status(200).json({status: "ok"})
+      res.status(200).json({ status: "ok" })
     }));
 
 
@@ -191,7 +190,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
   }));
 
   const getSettings = () => {
-    const output = execFileSync('operator-cli', ['node-settings'], {encoding: 'utf8'});
+    const output = execFileSync('operator-cli', ['node-settings'], { encoding: 'utf8' });
     return yaml.load(output);
   }
 
@@ -202,7 +201,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
       return;
     }
 
-    const autoRestart:string = req.body.autoRestart.toString().toLowerCase()
+    const autoRestart: string = req.body.autoRestart.toString().toLowerCase()
 
     if (autoRestart != "true" && autoRestart != "false") {
       badRequestResponse(res, 'Invalid body');
