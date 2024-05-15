@@ -3,7 +3,7 @@ import { FieldValues, useForm } from "react-hook-form";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { EyeSlashIcon } from "@heroicons/react/24/outline";
 import { GeistSans } from "geist/font";
-import { authService } from "../../services/auth.service";
+import { authService, isFirstTimeUserKey } from "../../services/auth.service";
 import { useRouter } from "next/router";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 
@@ -25,12 +25,20 @@ export const LoginForm: React.FC = () => {
   const router = useRouter();
   const login = authService.useLogin();
 
+  const isFirstTimeUser = () => {
+    return localStorage.getItem(isFirstTimeUserKey) === "true";
+  };
+
   async function onSubmit({ password }: FieldValues) {
     setApiError(null);
 
     try {
       await login(password);
-      router.push("/");
+      if (isFirstTimeUser()) {
+        router.push("/onboarding");
+      } else {
+        router.push("/");
+      }
     } catch (error) {
       setApiError(error as SetStateAction<Error | null>);
     }
@@ -93,7 +101,7 @@ export const LoginForm: React.FC = () => {
             disabled={formState.isSubmitting}
             className={
               (isActive ? "bg-indigo-600 hover:bg-indigo-700" : "bg-gray-300") +
-              " text-white text-sm font-semibold py-2 px-4 rounded-md " +
+              " text-white text-sm font-semibold py-2 px-4 w-40 rounded-md flex justify-center " +
               GeistSans.className
             }
             type="submit"
