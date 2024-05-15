@@ -26,7 +26,7 @@ export const LoginForm: React.FC = () => {
   const login = authService.useLogin();
 
   const isFirstTimeUser = () => {
-    return localStorage.getItem(isFirstTimeUserKey) === "true";
+    return localStorage.getItem(isFirstTimeUserKey) == null;
   };
 
   async function onSubmit({ password }: FieldValues) {
