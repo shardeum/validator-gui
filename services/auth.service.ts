@@ -4,6 +4,7 @@ import { hashSha256 } from '../utils/sha256-hash';
 import { useCallback } from "react";
 
 const isLoggedInKey = 'isLoggedIn'
+export const isFirstTimeUserKey = 'isFirstTimeUser'
 
 function useLogin() {
   const { apiBase } = useGlobals();
@@ -22,6 +23,14 @@ function useLogin() {
       }
     }
     localStorage.setItem(isLoggedInKey, 'true');
+
+    const isFirstTimeUserFlagPresent = localStorage.getItem(isFirstTimeUserKey);
+    if (isFirstTimeUserFlagPresent) {
+      localStorage.setItem(isFirstTimeUserKey, 'false');
+    }
+    else {
+      localStorage.setItem(isFirstTimeUserKey, 'true');
+    }
   }, [apiBase]);
 }
 
