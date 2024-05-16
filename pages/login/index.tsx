@@ -1,19 +1,22 @@
-import { ReactElement } from "react";
+import { ReactElement, useContext } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { GeistSans } from "geist/font";
 import { authService } from "../../services/auth.service";
 import Head from "next/head";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
-import logoIconOtherBlocks from "../../assets/login-aside-other-blocks.svg";
+import loginAsideBg from "../../assets/login-aside-bg.svg";
+import mobileLoginBg from "../../assets/mobile-login-bg.svg";
 import { Logo } from "../../components/atoms/Logo";
 import { Title } from "../../components/atoms/Title";
 import { LoginForm } from "../../components/molecules/LoginForm";
 import { useNodeVersion } from "../../hooks/useNodeVersion";
+import { useDevice } from "../../context/device";
 
 const Login = () => {
   const router = useRouter();
   const { publicVersion } = useNodeVersion();
+  const { isMobile } = useDevice();
 
   useEffect(() => {
     // redirect to home if already logged in
@@ -31,10 +34,9 @@ const Login = () => {
         <aside
           className="grow max-sm:hidden w-full h-full basis-0 bg-[#3042FB] text-white flex flex-col justify-end items-start"
           style={{
-            backgroundImage: `url(${logoIconOtherBlocks.src})`,
+            backgroundImage: `url(${loginAsideBg.src})`,
             backgroundRepeat: "no-repeat",
-            width: "100%",
-            height: "100%",
+            backgroundSize: "fill",
           }}
         >
           <div className="flex flex-col items-center mb-20 ml-20 gap-y-8">
@@ -59,7 +61,16 @@ const Login = () => {
             </div>
           </div>
         </aside>
-        <div className="bg-white grow text-stone-500 basis-0	rounded-xl text-sm">
+        <div
+          className="bg-[#FAFAFA] grow text-stone-500 basis-0 rounded-xl text-sm h-full max-w-md"
+          style={{
+            backgroundImage: isMobile ? `url(${mobileLoginBg.src})` : "",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "fill",
+            height: "100%",
+            width: "100%",
+          }}
+        >
           <main className="grow p-20 h-full">
             <div className="flex flex-col gap-y-8 h-full">
               <Logo className="w-40 mb-4" />
