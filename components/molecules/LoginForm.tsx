@@ -45,7 +45,7 @@ export const LoginForm: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col shadow-md border border-gray-100 rounded-md px-2 py-2">
+    <div className="flex flex-col shadow-md bg-white border border-gray-100 rounded-md px-2 py-2">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
         <label className={GeistSans.className + " block"}>
           <span className="text-gray-900 font-light bg-white">Password</span>
