@@ -6,6 +6,7 @@ import { GeistSans } from "geist/font";
 import { authService, isFirstTimeUserKey } from "../../services/auth.service";
 import { useRouter } from "next/router";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
+import { useDevice } from "../../context/device";
 
 export const LoginForm: React.FC = () => {
   const { register, handleSubmit, formState } = useForm();
@@ -24,6 +25,7 @@ export const LoginForm: React.FC = () => {
 
   const router = useRouter();
   const login = authService.useLogin();
+  const { isMobile } = useDevice();
 
   const isFirstTimeUser = () => {
     return localStorage.getItem(isFirstTimeUserKey) == null;
@@ -34,7 +36,7 @@ export const LoginForm: React.FC = () => {
 
     try {
       await login(password);
-      if (isFirstTimeUser()) {
+      if (isFirstTimeUser() && !isMobile) {
         router.push("/onboarding");
       } else {
         router.push("/");

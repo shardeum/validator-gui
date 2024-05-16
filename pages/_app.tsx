@@ -1,59 +1,72 @@
-import '../styles/globals.css'
-import '@rainbow-me/rainbowkit/styles.css';
-import type { AppProps } from 'next/app'
-import Layout from '../components/Layout';
-import React, { ReactElement } from 'react';
-import { NextPage } from 'next';
-import ToastContextProvider from '../components/ToastContextProvider';
-import { Chain, configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { publicProvider } from 'wagmi/providers/public'
-import { connectorsForWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { injectedWallet, metaMaskWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
-import ConfirmModalContextProvider from '../components/ConfirmModalContextProvider';
-import RouteGuard from '../components/RouteGuard';
-import FetcherContextProvider from '../components/FetcherContextProvider';
+import "../styles/globals.css";
+import "@rainbow-me/rainbowkit/styles.css";
+import type { AppProps } from "next/app";
+import Layout from "../components/Layout";
+import React, { ReactElement } from "react";
+import { NextPage } from "next";
+import ToastContextProvider from "../components/ToastContextProvider";
+import { Chain, configureChains, createConfig, WagmiConfig } from "wagmi";
+import { publicProvider } from "wagmi/providers/public";
+import {
+  connectorsForWallets,
+  RainbowKitProvider,
+} from "@rainbow-me/rainbowkit";
+import {
+  injectedWallet,
+  metaMaskWallet,
+  walletConnectWallet,
+} from "@rainbow-me/rainbowkit/wallets";
+import ConfirmModalContextProvider from "../components/ConfirmModalContextProvider";
+import RouteGuard from "../components/RouteGuard";
+import FetcherContextProvider from "../components/FetcherContextProvider";
+import { createContext } from "vm";
+import DeviceContextProvider from "../context/device";
 
 export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactElement | null
-}
+  getLayout?: (page: ReactElement) => ReactElement | null;
+};
 
 type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout
-}
+  Component: NextPageWithLayout;
+};
 
 function getDefaultLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 }
 
-export const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL ?? 'https://atomium.shardeum.org/';
-export const EXPLORER_URL = process.env.NEXT_EXPLORER_URL ?? 'https://explorer-atomium.shardeum.org/';
-export const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID ? +process.env.NEXT_PUBLIC_CHAIN_ID : 8082;
+export const RPC_URL =
+  process.env.NEXT_PUBLIC_RPC_URL ?? "https://atomium.shardeum.org/";
+export const EXPLORER_URL =
+  process.env.NEXT_EXPLORER_URL ?? "https://explorer-atomium.shardeum.org/";
+export const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
+  ? +process.env.NEXT_PUBLIC_CHAIN_ID
+  : 8082;
 
 export const devnet: Chain = {
   id: CHAIN_ID,
-  name: 'Shardeum',
-  network: 'shardeum_atomium',
+  name: "Shardeum",
+  network: "shardeum_devnet",
   nativeCurrency: {
     decimals: 18,
-    name: 'Shardeum',
-    symbol: 'SHM',
+    name: "Shardeum",
+    symbol: "SHM",
   },
   rpcUrls: {
-    default: {http: [RPC_URL]},
-    public: {http: [RPC_URL]},
+    default: { http: [RPC_URL] },
+    public: { http: [RPC_URL] },
   },
   blockExplorers: {default: {name: 'Atomium Explorer', url: EXPLORER_URL}},
 }
 
-const {chains, publicClient} = configureChains([devnet], [publicProvider()])
+const { chains, publicClient } = configureChains([devnet], [publicProvider()]);
 
 const connectors = connectorsForWallets([
   {
-    groupName: 'Recommended',
+    groupName: "Recommended",
     wallets: [
-      injectedWallet({chains}),
-      metaMaskWallet({chains, projectId: 'shm-dashboard'}),
-      walletConnectWallet({chains, projectId: 'shm-dashboard'}),
+      injectedWallet({ chains }),
+      metaMaskWallet({ chains, projectId: "shm-dashboard" }),
+      walletConnectWallet({ chains, projectId: "shm-dashboard" }),
     ],
   },
 ]);
@@ -64,9 +77,8 @@ const config = createConfig({
   connectors,
 });
 
-
-function App({Component, pageProps}: AppPropsWithLayout) {
-  const getLayout = Component.getLayout ?? getDefaultLayout
+function App({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component.getLayout ?? getDefaultLayout;
   return (
     <>
       <WagmiConfig config={config}>
@@ -74,16 +86,18 @@ function App({Component, pageProps}: AppPropsWithLayout) {
           <RouteGuard>
             <ConfirmModalContextProvider>
               <ToastContextProvider>
-                <FetcherContextProvider>
-                  {getLayout(<Component {...pageProps} />)}
-                </FetcherContextProvider>
+                <DeviceContextProvider>
+                  <FetcherContextProvider>
+                    {getLayout(<Component {...pageProps} />)}
+                  </FetcherContextProvider>
+                </DeviceContextProvider>
               </ToastContextProvider>
             </ConfirmModalContextProvider>
           </RouteGuard>
         </RainbowKitProvider>
       </WagmiConfig>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
