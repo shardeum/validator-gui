@@ -34,9 +34,13 @@ function getDefaultLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 }
 
-export const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL ?? 'https://atomium.shardeum.org/';
-export const EXPLORER_URL = process.env.NEXT_EXPLORER_URL ?? 'https://explorer-atomium.shardeum.org/';
-export const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID ? +process.env.NEXT_PUBLIC_CHAIN_ID : 8082;
+export const RPC_URL =
+  process.env.NEXT_PUBLIC_RPC_URL ?? "https://atomium.shardeum.org/";
+export const EXPLORER_URL =
+  process.env.NEXT_EXPLORER_URL ?? "https://explorer-atomium.shardeum.org/";
+export const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
+  ? +process.env.NEXT_PUBLIC_CHAIN_ID
+  : 8082;
 
 export const devnet: Chain = {
   id: CHAIN_ID,
@@ -62,10 +66,7 @@ const connectors = connectorsForWallets([
     wallets: [
       injectedWallet({ chains }),
       metaMaskWallet({ chains, projectId: "shm-dashboard" }),
-      // walletConnectWallet({
-      //   chains,
-      //   projectId: "shm-dashboard",
-      // }),
+      walletConnectWallet({ chains, projectId: "shm-dashboard" }),
     ],
   },
 ]);
@@ -78,7 +79,6 @@ const config = createConfig({
 
 function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? getDefaultLayout;
-
   return (
     <>
       <WagmiConfig config={config}>
@@ -89,7 +89,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
                 <DeviceContextProvider>
                   <FetcherContextProvider>
                     {getLayout(<Component {...pageProps} />)}
-                    <Modal />
+                  <Modal />
                   </FetcherContextProvider>
                 </DeviceContextProvider>
               </ToastContextProvider>

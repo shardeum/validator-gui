@@ -3,9 +3,9 @@ import { FieldValues, useForm } from "react-hook-form";
 import { GeistSans } from "geist/font";
 import { authService, isFirstTimeUserKey } from "../../services/auth.service";
 import { useRouter } from "next/router";
-import { useDevice } from "../../context/device";
 import { PasswordInput } from "../atoms/PasswordInput";
 import { useGlobals } from "../../utils/globals";
+import { useDevice } from "../../context/device";
 
 export const LoginForm: React.FC = () => {
   const { register, handleSubmit, watch, formState } = useForm();
