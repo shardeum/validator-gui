@@ -32,7 +32,7 @@ const Login = () => {
       <div className="h-screen w-screen flex center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <aside
-          className="grow max-sm:hidden w-full h-full basis-0 bg-[#3042FB] text-white flex flex-col justify-end items-start"
+          className="basis-0 grow max-sm:hidden w-full h-full bg-[#3042FB] text-white flex flex-col justify-end items-start"
           style={{
             backgroundImage: `url(${loginAsideBg.src})`,
             backgroundRepeat: "no-repeat",
@@ -62,7 +62,7 @@ const Login = () => {
           </div>
         </aside>
         <div
-          className="bg-[#FAFAFA] grow text-stone-500 basis-0 rounded-xl text-sm h-full max-w-md"
+          className="bg-[#FAFAFA] flex basis-0 grow text-stone-500 rounded-xl text-sm h-full"
           style={{
             backgroundImage: isMobile ? `url(${mobileLoginBg.src})` : "",
             backgroundRepeat: "no-repeat",
