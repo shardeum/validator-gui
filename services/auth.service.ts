@@ -18,14 +18,16 @@ function useLogin() {
       });
       const data = await res.json();
       if (!res.ok) {
-        if (res.status === 403) {
-          throw new Error("Invalid password!");
-        }
-      } else if (res.ok && data?.block) {
-        throw new Error(
-          "IpAddress has been blocked for too many failed Attempts"
-        );
-      } else {
+        console.log(res, data);
+        if (res.status === 403 && data?.errorMessage === "Blocked") {
+          throw new Error(
+            "IpAddress has been blocked for too many failed Attempts!"
+          );
+        } else if (res.status === 403) {
+            throw new Error("Invalid password!");
+        } 
+      }
+      else {
         localStorage.setItem(isLoggedInKey, "true");
       }
     },

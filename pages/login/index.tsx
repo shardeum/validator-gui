@@ -32,8 +32,9 @@ const Login = () => {
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     catch(error:any){
-      if(error?.message === 'IpAddress has been blocked for too many failed Attempts')
-          setIsDisabled(true);
+      if(error.message === "IpAddress has been blocked for too many failed Attempts!"){
+        setIsDisabled(true);
+      }
       setApiError(error as SetStateAction<Error | null>)
     }
   }
