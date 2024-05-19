@@ -18,16 +18,14 @@ function useLogin() {
       });
       const data = await res.json();
       if (!res.ok) {
-        console.log(res, data);
         if (res.status === 403 && data?.errorMessage === "Blocked") {
           throw new Error(
             "IpAddress has been blocked for too many failed Attempts!"
           );
         } else if (res.status === 403) {
-            throw new Error("Invalid password!");
-        } 
-      }
-      else {
+          throw new Error("Invalid password!");
+        }
+      } else {
         localStorage.setItem(isLoggedInKey, "true");
       }
     },
@@ -47,10 +45,20 @@ async function logout(apiBase: string) {
   Router.push("/login");
 }
 
+async function checkIp(apiBase: string) {
+  const res = await fetch(`${apiBase}/auth/check`, {
+    headers: { "Content-Type": "application/json" },
+    method: "POST",
+  });
+  const data = await res.json();
+  return data
+}
+
 export const authService = {
   get isLogged(): boolean {
     return !!localStorage.getItem(isLoggedInKey);
   },
   useLogin,
   logout,
+  checkIp
 };
