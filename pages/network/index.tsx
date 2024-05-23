@@ -13,7 +13,7 @@ export default function Network() {
                   <div>Active validators: {nullPlaceholder(network.active)}</div>
                   <div>Standby validators: {nullPlaceholder(network.standby)}</div>
                   <div>Desired network size: {nullPlaceholder(network.desired)}</div>
-                  <div>Joining / Syncing: {nullPlaceholder(network.joining)} / {nullPlaceholder(network.syncing)}</div>
+                  <div>Syncing: {nullPlaceholder(network.syncing)}</div>
               </div>
           </div>
           <div className="flex flex-col items-stretch">
@@ -30,7 +30,7 @@ export default function Network() {
               <h1 className="font-semibold mb-3">Network Health - Coming Soon</h1>
               <div
                   className="bg-white text-stone-500	rounded-xl p-8 text-sm [&>*]:pb-2 flex flex-col flex-grow justify-center">
-                  <div>Current A:S Ratio: {network.active/network.standby * 100}%</div>
+                  <div>Current A:S Ratio: {network.standby > 0 ? network.active/network.standby * 100 : 0}%</div>
                   <div>Target A:S Ratio: {nullPlaceholder(null)}</div>
                   <div>Network health: {nullPlaceholder(null)}%
                   </div>
