@@ -1,5 +1,5 @@
 import apiRouter from './api'
-import { apiLimiter, httpBodyLimiter, jwtMiddleware, loginHandler, logoutHandler } from './auth'
+import { apiLimiter, checkIpHandler, httpBodyLimiter, jwtMiddleware, loginHandler, logoutHandler } from './auth'
 import * as https from 'https';
 import * as fs from 'fs';
 import path from 'path';
@@ -24,6 +24,7 @@ if (isDev) {
     app.use(cookieParser());
     app.post('/auth/login', loginHandler)
     app.post('/auth/logout', logoutHandler)
+    app.post('/auth/check',checkIpHandler)
     app.use('/api', jwtMiddleware, apiRouter)
     app.get('*', (req: any, res: any) => nextHandler(req, res))
     app.use(errorMiddleware(isDev))
