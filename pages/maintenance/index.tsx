@@ -82,6 +82,7 @@ export default function Maintenance() {
   const showStakeWarning =
     nodeStatus &&
     stakeInfo?.stake &&
+    stakeInfo?.stake > "0.0" &&
     ethers.utils
       .parseEther(stakeInfo?.stake)
       .lt(ethers.utils.parseEther(nodeStatus.stakeRequirement));
@@ -255,7 +256,7 @@ export default function Maintenance() {
                   <div className="flex-grow" />
                   <div>
                     <span className="font-semibold">SHM staked:</span>{" "}
-                    {stakeInfo?.stake ? stakeInfo.stake + " SHM" : "-"}
+                    {(stakeInfo?.stake ?? "0.0") > "0.0" ? stakeInfo?.stake + " SHM" : "-"}
                   </div>
                   <div className="overflow-hidden text-ellipsis">
                     <span className="font-semibold">Stake address:</span>{" "}
