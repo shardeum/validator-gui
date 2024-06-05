@@ -4,7 +4,6 @@ import { useTXLogs } from "./useTXLogs";
 import { isMetaMaskError } from "../utils/isMetaMaskError";
 import { isEthersError } from "../utils/isEthersError";
 import { ExternalProvider } from "@ethersproject/providers";
-import { StakeData } from "../components/molecules/MinimalStakeForm";
 
 type useStakeProps = {
   nominator: string;
@@ -13,6 +12,16 @@ type useStakeProps = {
   onStake?: (amountStaked: number) => void;
   totalStaked: number;
 };
+
+type StakeData = {
+  isInternalTx: boolean;
+  internalTXType: number;
+  nominator: string;
+  nominee: string;
+  stake: string;
+  timestamp: number;
+  stakeOk: boolean;
+}
 
 export const useStake = ({ nominator, nominee, stakeAmount, onStake, totalStaked }: useStakeProps) => {
   const requiredStake = ethers.utils.parseEther(stakeAmount).toString();
