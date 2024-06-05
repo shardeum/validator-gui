@@ -9,14 +9,14 @@ body {
 
 ::-moz-selection {
   /* Code for Firefox */
-  color: black;
+  color: white;
   font: small-caption;
   letter-spacing: 1rem;
   background-color: #777;
 }
 
 ::selection {
-  color: black;
+  color: white;
   font: small-caption;
   letter-spacing: 1rem;
   background-color: #777;
@@ -26,6 +26,29 @@ input[type="password"] {
   color: black;
   font-family: Verdana;
   letter-spacing: 0.125em;
+}
+
+/* Firefox */
+::placeholder {
+  font-family: Opera, Helvetica, sans-serif;
+  letter-spacing: 0.05em;
+  font-size: 0.8em;
+  font-weight: 300;
+}
+
+/* Edge 12 -18 */
+::-ms-input-placeholder {
+  font-family: Opera, Helvetica, sans-serif;
+  letter-spacing: 0.05em;
+  font-size: 0.8em;
+  font-weight: 300;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  background-color: "white";
+  margin: 0;
 }
 
 html,
@@ -85,4 +108,193 @@ li.li-right {
   100% {
     transform: rotate(0);
   }
+}
+
+.fill-bg {
+  -webkit-background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
+  -o-background-size: 100% 100%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-300 {
+  animation: fade 300ms linear forwards;
+}
+.dropdown-400 {
+  animation: fade 400ms linear forwards;
+}
+.dropdown-500 {
+  animation: fade 500ms linear forwards;
+}
+.dropdown-600 {
+  animation: fade 600ms linear forwards;
+}
+
+.hidden-scrollar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hidden-scrollar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.bodyFg {
+  color: rgba(0, 0, 0, 0.66);
+  font-weight: 300;
+}
+
+::backdrop {
+  background-color: black;
+  opacity: 0.66;
+}
+
+/* Toggle switch styles */
+.toggle-switch-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.toggle-switch-container::before,
+.toggle-switch-container::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 10px;
+}
+.toggle-switch-container::before {
+  top: 0;
+  background: linear-gradient(to bottom, #defceb 0%, rgb(0, 0, 0, 0) 100%);
+}
+.toggle-switch-container::after {
+  bottom: 0;
+  background: linear-gradient(to top, #defceb 0%, rgb(0, 0, 0, 0) 100%);
+}
+.toggle-switch-container.loading::before {
+  background: linear-gradient(
+    to bottom,
+    #d8ddff 0%,
+    rgb(0, 0, 0, 0) 100%
+  ) !important;
+}
+.toggle-switch-container.loading::after {
+  background: linear-gradient(
+    to top,
+    #d8ddff 0%,
+    rgb(0, 0, 0, 0) 100%
+  ) !important;
+}
+.toggle-switch-container.active::before {
+  background: linear-gradient(to bottom, #ffdede 0%, rgb(0, 0, 0, 0) 100%);
+}
+.toggle-switch-container.active::after {
+  background: linear-gradient(to top, #ffdede 0%, rgb(0, 0, 0, 0) 100%);
+}
+.toggle-switch-container .text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: 500;
+  color: rgb(53, 53, 53);
+  transition: all 0.3s ease-in-out;
+}
+.toggle-switch-container.loading .switch {
+  pointer-events: none;
+}
+.toggle-switch-container.loading .switch .slider {
+  width: 34px;
+  background-color: #9b999b;
+}
+.toggle-switch-container.loading .switch .slider::before {
+  border: 3px solid #9b999b;
+  border-top: 3px solid #6174f0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+.toggle-switch-container.active .switch .slider::before {
+  right: 3px;
+  left: unset;
+}
+.toggle-switch-container.active.loading .switch .slider::before {
+  right: 0px;
+  left: unset;
+}
+
+.switch {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  height: 34px;
+  width: 56px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.switch .slider {
+  position: absolute;
+  z-index: 10;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  background-color: #1bc665;
+  transition: all 0.3s ease-in-out;
+}
+.switch .slider::before {
+  content: "";
+  position: absolute;
+  height: 28px;
+  width: 28px;
+  left: 3px;
+  bottom: 3px;
+  background-color: rgb(241, 241, 241);
+  transition: 0.3s ease;
+  transition-property: background-color;
+  animation: spin 1s ease infinite;
+}
+.toggle-switch-container.active .switch .slider.round {
+  background-color: #e1413e;
+}
+.switch .slider.round {
+  border-radius: 28px;
+  box-shadow: 2px 2px 5px rgb(0, 0, 0, 0.1);
+}
+.switch .slider.round::before {
+  border-radius: 50%;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.tooltip {
+  --tooltip-color: #fff;
+  --tooltip-text-color: rgba(0, 0, 0, 0.66);
+}
+
+.tooltip:before {
+  @apply border rounded-lg flex items-center py-4;
 }
