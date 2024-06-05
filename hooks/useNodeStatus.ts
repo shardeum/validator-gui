@@ -7,10 +7,10 @@ import { FetcherContext } from '../components/FetcherContextProvider';
 import { ToastContext } from '../components/ToastContextProvider';
 
 type NodeStatusResponse = {
-  nodeStatus: NodeStatus | undefined
-  startNode: Function
-  stopNode: Function
-  isLoading: boolean
+  nodeStatus: NodeStatus | undefined;
+  startNode: Function;
+  stopNode: Function;
+  isLoading: boolean;
 }
 
 export const useNodeStatus = (): NodeStatusResponse => {
@@ -47,6 +47,6 @@ export const useNodeStatus = (): NodeStatusResponse => {
     nodeStatus: data,
     startNode,
     stopNode,
-    isLoading,
+    isLoading
   }
 }
