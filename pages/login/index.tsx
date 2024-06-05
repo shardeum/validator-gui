@@ -1,4 +1,4 @@
-import { ReactElement, useContext } from "react";
+import { ReactElement } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { GeistSans } from "geist/font";
@@ -21,22 +21,20 @@ const Login = () => {
   useEffect(() => {
     // redirect to home if already logged in
     if (authService.isLogged) {
-      router.push("/");
+      router.push("/dashboard");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <>
+    <div className="flex flex-col h-screen justify-between relative">
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <div className="h-screen w-screen flex center">
+      <div className="w-screen flex center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <aside
-          className="basis-0 grow max-sm:hidden w-full h-full bg-[#3042FB] text-white flex flex-col justify-end items-start"
+          className="basis-0 grow max-sm:hidden w-full h-screen bg-[#3042FB] text-white flex flex-col justify-end items-start fill-bg"
           style={{
             backgroundImage: `url(${loginAsideBg.src})`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "fill",
           }}
         >
           <div className="flex flex-col items-center mb-20 ml-20 gap-y-8">
@@ -61,17 +59,8 @@ const Login = () => {
             </div>
           </div>
         </aside>
-        <div
-          className="bg-[#FAFAFA] flex basis-0 grow text-stone-500 rounded-xl text-sm h-full"
-          style={{
-            backgroundImage: isMobile ? `url(${mobileLoginBg.src})` : "",
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "fill",
-            height: "100%",
-            width: "100%",
-          }}
-        >
-          <main className="grow p-20 h-full">
+        <div className="flex basis-0 grow text-stone-500 rounded-xl text-sm h-full">
+          <main className={`grow px-6 pt-24 md:p-20 h-full`}>
             <div className="flex flex-col gap-y-8 h-full">
               <Logo className="w-40 mb-4" />
               <Title
@@ -83,18 +72,29 @@ const Login = () => {
               />
               <div className="flex flex-col justify-between h-full">
                 <LoginForm />
-                <div className="flex justify-between w-full">
-                  <span>
-                    Validator Version : {publicVersion?.runningCliVersion}
-                  </span>
-                  <span>Running on Localhost</span>
-                </div>
+                {!isMobile && (
+                  <div className="flex justify-between w-full">
+                    <span>
+                      Validator Version :{" "}
+                      {publicVersion?.runnningValidatorVersion}
+                    </span>
+                    <span>Running on Localhost</span>
+                  </div>
+                )}
               </div>
             </div>
           </main>
         </div>
       </div>
-    </>
+      {isMobile && (
+        <div
+          className="fill-bg h-96 w-full"
+          style={{
+            backgroundImage: `url(${mobileLoginBg.src})`,
+          }}
+        ></div>
+      )}
+    </div>
   );
 };
 
@@ -113,7 +113,7 @@ Login.getLayout = function getLayout(page: ReactElement) {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>{page}</div>
+      <div className="bg-[$FAFAFA] h-screen">{page}</div>
     </>
   );
 };
