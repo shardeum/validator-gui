@@ -74,7 +74,7 @@ export const AddStakeModal = () => {
             <input
               type="number"
               step="0.00000000000000000001"
-              min={nodeStatus?.stakeRequirement || "20"}
+              min={nodeStatus?.stakeRequirement || "10"}
               id={stakeInputId}
               ref={stakeInputRef}
               placeholder="Enter the amount to stake"
