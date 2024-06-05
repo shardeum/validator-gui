@@ -5,29 +5,22 @@ import { Card } from "../layouts/Card";
 import { useAccount, useNetwork } from "wagmi";
 import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 import { CHAIN_ID } from "../../pages/_app";
-import { ConfirmUnstakeModal } from "./ConfirmUnstakeModal";
 import useModalStore from "../../hooks/useModalStore";
 import { ConfirmRedemptionModal } from "./ConfirmRedemptionModal";
 
 function formatDate(date: Date) {
-  // Define options for the date part
-  const dateOptions = {
+  // Format date and time separately
+  const datePart = date.toLocaleDateString("en-US", {
     weekday: "short",
     day: "2-digit",
     month: "short",
     year: "numeric",
-  };
-
-  // Define options for the time part
-  const timeOptions = {
+  });
+  const timePart = date.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: true,
-  };
-
-  // Format date and time separately
-  const datePart = date.toLocaleDateString("en-US", dateOptions);
-  const timePart = date.toLocaleTimeString("en-US", timeOptions);
+  });
 
   // Combine date and time parts
   return `${datePart} ${timePart}`;
