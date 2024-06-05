@@ -2,7 +2,7 @@ import { ErrorResponse } from './error'
 
 export type NodeStatus = {
   state: 'active' | 'standby' | 'stopped'
-  exitStatus: 'Exit with warning' | 'Exited cleanly'|'Exit with error',
+  exitStatus: 'Exit with warning' | 'Exited cleanly' | 'Exit with error',
   exitMessage: string,
   totalTimeValidating: number
   lastActive: string
@@ -23,6 +23,12 @@ export type NodeStatus = {
 
 export type NodeLogsResponse = string[] | ErrorResponse
 export type NodeStatusResponse = NodeStatus | ErrorResponse
+
+type LogsCleared = {
+  logsCleared: string[];
+}
+
+export type NodeClearLogsResponse = LogsCleared | ErrorResponse
 
 type NodeStatusHistory = {
   state: string
