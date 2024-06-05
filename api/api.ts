@@ -4,10 +4,14 @@ import configureNodeHandlers from './handlers/node'
 import { exec } from 'child_process'
 import fs from 'fs'
 import path from 'path'
+import { Request, Response } from 'express';
+import asyncRouteHandler from './handlers/async-router-handler'
 const yaml = require('js-yaml')
 
-const apiRouter = express.Router()
+const FAUCET_CLAIM_URL =
+  process.env.FAUCET_CLAIM_URL ?? "https://api.shardeum.org/api/transfer";
 
+const apiRouter = express.Router()
 configureNodeHandlers(apiRouter)
 
 // app.get('/node/status', (req, res) => {
@@ -97,5 +101,23 @@ apiRouter.post('/log/unstake', (req, res) => {
   })
   res.status(200).json({ status: 'ok' })
 })
+
+apiRouter.post(
+  '/claim-tokens',
+  asyncRouteHandler(async (req: Request, res: Response) => {
+    const { address: accountAddress } = req.query;
+    const claimResponse = await fetch(
+      `${FAUCET_CLAIM_URL}?address=${accountAddress}`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await claimResponse.json();
+    res.status(200).json(data)
+  }));
 
 export default apiRouter
