@@ -1,6 +1,7 @@
 import { execFile, execFileSync } from 'child_process';
 import { Request, Response, Router } from 'express';
 import {
+  NodeClearLogsResponse,
   NodeLogsResponse,
   NodeNetworkResponse,
   NodeSettings,
@@ -13,7 +14,7 @@ import { badRequestResponse, cliStderrResponse } from './util';
 import path from 'path';
 import { existsSync } from 'fs';
 import asyncRouteHandler from './async-router-handler';
-import { ExecFileSyncError } from '../types/error';
+import fs from 'fs';
 import * as crypto from '@shardus/crypto-utils';
 
 const yaml = require('js-yaml')
@@ -86,6 +87,28 @@ export default function configureNodeHandlers(apiRouter: Router) {
       }
       const availableLogs = stdout.split(',').map((s: string) => s.trim());
       res.json(availableLogs);
+    });
+  }));
+
+  apiRouter.delete('/node/logs', asyncRouteHandler(async (req: Request, res: Response<NodeClearLogsResponse>) => {
+    let logsPath = path.join(__dirname, '../../../cli/build/logs');
+    if (!existsSync(logsPath)) {
+      res.json({ logsCleared: [] });
+      return;
+    }
+    execFile('ls', ['-m'], { cwd: logsPath }, (err, stdout, stderr) => {
+      if (err) {
+        throw new Error('Unable to get logs', err)
+      }
+      if (stderr) {
+        throw new Error('Unable to get logs' + stderr)
+      }
+      const availableLogs = stdout.split(',').map((s: string) => s.trim());
+      for (let availableLog of availableLogs) {
+        const logPath = path.join(__dirname, `../../../cli/build/logs/${availableLog}`);
+        fs.writeFileSync(logPath, "", 'utf-8');
+      }
+      res.json({ logsCleared: availableLogs });
     });
   }));
 
