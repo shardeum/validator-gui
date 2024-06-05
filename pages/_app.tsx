@@ -19,8 +19,8 @@ import {
 import ConfirmModalContextProvider from "../components/ConfirmModalContextProvider";
 import RouteGuard from "../components/RouteGuard";
 import FetcherContextProvider from "../components/FetcherContextProvider";
-import { createContext } from "vm";
 import DeviceContextProvider from "../context/device";
+import { Modal } from "../components/layouts/Modal";
 
 export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactElement | null;
@@ -66,7 +66,10 @@ const connectors = connectorsForWallets([
     wallets: [
       injectedWallet({ chains }),
       metaMaskWallet({ chains, projectId: "shm-dashboard" }),
-      walletConnectWallet({ chains, projectId: "shm-dashboard" }),
+      walletConnectWallet({
+        chains,
+        projectId: "shm-dashboard",
+      }),
     ],
   },
 ]);
@@ -79,6 +82,7 @@ const config = createConfig({
 
 function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? getDefaultLayout;
+
   return (
     <>
       <WagmiConfig config={config}>
@@ -89,6 +93,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
                 <DeviceContextProvider>
                   <FetcherContextProvider>
                     {getLayout(<Component {...pageProps} />)}
+                    <Modal />
                   </FetcherContextProvider>
                 </DeviceContextProvider>
               </ToastContextProvider>
