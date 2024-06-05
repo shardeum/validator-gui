@@ -1,25 +1,17 @@
 import { SetStateAction, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import { EyeIcon } from "@heroicons/react/24/outline";
-import { EyeSlashIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { GeistSans } from "geist/font";
 import { authService, isFirstTimeUserKey } from "../../services/auth.service";
 import { useRouter } from "next/router";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import { useDevice } from "../../context/device";
+import { PasswordInput } from "../atoms/PasswordInput";
 
 export const LoginForm: React.FC = () => {
   const { register, handleSubmit, formState } = useForm();
   const [isInputVisible, setIsInputVisible] = useState(false);
-  const [isActive, setIsActive] = useState(false);
-
-  const handleToggle = () => {
-    if (isInputVisible) {
-      setIsInputVisible(false);
-    } else {
-      setIsInputVisible(true);
-    }
-  };
+  const [isInputActive, setIsInputActive] = useState(false);
 
   const [apiError, setApiError] = useState<Error | null>(null);
 
@@ -39,7 +31,7 @@ export const LoginForm: React.FC = () => {
       if (isFirstTimeUser() && !isMobile) {
         router.push("/onboarding");
       } else {
-        router.push("/");
+        router.push("/dashboard");
       }
     } catch (error) {
       setApiError(error as SetStateAction<Error | null>);
@@ -53,42 +45,11 @@ export const LoginForm: React.FC = () => {
           <span className="text-gray-900 font-light bg-white">Password</span>
         </label>
         <div>
-          <div
-            className={
-              "flex items-center py-2 px-3 rounded-md border border-b-2 bg-white " +
-              (isActive ? "border-b-indigo-500" : "")
-            }
-          >
-            <div className="w-full flex justify-between">
-              <input
-                type={isInputVisible ? "text" : "password"}
-                placeholder="Enter password here"
-                className="outline-none flex-1 bg-white"
-                {...register("password")}
-                onChange={(e) => {
-                  const password = e.target.value;
-                  if (password.length > 0) {
-                    setIsActive(true);
-                  } else {
-                    setIsActive(false);
-                  }
-                }}
-              />
-              <span>
-                {isInputVisible ? (
-                  <EyeIcon
-                    className="cursor-pointer h-4 ml-2"
-                    onClick={handleToggle}
-                  />
-                ) : (
-                  <EyeSlashIcon
-                    className="cursor-pointer h-4 ml-2"
-                    onClick={handleToggle}
-                  />
-                )}
-              </span>
-            </div>
-          </div>
+          <PasswordInput
+            inputProps={register("password")}
+            isInputActive={isInputActive}
+            setIsInputActive={setIsInputActive}
+          />
           {apiError && (
             <div className="flex text-red-600 items-center mb-5 mt-1">
               <div className={"font-normal text-xs " + GeistSans.className}>
@@ -102,8 +63,10 @@ export const LoginForm: React.FC = () => {
           <button
             disabled={formState.isSubmitting}
             className={
-              (isActive ? "bg-indigo-600 hover:bg-indigo-700" : "bg-gray-300") +
-              " text-white text-sm font-semibold py-2 px-4 w-40 rounded-md flex justify-center " +
+              (isInputActive
+                ? "bg-indigo-600 hover:bg-indigo-700"
+                : "bg-gray-300") +
+              " text-white text-sm font-semibold py-2 px-4 w-40 rounded-md flex justify-center ease-in-out duration-300 " +
               GeistSans.className
             }
             type="submit"
