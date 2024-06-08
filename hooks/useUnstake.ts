@@ -113,8 +113,9 @@ export const useUnstake = ({ nominator, nominee, force }: useStakeProps) => {
 
   const handleRemoveStake = async () => {
     setLoading(true);
-    await new Promise(r => setTimeout(r, 3000));
+    // await new Promise(r => setTimeout(r, 3000));
     const wasUnstakeSuccessful = await sendTransaction(nominator, nominee, force);
+    // const wasUnstakeSuccessful = true;
     setLoading(false);
     return wasUnstakeSuccessful;
   }
