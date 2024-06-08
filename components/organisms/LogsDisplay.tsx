@@ -8,7 +8,7 @@ export const LogsDisplay = () => {
 
   return (
     <div className="grow flex flex-col justify-between">
-      <div className="px-16 flex flex-col gap-y-12">
+      <div className="md:px-16 px-4 flex flex-col gap-y-12">
         <div className="flex flex-col gap-y-2">
           <span className="text-2xl font-semibold">Validator Logs</span>
           <span className="text-sm bodyFg">
@@ -26,7 +26,7 @@ export const LogsDisplay = () => {
                   clearAllLogs();
                 }}
               >
-                Clear All Logs
+                Clear All<span className="max-md:hidden"> Logs</span>
               </span>
               <button
                 className="border border-gray-300 bg-white px-4 py-1 rounded flex items-center gap-x-2"
@@ -35,7 +35,9 @@ export const LogsDisplay = () => {
                 }}
               >
                 <ArrowDownTrayIcon className="w-4 h-4 text-black stroke-2" />
-                <span className="text-md font-semibold">Download All Logs</span>
+                <span className="text-md font-semibold">
+                  Download All<span className="max-md:hidden"> Logs</span>
+                </span>
               </button>
             </div>
           </div>
