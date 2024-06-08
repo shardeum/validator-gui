@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNodeVersion } from "../../hooks/useNodeVersion";
-import { useGlobals } from "../../utils/globals";
 import Link from "next/link";
 
 const newGuiVersionAvailableKey = "newGuiVersionAvailable";
 const newValidatorVersionAvailableKey = "newValidatorVersionAvailable";
 
+const VERSION_UPDATE_REPOSTORY_URL =
+  process.env.VERSION_UPDATE_REPOSTORY_URL ??
+  "https://github.com/shardeum/validator-dashboard";
+
 export const InformationPopupsDisplay = () => {
   const { version } = useNodeVersion();
-  const { versionUpdateRepositoryUrl } = useGlobals();
 
   const [showGuiUpdatePrompt, setShowGuiUpdatePrompt] = useState(false);
   const [showValidatorUpdatePrompt, setShowValidatorUpdatePrompt] =
@@ -84,7 +86,7 @@ export const InformationPopupsDisplay = () => {
                 Dismiss
               </button>
               <Link
-                href={versionUpdateRepositoryUrl}
+                href={VERSION_UPDATE_REPOSTORY_URL}
                 onClick={() => {
                   setShowValidatorUpdatePrompt(false);
                 }}
@@ -119,7 +121,7 @@ export const InformationPopupsDisplay = () => {
                 Dismiss
               </button>
               <Link
-                href={versionUpdateRepositoryUrl}
+                href={VERSION_UPDATE_REPOSTORY_URL}
                 onClick={() => {
                   setShowGuiUpdatePrompt(false);
                 }}
