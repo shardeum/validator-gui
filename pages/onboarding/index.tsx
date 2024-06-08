@@ -23,36 +23,14 @@ import { ExpansionArrow } from "../../components/atoms/ExpansionArrow";
 import { useStake } from "../../hooks/useStake";
 
 const tokensClaimedByKey = "tokensClaimedBy";
-const onboardingCompletedKey = "onboardingCompleted";
-
-const VALIDATOR_GUI_DOCS_URL =
-  process.env.VALIDATOR_GUI_DOCS_URL ??
-  "https://docs.shardeum.org/node/run/validator";
-const VALIDATOR_GUI_FAQS_URL =
-  process.env.VALIDATOR_GUI_FAQS_URL ??
-  "https://docs.shardeum.org/faqs/general";
+export const onboardingCompletedKey = "onboardingCompleted";
 
 const Onboarding = () => {
-  const [accountAddress, setAccountAddress] = useState("");
-  const [isNodeStarted, setIsNodeStarted] = useState(true);
+  const [isNodeStarted, setIsNodeStarted] = useState(false);
   const [accountBalance, setAccountBalance] = useState("");
   const [tokenClaimPhase, setTokenClaimPhase] = useState(0); // 0: hasn't claimed yet, 1: initiated request, 2: has claimed
-  const { stakeInfo } = useAccountStakeInfo(accountAddress);
-  const [isStakingComplete, setIsStakingComplete] = useState(
-    localStorage.getItem(onboardingCompletedKey) === "true"
-  );
-  const [stakedAmount, setStakedAmount] = useState(0);
-  const [showSuccessScreen, setShowSuccessScreen] = useState(false);
-
-  useEffect(() => {
-    const claimantAddress = localStorage.getItem(tokensClaimedByKey);
-    setTokenClaimPhase(claimantAddress === accountAddress ? 2 : 0);
-  }, [accountAddress]);
-
-  const { chain } = useNetwork();
-  const { isConnected } = useAccount({
+  const { isConnected, address } = useAccount({
     onConnect: async (args) => {
-      setAccountAddress(args?.address || "");
       if (args?.address) {
         const balance = await fetchBalance({
           address: args?.address,
@@ -62,10 +40,25 @@ const Onboarding = () => {
       }
     },
     onDisconnect: () => {
-      setAccountAddress("");
       setAccountBalance("");
     },
   });
+
+  const { validatorGuiDocsUrl, validatorGuiFaqsUrl } = useGlobals();
+  const { stakeInfo } = useAccountStakeInfo(address);
+  const [isStakingComplete, setIsStakingComplete] = useState(
+    localStorage.getItem(onboardingCompletedKey) === "true"
+  );
+  const [stakedAmount, setStakedAmount] = useState(0);
+  const [showSuccessScreen, setShowSuccessScreen] = useState(false);
+
+  useEffect(() => {
+    const claimantAddress = localStorage.getItem(tokensClaimedByKey);
+    setTokenClaimPhase(claimantAddress === address ? 2 : 0);
+  }, [address]);
+
+  const { chain } = useNetwork();
+
   const { switchNetwork } = useSwitchNetwork();
   const router = useRouter();
   const { isMobile } = useDevice();
@@ -78,12 +71,12 @@ const Onboarding = () => {
     isEmpty,
     isLoading: isStaking,
   } = useStake({
-    nominator: accountAddress?.toString() || "",
+    nominator: address?.toString() || "",
     nominee: nodeStatus?.nomineeAddress || "",
     stakeAmount: nodeStatus?.stakeRequirement || "20",
     totalStaked: stakeInfo?.stake ? Number(stakeInfo.stake) : 0,
-    onStake: (stakeAmount: number) => {
-      setStakedAmount(stakeAmount);
+    onStake: (wasTxnSuccessful: boolean) => {
+      setIsStakingComplete(wasTxnSuccessful);
     },
   });
   const minimumStakeRequirement = parseFloat(
@@ -91,6 +84,14 @@ const Onboarding = () => {
   );
 
   const { apiBase } = useGlobals();
+
+  useEffect(() => {
+    if (nodeStatus?.state && nodeStatus.state !== "stopped") {
+      setIsNodeStarted(true);
+    } else {
+      setIsNodeStarted(false);
+    }
+  }, [nodeStatus?.state]);
 
   useEffect(() => {
     const nomineeAddress = nodeStatus?.nomineeAddress;
@@ -116,8 +117,8 @@ const Onboarding = () => {
     }
   }, [isStakingComplete]);
 
-  const claimTokens = async (accountAddress: string) => {
-    const claimUrl = `${apiBase}/api/claim-tokens?address=${accountAddress}`;
+  const claimTokens = async (address: string) => {
+    const claimUrl = `${apiBase}/api/claim-tokens?address=${address}`;
     const claimResponse = await fetch(claimUrl, {
       method: "POST",
       headers: {
@@ -128,7 +129,7 @@ const Onboarding = () => {
     const data = await claimResponse.json();
     const tokenClaimComplete = data && data?.transfer;
     if (tokenClaimComplete) {
-      localStorage.setItem(tokensClaimedByKey, accountAddress);
+      localStorage.setItem(tokensClaimedByKey, address);
     }
     return true;
   };
@@ -183,7 +184,7 @@ const Onboarding = () => {
                       </div>
                       <Link
                         className="flex items-center"
-                        href={VALIDATOR_GUI_DOCS_URL}
+                        href={validatorGuiDocsUrl}
                         target="_blank"
                       >
                         <span className="ml-2 underline">Documentation</span>
@@ -194,7 +195,7 @@ const Onboarding = () => {
                       <QuestionMarkCircleIcon className="w-5 h-5" />
                       <Link
                         className="flex items-center"
-                        href={VALIDATOR_GUI_FAQS_URL}
+                        href={validatorGuiFaqsUrl}
                         target="_blank"
                       >
                         <span className="ml-2 underline">FAQs</span>
@@ -283,9 +284,10 @@ const Onboarding = () => {
                       </span>
                     </div>
                     <span className="text-gray-600 text-sm ml-8">
-                      {accountAddress.slice(0, 4)}...
-                      {accountAddress.slice(accountAddress.length - 5)}{" "}
-                      connected to the network
+                      {address &&
+                        `${address.slice(0, 4)}...
+                      ${address.slice(address.length - 5)} connected to the
+                      network`}
                     </span>
                   </>
                 )}
@@ -323,7 +325,7 @@ const Onboarding = () => {
                                   onClick={async () => {
                                     setTokenClaimPhase(1);
                                     const tokensClaimed = await claimTokens(
-                                      accountAddress
+                                      address || ""
                                     );
                                     if (tokensClaimed) {
                                       setTokenClaimPhase(2);
@@ -344,7 +346,7 @@ const Onboarding = () => {
                                   onClick={() => {
                                     localStorage.setItem(
                                       tokensClaimedByKey,
-                                      accountAddress
+                                      address || ""
                                     );
                                     setTokenClaimPhase(2);
                                   }}
@@ -486,7 +488,7 @@ const Onboarding = () => {
 
               {/* Step 4: Stake SHM */}
               <div className="bg-white w-full border p-3 shadow-md rounded-sm">
-                {!isNodeStarted && (
+                {(!isConnected || tokenClaimPhase < 2 || !isNodeStarted) && (
                   <div className="flex flex-col">
                     <div className="flex items-center gap-x-2">
                       <span className="flex items-center justify-center bg-gray-400 h-5 w-5 rounded-full text-white text-xs">
@@ -499,7 +501,8 @@ const Onboarding = () => {
                     </div>
                   </div>
                 )}
-                {tokenClaimPhase === 2 &&
+                {isConnected &&
+                  tokenClaimPhase === 2 &&
                   isNodeStarted &&
                   !isStakingComplete && (
                     <div className="flex flex-col">
@@ -537,7 +540,6 @@ const Onboarding = () => {
                               <button
                                 onClick={async () => {
                                   await sendTransaction();
-                                  setIsStakingComplete(true);
                                 }}
                                 disabled={
                                   isEmpty ||
@@ -570,7 +572,16 @@ const Onboarding = () => {
                           <div className="flex flex-col w-full mt-2">
                             <div className="flex items-center"></div>
                             <div className="flex justify-between">
-                              <div className="text-xs">
+                              <div
+                                className={`text-xs ${
+                                  stakedAmount <
+                                  parseFloat(
+                                    nodeStatus?.stakeRequirement || "10.0"
+                                  )
+                                    ? "text-dangerFg"
+                                    : ""
+                                }`}
+                              >
                                 <span>Minimum stake requirement: </span>
                                 <span className="font-semibold">
                                   {minimumStakeRequirement.toFixed(0)} SHM
@@ -590,7 +601,8 @@ const Onboarding = () => {
                       </div>
                     </div>
                   )}
-                {tokenClaimPhase === 2 &&
+                {isConnected &&
+                  tokenClaimPhase === 2 &&
                   isNodeStarted &&
                   isStakingComplete && (
                     <>
