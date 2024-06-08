@@ -25,6 +25,13 @@ import { useStake } from "../../hooks/useStake";
 const tokensClaimedByKey = "tokensClaimedBy";
 export const onboardingCompletedKey = "onboardingCompleted";
 
+const VALIDATOR_GUI_FAQS_URL =
+  process.env.VALIDATOR_GUI_FAQS_URL ||
+  "https://docs.shardeum.org/faqs/general";
+const VALIDATOR_GUI_DOCS_URL =
+  process.env.VALIDATOR_GUI_DOCS_URL ||
+  "https://docs.shardeum.org/node/run/validator";
+
 const Onboarding = () => {
   const [isNodeStarted, setIsNodeStarted] = useState(false);
   const [accountBalance, setAccountBalance] = useState("");
@@ -43,8 +50,6 @@ const Onboarding = () => {
       setAccountBalance("");
     },
   });
-
-  const { validatorGuiDocsUrl, validatorGuiFaqsUrl } = useGlobals();
   const { stakeInfo } = useAccountStakeInfo(address);
   const [isStakingComplete, setIsStakingComplete] = useState(
     localStorage.getItem(onboardingCompletedKey) === "true"
@@ -184,7 +189,7 @@ const Onboarding = () => {
                       </div>
                       <Link
                         className="flex items-center"
-                        href={validatorGuiDocsUrl}
+                        href={VALIDATOR_GUI_DOCS_URL}
                         target="_blank"
                       >
                         <span className="ml-2 underline">Documentation</span>
@@ -195,7 +200,7 @@ const Onboarding = () => {
                       <QuestionMarkCircleIcon className="w-5 h-5" />
                       <Link
                         className="flex items-center"
-                        href={validatorGuiFaqsUrl}
+                        href={VALIDATOR_GUI_FAQS_URL}
                         target="_blank"
                       >
                         <span className="ml-2 underline">FAQs</span>
