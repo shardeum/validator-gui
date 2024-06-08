@@ -12,6 +12,8 @@ import useNotificationsStore, {
   NotificationType,
 } from "../../hooks/useNotificationsStore";
 import useToastStore from "../../hooks/useToastStore";
+import { useNodeStatusHistory } from "../../hooks/useNodeStatusHistory";
+import moment from "moment";
 
 export enum NodeState {
   ACTIVE = "ACTIVE",
@@ -31,6 +33,7 @@ type DailyNodeStatus = {
 
 type NodeStatusProps = {
   isWalletConnected: boolean;
+  address: string;
 };
 
 const previousNodeStateKey = "previousNodeState";
@@ -135,7 +138,7 @@ const getNodeStatusHistoryChart = (nodeStatusHistories: DailyNodeStatus[]) => {
               <div className="h-20 w-2 flex flex-col-reverse gap-y-0.5">
                 <div
                   className="bg-successFg tooltip dropdown-400"
-                  data-tip={`${nodeStatusHistory.activeDuration}%`}
+                  data-tip={`${nodeStatusHistory.activeDuration.toFixed(2)}%`}
                   style={{
                     height: `${nodeStatusHistory.activeDuration}%`,
                   }}
@@ -166,59 +169,26 @@ const getNodeStatusHistoryChart = (nodeStatusHistories: DailyNodeStatus[]) => {
   );
 };
 
-export const getTimeTags = (dateStr: string) => {
-  const weekday = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const month = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const date = new Date(dateStr);
-  let dateTag = `${weekday[date.getDay()]}, ${date.getDate()} ${
-    month[date.getMonth()]
-  } ${date.getFullYear()}`;
-  let hour = date.getHours();
-  let meridian = "AM";
-  if (hour > 12) {
-    hour -= 12;
-    meridian = "PM";
+export const getDurationBreakdownString = (duration: number) => {
+  if (duration === 0) {
+    return "0s";
   }
-  let timeTag = `${date.getHours()}:${date.getMinutes()} ${meridian}`;
-  if (!dateStr) {
-    dateTag = "";
-    timeTag = "";
-  }
-  return [dateTag, timeTag];
+  const momentDuration = moment.duration(duration, "seconds");
+  return `${momentDuration.weeks() > 0 ? `${momentDuration.weeks()}w ` : ""}${
+    momentDuration.days() > 0 ? `${momentDuration.days()}d ` : ""
+  }${momentDuration.hours()}h ${momentDuration.minutes()}m ${momentDuration.seconds()}s`;
 };
 
-export const NodeStatus = ({ isWalletConnected }: NodeStatusProps) => {
-  const { nodeStatus, isLoading } = useNodeStatus();
+export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
+  const { nodeStatus, isLoading, startNode, stopNode } = useNodeStatus();
+  const { nodeStatusHistory } = useNodeStatusHistory(address || "");
+
   const state: NodeState = getNodeState(nodeStatus);
   const title = getTitle(state, isWalletConnected);
-
   const titleBgColor = getTitleBgColor(state, isWalletConnected);
   const titleTextColor = getTitleTextColor(state, isWalletConnected);
 
   const [showMoreInfo, setShowMoreInfo] = useState(false);
-  const { startNode, stopNode } = useNodeStatus();
-
   const { addNotification } = useNotificationsStore((state: any) => ({
     addNotification: state.addNotification,
   }));
@@ -226,47 +196,143 @@ export const NodeStatus = ({ isWalletConnected }: NodeStatusProps) => {
     setCurrentToast: state.setCurrentToast,
     resetToast: state.resetToast,
   }));
+  //   {
+  //     day: "Sun",
+  //     activeDuration: 10,
+  //     standbyDuration: 30,
+  //     stoppedDuration: 25,
+  //   },
+  //   {
+  //     day: "Mon",
+  //     activeDuration: 20,
+  //     standbyDuration: 0,
+  //     stoppedDuration: 0,
+  //   },
+  //   {
+  //     day: "Tue",
+  //     activeDuration: 0,
+  //     standbyDuration: 0,
+  //     stoppedDuration: 0,
+  //   },
+  //   {
+  //     day: "Wed",
+  //     activeDuration: 25,
+  //     standbyDuration: 0,
+  //     stoppedDuration: 70,
+  //   },
+  //   {
+  //     day: "Thu",
+  //     activeDuration: 10,
+  //     standbyDuration: 40,
+  //     stoppedDuration: 30,
+  //   },
+  //   {
+  //     day: "Fri",
+  //     activeDuration: 15,
+  //     standbyDuration: 50,
+  //     stoppedDuration: 35,
+  //   },
+  //   {
+  //     day: "Sat",
+  //     activeDuration: 10,
+  //     standbyDuration: 30,
+  //     stoppedDuration: 20,
+  //   },
+  // ];
+
+  const [nodeStatusHistories, setNodeStatusHistories] = useState<
+    DailyNodeStatus[]
+  >([]);
+  const [totalValidatingTime, setTotalValidatingTime] = useState("0s");
+  const [totalValidatingTimeThisWeek, setTotalValidatingTimeThisWeek] =
+    useState("0s");
+
+  useEffect(() => {
+    setTotalValidatingTime(
+      getDurationBreakdownString(nodeStatusHistory?.totalNodeTime)
+    );
+
+    const pastWeekValidatingTimes: number[] = [];
+    const pastDay = moment().subtract(6, "d").startOf("day"); // 1 week ago
+    const pastWeekReferenceTimes: number[][] = [];
+    for (let i = 0; i < 6; i++) {
+      pastWeekReferenceTimes.push([pastDay.unix(), pastDay.add(1, "d").unix()]);
+      pastWeekValidatingTimes.push(0);
+    }
+    pastWeekValidatingTimes.push(0);
+    pastWeekReferenceTimes.push([pastDay.unix(), moment().unix()]);
+
+    (nodeStatusHistory?.history || []).forEach((session: any) => {
+      for (let i = 0; i < 7; i++) {
+        const [startOfDay, endOfDay] = pastWeekReferenceTimes[i];
+        const secondsOverlapWithTheDay = Math.max(
+          Math.min(endOfDay, session.e) - Math.max(startOfDay, session.b),
+          0
+        );
+        pastWeekValidatingTimes[i] += secondsOverlapWithTheDay;
+      }
+    });
+
+    let timeSpentValidatingInPastWeek = 0;
+    const statusHistories = [];
+    for (let i = 0; i < 7; i++) {
+      timeSpentValidatingInPastWeek += pastWeekValidatingTimes[i];
+      statusHistories.push({
+        day: moment.unix(pastWeekReferenceTimes[i][0]).format("ddd	"),
+        activeDuration: (pastWeekValidatingTimes[i] / 86400) * 100,
+        standbyDuration: 0,
+        stoppedDuration: 0,
+      });
+    }
+    console.log("STATUS HISTORIES:", statusHistories);
+    setNodeStatusHistories(statusHistories);
+    setTotalValidatingTimeThisWeek(
+      getDurationBreakdownString(timeSpentValidatingInPastWeek)
+    );
+  }, [nodeStatusHistory?.history, nodeStatusHistory?.totalNodeTime]);
 
   useEffect(() => {
     const previousNodeState = localStorage.getItem(previousNodeStateKey);
     const currentNodeState = nodeStatus?.state || previousNodeState;
     if (previousNodeState !== currentNodeState) {
-      switch (nodeStatus?.state) {
-        case "active":
-          addNotification({
-            type: NotificationType.NODE_STATUS,
-            severity: NotificationSeverity.SUCCESS,
-            title: "Your node status had been updated to: Validating",
-          });
-          setCurrentToast({
-            type: NotificationType.NODE_STATUS,
-            severity: NotificationSeverity.SUCCESS,
-            title: "Node Started Successfully",
-          });
-          break;
-        case "standby":
-        case "need-stake":
-          addNotification({
-            type: NotificationType.NODE_STATUS,
-            severity: NotificationSeverity.ATTENTION,
-            title: "Your node status had been updated to: Standby",
-          });
-          break;
-        case "stopped":
-          addNotification({
-            type: NotificationType.NODE_STATUS,
-            severity: NotificationSeverity.DANGER,
-            title: "Your node status had been updated to: Stopped",
-          });
-          setCurrentToast({
-            type: NotificationType.NODE_STATUS,
-            severity: NotificationSeverity.SUCCESS,
-            title: "Node Stopped Successfully",
-          });
-          break;
-        default:
-          break;
-      }
+      setTimeout(() => {
+        switch (nodeStatus?.state) {
+          case "active":
+            addNotification({
+              type: NotificationType.NODE_STATUS,
+              severity: NotificationSeverity.SUCCESS,
+              title: "Your node status had been updated to: Validating",
+            });
+            setCurrentToast({
+              type: NotificationType.NODE_STATUS,
+              severity: NotificationSeverity.SUCCESS,
+              title: "Node Started Successfully",
+            });
+            break;
+          case "standby":
+          case "need-stake":
+            addNotification({
+              type: NotificationType.NODE_STATUS,
+              severity: NotificationSeverity.ATTENTION,
+              title: "Your node status had been updated to: Standby",
+            });
+            break;
+          case "stopped":
+            addNotification({
+              type: NotificationType.NODE_STATUS,
+              severity: NotificationSeverity.DANGER,
+              title: "Your node status had been updated to: Stopped",
+            });
+            setCurrentToast({
+              type: NotificationType.NODE_STATUS,
+              severity: NotificationSeverity.SUCCESS,
+              title: "Node Stopped Successfully",
+            });
+            break;
+          default:
+            break;
+        }
+      }, 5000);
       localStorage.setItem(previousNodeStateKey, currentNodeState || "");
     } else {
       resetToast();
@@ -277,55 +343,7 @@ export const NodeStatus = ({ isWalletConnected }: NodeStatusProps) => {
     setShowMoreInfo((prevState: boolean) => !prevState);
   };
 
-  const nodeStatusHistories: DailyNodeStatus[] = [
-    {
-      day: "Sun",
-      activeDuration: 10,
-      standbyDuration: 30,
-      stoppedDuration: 25,
-    },
-    {
-      day: "Mon",
-      activeDuration: 20,
-      standbyDuration: 0,
-      stoppedDuration: 0,
-    },
-    {
-      day: "Tue",
-      activeDuration: 0,
-      standbyDuration: 0,
-      stoppedDuration: 0,
-    },
-    {
-      day: "Wed",
-      activeDuration: 25,
-      standbyDuration: 0,
-      stoppedDuration: 70,
-    },
-    {
-      day: "Thu",
-      activeDuration: 10,
-      standbyDuration: 40,
-      stoppedDuration: 30,
-    },
-    {
-      day: "Fri",
-      activeDuration: 15,
-      standbyDuration: 50,
-      stoppedDuration: 35,
-    },
-    {
-      day: "Sat",
-      activeDuration: 10,
-      standbyDuration: 30,
-      stoppedDuration: 20,
-    },
-  ];
   const isNodeStopped = state === NodeState.STOPPED;
-
-  const [lastActiveDateTag, lastActiveTimeTag] = getTimeTags(
-    nodeStatus?.lastActive || ""
-  );
 
   return (
     <Card>
@@ -349,10 +367,16 @@ export const NodeStatus = ({ isWalletConnected }: NodeStatusProps) => {
             <div className="flex justify-between">
               <span className="font-light text-xs">Previously active</span>
               <div className="flex flex-col">
-                <span className="text-xs">{lastActiveDateTag}</span>
-                <span className="text-xs flex justify-end">
-                  {lastActiveTimeTag}
+                <span className="text-xs">
+                  {nodeStatus?.state === "stopped"
+                    ? moment(nodeStatus?.lastActive).format("dddd, D MMM YYYY")
+                    : moment(nodeStatus?.lastActive).fromNow()}
                 </span>
+                {nodeStatus?.state === "stopped" && (
+                  <span className="text-xs flex justify-end">
+                    {moment(nodeStatus?.lastActive).format("LTS")}
+                  </span>
+                )}
               </div>
             </div>
             <div className="flex justify-between">
@@ -364,7 +388,6 @@ export const NodeStatus = ({ isWalletConnected }: NodeStatusProps) => {
                 {nodeStatus?.lastRotationIndex || "NA"}
               </span>
             </div>
-            <span>IS LOADING: {isLoading ? "TRUE" : "FALSE"}</span>
             <hr className="my-1" />
             <div className="flex flex-col gap-y-3">
               <div className="flex items-center justify-between">
@@ -388,13 +411,17 @@ export const NodeStatus = ({ isWalletConnected }: NodeStatusProps) => {
                     <span className="font-light text-xs">
                       Total validating time
                     </span>
-                    <span className="text-xs font-medium">N/A</span>
+                    <span className="text-xs font-medium">
+                      {totalValidatingTime}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-light text-xs">
                       Total time this week
                     </span>
-                    <span className="text-xs font-medium">02h 05m 01s</span>
+                    <span className="text-xs font-medium">
+                      {totalValidatingTimeThisWeek}
+                    </span>
                   </div>
                   {getNodeStatusHistoryChart(nodeStatusHistories)}
                 </div>
@@ -431,7 +458,7 @@ export const NodeStatus = ({ isWalletConnected }: NodeStatusProps) => {
                 )}
                 {isLoading && (
                   <button
-                    className="mt-2 border border-gray-300 rounded px-3 py-2 flex items-center justify-center text-sm font-medium"
+                    className="border border-gray-300 rounded px-3 py-2 flex items-center justify-center text-sm font-medium"
                     disabled={true}
                   >
                     <div className="spinner flex items-center justify-center mr-3">
