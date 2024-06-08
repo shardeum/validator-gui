@@ -9,7 +9,7 @@ import { CHAIN_ID } from "../../pages/_app";
 import { WalletConnectButton } from "./WalletConnectButton";
 import { ConfirmUnstakeModal } from "./ConfirmUnstakeModal";
 import { ClipboardIcon } from "../atoms/ClipboardIcon";
-import { useDevice } from "../../context/device";
+import { MobileModalWrapper } from "../layouts/MobileModalWrapper";
 
 export const StakeDisplay = () => {
   const addressRef = useRef<HTMLSpanElement>(null);
@@ -17,7 +17,6 @@ export const StakeDisplay = () => {
   const { stakeInfo } = useAccountStakeInfo(address);
   const { chain } = useNetwork();
   const { nodeStatus } = useNodeStatus();
-  const { isMobile } = useDevice();
   const { setShowModal, setContent, resetModal } = useModalStore(
     (state: any) => ({
       setShowModal: state.setShowModal,
@@ -79,25 +78,36 @@ export const StakeDisplay = () => {
                       "bg-white border border-bodyFg text-sm px-3 py-2 rounded basis-0 grow " +
                       (hasNodeStopped && parseFloat(stakeInfo?.stake || "0") > 0
                         ? "text-primary"
-                        : "text-gray-400 tooltip tooltip-bottom")
+                        : `text-gray-400 ${
+                            parseFloat(stakeInfo?.stake || "0") > 0
+                              ? "tooltip tooltip-bottom"
+                              : ""
+                          }`)
                     }
                     data-tip="It is not recommended to unstake while validating.
                     If absolutely necessary, use the force remove option in settings to remove stake (Not Recommended)."
                     disabled={
-                      !hasNodeStopped || parseFloat(stakeInfo?.stake || "0") > 0
+                      !hasNodeStopped ||
+                      parseFloat(stakeInfo?.stake || "0") === 0
                     }
                     onClick={() => {
                       resetModal();
                       setContent(
-                        <ConfirmUnstakeModal
-                          nominator={address?.toString() || ""}
-                          nominee={nodeStatus?.nomineeAddress || ""}
-                          isNormalUnstake={hasNodeStopped}
-                          currentRewards={parseFloat(
-                            nodeStatus?.currentRewards || "0"
-                          )}
-                          currentStake={parseFloat(stakeInfo?.stake || "0")}
-                        ></ConfirmUnstakeModal>
+                        <MobileModalWrapper
+                          closeButtonRequired={false}
+                          contentOnTop={false}
+                          wrapperClassName="fixed bottom-0 flex flex-col items-center justify-start p-3 rounded-t-2xl min-h-2/3 overflow-scroll bg-white w-screen dropdown-300 text-black"
+                        >
+                          <ConfirmUnstakeModal
+                            nominator={address?.toString() || ""}
+                            nominee={nodeStatus?.nomineeAddress || ""}
+                            isNormalUnstake={!hasNodeStopped}
+                            currentRewards={parseFloat(
+                              nodeStatus?.currentRewards || "0"
+                            )}
+                            currentStake={parseFloat(stakeInfo?.stake || "0")}
+                          ></ConfirmUnstakeModal>
+                        </MobileModalWrapper>
                       );
                       setShowModal(true);
                     }}
@@ -115,15 +125,12 @@ export const StakeDisplay = () => {
                     onClick={() => {
                       resetModal();
                       setContent(
-                        isMobile ? (
-                          <div className="flex flex-col items-center justify-start">
-                            <div className="fixed bottom-0 flex flex-col items-center justify-start p-3 rounded-t-2xl h-1/3 overflow-scroll bg-white w-screen dropdown-300 text-black">
-                              <AddStakeModal />
-                            </div>
-                          </div>
-                        ) : (
+                        <MobileModalWrapper
+                          closeButtonRequired={false}
+                          contentOnTop={false}
+                        >
                           <AddStakeModal />
-                        )
+                        </MobileModalWrapper>
                       );
                       setShowModal(true);
                     }}

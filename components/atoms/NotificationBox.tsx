@@ -47,17 +47,22 @@ export const NotificationBox = ({
   }));
 
   return (
-    <div className="border rounded flex py-2 px-3 dropdown-300">
-      <div className="flex justify-between w-full">
-        <div className="flex gap-x-2">
+    <div className="border rounded flex max-md:px-3 max-md:py-5 py-2 px-3 dropdown-300">
+      <div className="flex justify-between w-full max-md:gap-x-4">
+        <div className="flex gap-x-4 md:gap-x-2">
           <div className="flex flex-col justify-start">
             <NotificationIcon
               notificationType={notification.type}
               severity={notification.severity}
+              iconClassName="h-3 w-3 max-md:h-7 max-md:w-7"
+              containerClassName="rounded-full border h-5 w-5 flex justify-center items-center
+              max-md:h-8 max-md:w-8"
             />
           </div>
-          <div className="flex flex-col justify-start">
-            <span className="text-xs font-semibold">{notification.title}</span>
+          <div className="flex flex-col justify-start max-md:gap-y-2">
+            <span className="text-sm max-md:max-w-[16rem] md:text-xs text-subtleFg md:font-semibold">
+              {notification.title}
+            </span>
             <span className="bodyFg text-xs">
               {timeSince(notification.timestamp)} ago
             </span>

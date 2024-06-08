@@ -34,8 +34,8 @@ export const SettingsDisplay = () => {
   }, [nodeStatus?.state]);
 
   return (
-    <div className="grow flex flex-col justify-between bg-subtleBg">
-      <div className="px-16 flex flex-col gap-y-12">
+    <div className="grow flex flex-col justify-between">
+      <div className="md:px-16 px-4 flex flex-col gap-y-12">
         <div className="flex flex-col gap-y-2">
           <span className="text-2xl font-semibold">Settings</span>
           <span className="text-sm bodyFg">

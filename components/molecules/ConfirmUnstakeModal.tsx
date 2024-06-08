@@ -5,6 +5,9 @@ import {
 import useModalStore from "../../hooks/useModalStore";
 import { useUnstake } from "../../hooks/useUnstake";
 import { ForceUnstakeSuccessModal } from "./ForceUnstakeSuccessModal";
+import { MobileModalWrapper } from "../layouts/MobileModalWrapper";
+import { useDevice } from "../../context/device";
+import { UnstakeSuccessModal } from "./UnstakeSuccessModal";
 
 type ConfirmUnstakeModalProps = {
   nominator: string;
@@ -28,6 +31,7 @@ export const ConfirmUnstakeModal = ({
       resetModal: state.resetModal,
     })
   );
+  const { isMobile } = useDevice();
   const { handleRemoveStake, isLoading } = useUnstake({
     nominator,
     nominee,
@@ -83,8 +87,11 @@ export const ConfirmUnstakeModal = ({
             </div>
             <span className="break-words text-sm leading-5 max-w-md basis-0 grow">
               It is not recommended to force remove stake while validating. You
-              might lose <strong>{currentRewards.toFixed(0)} SHM</strong> earned
-              in the current cycle.
+              might lose{" "}
+              <span className="font-semibold">
+                {currentRewards.toFixed(0)} SHM
+              </span>{" "}
+              earned in the current cycle.
             </span>
           </div>
           <hr className="my-1" />
@@ -125,13 +132,34 @@ export const ConfirmUnstakeModal = ({
                 if (wasUnstakeSuccessful && !isNormalUnstake) {
                   setTimeout(() => {
                     setContent(
-                      <ForceUnstakeSuccessModal
-                        stake={currentStake}
-                        rewards={currentRewards}
-                      />
+                      <MobileModalWrapper
+                        closeButtonRequired={false}
+                        contentOnTop={false}
+                        wrapperClassName="fixed bottom-0 flex flex-col items-center justify-start p-3 rounded-t-2xl min-h-2/3 overflow-scroll bg-white w-screen dropdown-300 text-black"
+                      >
+                        <ForceUnstakeSuccessModal
+                          stake={currentStake}
+                          rewards={currentRewards}
+                        />
+                      </MobileModalWrapper>
                     );
                     setShowModal(true);
-                  }, 1200);
+                  }, 1000);
+                } else if (wasUnstakeSuccessful && isMobile) {
+                  setTimeout(() => {
+                    setContent(
+                      <MobileModalWrapper
+                        closeButtonRequired={false}
+                        contentOnTop={false}
+                      >
+                        <UnstakeSuccessModal
+                          stake={currentStake}
+                          rewards={currentRewards}
+                        />
+                      </MobileModalWrapper>
+                    );
+                    setShowModal(true);
+                  }, 1000);
                 }
               }}
             >

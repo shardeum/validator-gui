@@ -2,6 +2,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import useModalStore from "../../hooks/useModalStore";
 import { useUnstake } from "../../hooks/useUnstake";
 import { RedemptionSuccessModal } from "./RedemptionSuccessModal";
+import { MobileModalWrapper } from "../layouts/MobileModalWrapper";
 
 type ConfirmRedemptionModalProps = {
   nominator: string;
@@ -92,13 +93,18 @@ export const ConfirmRedemptionModal = ({
                 if (wasRedemptionSuccessful) {
                   setTimeout(() => {
                     setContent(
-                      <RedemptionSuccessModal
-                        stake={currentStake}
-                        rewards={currentRewards}
-                      />
+                      <MobileModalWrapper
+                        closeButtonRequired={false}
+                        contentOnTop={false}
+                      >
+                        <RedemptionSuccessModal
+                          stake={currentStake}
+                          rewards={currentRewards}
+                        />
+                      </MobileModalWrapper>
                     );
                     setShowModal(true);
-                  }, 1200);
+                  }, 1000);
                 }
               }}
             >
