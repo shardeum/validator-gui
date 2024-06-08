@@ -5,8 +5,11 @@ import fs from 'fs'
 import path from 'path'
 import { Request, Response } from 'express';
 import asyncRouteHandler from './handlers/async-router-handler'
-import { useGlobals } from '../utils/globals'
 const yaml = require('js-yaml')
+
+const ACCOUNT_INFO_URL = process.env.ACCOUNT_INFO_URL ?? "https://explorer-sphinx.shardeum.org/api/account";
+const FAUCET_CLAIM_URL =
+  process.env.FAUCET_CLAIM_URL ?? "https://api.shardeum.org/api/transfer";
 
 const apiRouter = express.Router()
 configureNodeHandlers(apiRouter)
@@ -28,9 +31,9 @@ configureNodeHandlers(apiRouter)
 apiRouter.get('/node/status/history', async (req, res) => {
   console.log('fetching node history')
   const { address: accountAddress } = req.query;
-  const { accountInfoUrl } = useGlobals();
+
   const accInfoResponse = await fetch(
-    `${accountInfoUrl}?address=${accountAddress}`,
+    `${ACCOUNT_INFO_URL}?address=${accountAddress}`,
     {
       method: "GET",
       headers: {
@@ -91,9 +94,8 @@ apiRouter.post(
   '/claim-tokens',
   asyncRouteHandler(async (req: Request, res: Response) => {
     const { address: accountAddress } = req.query;
-    const { faucetClaimUrl } = useGlobals();
     const claimResponse = await fetch(
-      `${faucetClaimUrl}?address=${accountAddress}`,
+      `${FAUCET_CLAIM_URL}?address=${accountAddress}`,
       {
         method: "POST",
         headers: {
