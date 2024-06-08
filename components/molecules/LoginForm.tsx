@@ -1,6 +1,5 @@
 import { SetStateAction, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { GeistSans } from "geist/font";
 import { authService, isFirstTimeUserKey } from "../../services/auth.service";
 import { useRouter } from "next/router";
@@ -10,7 +9,6 @@ import { PasswordInput } from "../atoms/PasswordInput";
 
 export const LoginForm: React.FC = () => {
   const { register, handleSubmit, formState } = useForm();
-  const [isInputVisible, setIsInputVisible] = useState(false);
   const [isInputActive, setIsInputActive] = useState(false);
 
   const [apiError, setApiError] = useState<Error | null>(null);
@@ -20,7 +18,7 @@ export const LoginForm: React.FC = () => {
   const { isMobile } = useDevice();
 
   const isFirstTimeUser = () => {
-    return localStorage.getItem(isFirstTimeUserKey) == null;
+    return localStorage.getItem(isFirstTimeUserKey) !== "false";
   };
 
   async function onSubmit({ password }: FieldValues) {
