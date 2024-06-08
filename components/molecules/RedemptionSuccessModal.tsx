@@ -14,6 +14,7 @@ export const RedemptionSuccessModal = ({
   const { resetModal } = useModalStore((state: any) => ({
     resetModal: state.resetModal,
   }));
+  const totalAmount = stake + rewards;
 
   return (
     <div className="bg-white text-subtleFg flex flex-col p-4 max-w-sm w-full rounded">
@@ -33,8 +34,9 @@ export const RedemptionSuccessModal = ({
         <span className="text-lg font-semibold">Rewards Claimed</span>
 
         <span className="text-sm bodyFg text-center">
-          You&apos;ve successfully unstaked <strong>{stake.toFixed(2)}</strong>{" "}
-          SHM into your wallet.
+          You&apos;ve successfully unstaked{" "}
+          <span className="font-semibold">{totalAmount.toFixed(2)} SHM</span>{" "}
+          into your wallet.
         </span>
 
         <button
