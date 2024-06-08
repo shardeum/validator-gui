@@ -7,6 +7,7 @@ import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 import { CHAIN_ID } from "../../pages/_app";
 import useModalStore from "../../hooks/useModalStore";
 import { ConfirmRedemptionModal } from "./ConfirmRedemptionModal";
+import { MobileModalWrapper } from "../layouts/MobileModalWrapper";
 
 function formatDate(date: Date) {
   // Format date and time separately
@@ -42,14 +43,14 @@ export const RewardsCard = () => {
     isConnected &&
       chain?.id === CHAIN_ID &&
       nodeStatus?.state !== "active" &&
-      parseFloat(stakeInfo?.stake || "0") > 0
+      parseFloat(stakeInfo?.stake || "0") >= 0
   );
   useEffect(() => {
     setCanRedeem(
       isConnected &&
         chain?.id === CHAIN_ID &&
-        nodeStatus?.state !== "active" &&
-        parseFloat(stakeInfo?.stake || "0") > 0
+        nodeStatus?.state === "stopped" &&
+        parseFloat(stakeInfo?.stake || "0") >= 0
     );
   }, [nodeStatus?.state, stakeInfo?.stake, isConnected, chain?.id]);
 
@@ -61,7 +62,9 @@ export const RewardsCard = () => {
             <div className="flex justify-between w-full">
               <div className="flex flex-col w-full gap-y-2">
                 <span className="font-semibold text-2xl flex gap-x-2">
-                  <span>{nodeStatus?.currentRewards} SHM</span>
+                  <span>
+                    {nodeStatus?.currentRewards || (0.0).toFixed(2)} SHM
+                  </span>
                   <span className="text-xs leading-9 bodyFg">(~0.00$)</span>
                 </span>
                 <div className="text-xs flex justify-between w-full bodyFg">
@@ -79,7 +82,7 @@ export const RewardsCard = () => {
           <div className="flex justify-between">
             <span className="text-xs bodyFg">Total rewards earned</span>
             <span className="font-semibold text-xs">
-              {nodeStatus?.lifetimeEarnings} SHM
+              {nodeStatus?.lifetimeEarnings || (0.0).toFixed(2)} SHM
             </span>
           </div>
           <div>
@@ -94,14 +97,19 @@ export const RewardsCard = () => {
               onClick={() => {
                 resetModal();
                 setContent(
-                  <ConfirmRedemptionModal
-                    nominator={address?.toString() || ""}
-                    nominee={nodeStatus?.nomineeAddress || ""}
-                    currentRewards={parseFloat(
-                      nodeStatus?.currentRewards || "0"
-                    )}
-                    currentStake={parseFloat(stakeInfo?.stake || "0")}
-                  ></ConfirmRedemptionModal>
+                  <MobileModalWrapper
+                    closeButtonRequired={false}
+                    contentOnTop={false}
+                  >
+                    <ConfirmRedemptionModal
+                      nominator={address?.toString() || ""}
+                      nominee={nodeStatus?.nomineeAddress || ""}
+                      currentRewards={parseFloat(
+                        nodeStatus?.currentRewards || "0"
+                      )}
+                      currentStake={parseFloat(stakeInfo?.stake || "0")}
+                    ></ConfirmRedemptionModal>
+                  </MobileModalWrapper>
                 );
                 setShowModal(true);
               }}
