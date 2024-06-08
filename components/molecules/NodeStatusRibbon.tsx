@@ -16,6 +16,7 @@ import useToastStore from "../../hooks/useToastStore";
 import { ExpansionArrow } from "../atoms/ExpansionArrow";
 import useModalStore from "../../hooks/useModalStore";
 import { OverviewSidebar } from "../organisms/OverviewSidebar";
+import { MobileModalWrapper } from "../layouts/MobileModalWrapper";
 
 export enum NodeState {
   ACTIVE = "ACTIVE",
@@ -33,7 +34,7 @@ type DailyNodeStatus = {
   stoppedDuration: number; // in %of total time
 };
 
-type NodeStatusMobileRibbonProps = {
+type NodeStatusRibbonProps = {
   isWalletConnected: boolean;
 };
 
@@ -141,50 +142,6 @@ const getBorderColor = (state: NodeState, isWalletConnected: boolean) => {
     : "subtleBg";
 };
 
-const getNodeStatusHistoryChart = (nodeStatusHistories: DailyNodeStatus[]) => {
-  return (
-    <div className="flex bg-subtleBg p-2 h-full">
-      <div className="w-full h-20 flex justify-around gap-x-5">
-        {nodeStatusHistories.map((nodeStatusHistory) => {
-          return (
-            <div
-              className="flex flex-col gap-y-2 items-center"
-              key={nodeStatusHistory.day}
-            >
-              <div className="h-20 w-2 flex flex-col-reverse gap-y-0.5">
-                <div
-                  className="bg-successFg tooltip dropdown-400"
-                  data-tip={`${nodeStatusHistory.activeDuration}%`}
-                  style={{
-                    height: `${nodeStatusHistory.activeDuration}%`,
-                  }}
-                ></div>
-                <div
-                  className="bg-attentionBorder tooltip dropdown-500"
-                  data-tip={`${nodeStatusHistory.standbyDuration}%`}
-                  style={{
-                    height: `${nodeStatusHistory.standbyDuration}%`,
-                  }}
-                ></div>
-                <div
-                  className="bg-severeFg tooltip dropdown-600"
-                  data-tip={`${nodeStatusHistory.stoppedDuration}%`}
-                  style={{
-                    height: `${nodeStatusHistory.stoppedDuration}%`,
-                  }}
-                ></div>
-              </div>
-              <span className="text-xs font-medium">
-                {nodeStatusHistory.day}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
-
 export const getTimeTags = (dateStr: string) => {
   const weekday = [
     "Sunday",
@@ -227,25 +184,25 @@ export const getTimeTags = (dateStr: string) => {
   return [dateTag, timeTag];
 };
 
-export const NodeStatusMobileRibbon = ({
+export const NodeStatusRibbon = ({
   isWalletConnected,
-}: NodeStatusMobileRibbonProps) => {
-  const { nodeStatus, startNode, stopNode, isLoading } = useNodeStatus();
+}: NodeStatusRibbonProps) => {
+  const { nodeStatus } = useNodeStatus();
   const state: NodeState = getNodeState(nodeStatus);
   const title = getTitle(state, isWalletConnected);
 
   const titleBgColor = getTitleBgColor(state, isWalletConnected);
   const titleTextColor = getTitleTextColor(state, isWalletConnected);
   const borderColor = getBorderColor(state, isWalletConnected);
-  const [showMoreInfo, setShowMoreInfo] = useState(false);
-  const { showModal, setShowModal, resetModal, content, setContent } =
-    useModalStore((state: any) => ({
+  const { showModal, setShowModal, setContent } = useModalStore(
+    (state: any) => ({
       showModal: state.showModal,
       setShowModal: state.setShowModal,
       resetModal: state.resetModal,
       content: state.content,
       setContent: state.setContent,
-    }));
+    })
+  );
 
   const { addNotification } = useNotificationsStore((state: any) => ({
     addNotification: state.addNotification,
@@ -301,62 +258,8 @@ export const NodeStatusMobileRibbon = ({
     }
   }, [nodeStatus?.state]);
 
-  const toggleShowMoreInfo = () => {
-    setShowMoreInfo((prevState: boolean) => !prevState);
-  };
-
-  const nodeStatusHistories: DailyNodeStatus[] = [
-    {
-      day: "Sun",
-      activeDuration: 10,
-      standbyDuration: 30,
-      stoppedDuration: 25,
-    },
-    {
-      day: "Mon",
-      activeDuration: 20,
-      standbyDuration: 0,
-      stoppedDuration: 0,
-    },
-    {
-      day: "Tue",
-      activeDuration: 0,
-      standbyDuration: 0,
-      stoppedDuration: 0,
-    },
-    {
-      day: "Wed",
-      activeDuration: 25,
-      standbyDuration: 0,
-      stoppedDuration: 70,
-    },
-    {
-      day: "Thu",
-      activeDuration: 10,
-      standbyDuration: 40,
-      stoppedDuration: 30,
-    },
-    {
-      day: "Fri",
-      activeDuration: 15,
-      standbyDuration: 50,
-      stoppedDuration: 35,
-    },
-    {
-      day: "Sat",
-      activeDuration: 10,
-      standbyDuration: 30,
-      stoppedDuration: 20,
-    },
-  ];
-  const isNodeStopped = state === NodeState.STOPPED;
-
-  const [lastActiveDateTag, lastActiveTimeTag] = getTimeTags(
-    nodeStatus?.lastActive || ""
-  );
-
   return (
-    <div className="mt-14">
+    <div className="mt-20">
       {/* this hidden dom tree is here just to initialise the tw colors dynamically */}
       <div className="hidden">
         <span className="bg-successBg text-xl text-successFg border border-b-successBorder">
@@ -391,20 +294,12 @@ export const NodeStatusMobileRibbon = ({
               toReverseDirection={false}
               onClick={() => {
                 setContent(
-                  <div className="flex flex-col items-center justify-between h-full">
-                    <div className="fixed top-0 flex flex-col py-5 px-7 rounded-b-2xl h-4/5 overflow-scroll bg-white w-screen dropdown-300 text-black">
-                      <OverviewSidebar />
-                    </div>
-                    <button
-                      className="flex items-center px-3 py-1 gap-x-2 bg-gray-800 text-gray-300 rounded-full fixed bottom-4"
-                      onClick={() => {
-                        resetModal();
-                      }}
-                    >
-                      <span>Close</span>
-                      <XMarkIcon className="text-gray-300 h-5 w-5" />
-                    </button>
-                  </div>
+                  <MobileModalWrapper
+                    closeButtonRequired={true}
+                    contentOnTop={true}
+                  >
+                    <OverviewSidebar />
+                  </MobileModalWrapper>
                 );
                 setShowModal(true);
               }}
