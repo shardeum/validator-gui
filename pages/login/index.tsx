@@ -12,6 +12,7 @@ import { Title } from "../../components/atoms/Title";
 import { LoginForm } from "../../components/molecules/LoginForm";
 import { useNodeVersion } from "../../hooks/useNodeVersion";
 import { useDevice } from "../../context/device";
+import { onboardingCompletedKey } from "../onboarding";
 
 const Login = () => {
   const router = useRouter();
@@ -21,7 +22,13 @@ const Login = () => {
   useEffect(() => {
     // redirect to home if already logged in
     if (authService.isLogged) {
-      router.push("/dashboard");
+      const onboardingCompleted =
+        localStorage.getItem(onboardingCompletedKey) === "true";
+      if (onboardingCompleted) {
+        router.push("/onboarding");
+      } else {
+        router.push("/dashboard");
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
