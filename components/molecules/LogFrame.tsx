@@ -85,7 +85,7 @@ export const LogFrame = ({ logId }: LogFrameProps) => {
         <div>
           <textarea
             disabled
-            className="w-full rounded-b bg-white text-sm bodyFg min-h-16 max-h-96 overflow-scroll px-7"
+            className="w-full rounded-b bg-white text-sm bodyFg max-h-96 overflow-scroll px-7 min-h-[16rem]"
           >
             {logContent}
           </textarea>
