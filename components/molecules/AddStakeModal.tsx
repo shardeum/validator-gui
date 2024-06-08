@@ -6,6 +6,11 @@ import { useNodeStatus } from "../../hooks/useNodeStatus";
 import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 import { useStake } from "../../hooks/useStake";
 import useModalStore from "../../hooks/useModalStore";
+import useToastStore from "../../hooks/useToastStore";
+import {
+  NotificationSeverity,
+  NotificationType,
+} from "../../hooks/useNotificationsStore";
 
 export const AddStakeModal = () => {
   const { resetModal } = useModalStore((state: any) => ({
@@ -23,7 +28,6 @@ export const AddStakeModal = () => {
     nodeStatus?.stakeRequirement || "10"
   );
 
-  const [apiError, setApiError] = useState<Error | null>(null);
   const {
     sendTransaction,
     handleStakeChange,
@@ -35,10 +39,30 @@ export const AddStakeModal = () => {
     nominee: nodeStatus?.nomineeAddress || "",
     stakeAmount: nodeStatus?.stakeRequirement || "20",
     totalStaked: stakeInfo?.stake ? Number(stakeInfo.stake) : 0,
-    onStake: (stakeAmount: number) => {
-      setStakedAmount(stakeAmount);
+    onStake: (wasTxnSuccessful: boolean) => {
+      if (wasTxnSuccessful) {
+        setTimeout(() => {
+          setCurrentToast({
+            type: NotificationType.NODE_STATUS,
+            severity: NotificationSeverity.SUCCESS,
+            title: "Stake Added",
+            description: `${stakedAmount.toFixed(2)} SHM staked Successfully`,
+          });
+        }, 1200);
+      } else {
+        setTimeout(() => {
+          setCurrentToast({
+            type: NotificationType.NODE_STATUS,
+            severity: NotificationSeverity.DANGER,
+            title: "Staking Unsuccessful",
+          });
+        }, 1200);
+      }
     },
   });
+  const { setCurrentToast } = useToastStore((state: any) => ({
+    setCurrentToast: state.setCurrentToast,
+  }));
 
   useEffect(() => {
     const nomineeAddress = nodeStatus?.nomineeAddress;
@@ -79,6 +103,7 @@ export const AddStakeModal = () => {
               ref={stakeInputRef}
               placeholder="Enter the amount to stake"
               className="outline-none flex-1 bg-white"
+              disabled={isLoading}
               onChange={(e) => {
                 const amount = e.target.value;
                 if (amount) {
@@ -87,13 +112,6 @@ export const AddStakeModal = () => {
                 handleStakeChange(e);
               }}
             />
-            {apiError && (
-              <div className="flex text-dangerFg items-center mb-5 mt-1">
-                <div className={"font-normal text-xs " + GeistSans.className}>
-                  {apiError.message}
-                </div>
-              </div>
-            )}
           </div>
           <div className="flex flex-col w-full mt-2">
             <div className="flex items-center"></div>
