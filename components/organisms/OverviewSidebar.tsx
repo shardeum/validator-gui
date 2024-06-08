@@ -1,5 +1,4 @@
 import { useAccount } from "wagmi";
-import { useNodeStatusHistory } from "../../hooks/useNodeStatusHistory";
 import { NodeStatus } from "../molecules/NodeStatus";
 import { StakeDisplay } from "../molecules/StakeDisplay";
 import { QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
@@ -10,8 +9,7 @@ export const OverviewSidebar: React.FC = () => {
   const renderCount = useRef(0);
   renderCount.current = renderCount.current + 1;
 
-  const { isConnected } = useAccount();
-  const { nodeStatusHistory } = useNodeStatusHistory();
+  const { isConnected, address } = useAccount();
   const { version } = useNodeVersion();
 
   return (
@@ -19,7 +17,7 @@ export const OverviewSidebar: React.FC = () => {
       <div className="flex flex-col gap-y-2">
         <span className="font-semibold">Node Status</span>
         <div className="flex flex-col shadow border border-gray-200 rounded">
-          <NodeStatus isWalletConnected={isConnected} />
+          <NodeStatus isWalletConnected={isConnected} address={address || ""} />
         </div>
       </div>
       <div className="flex flex-col gap-y-2">
