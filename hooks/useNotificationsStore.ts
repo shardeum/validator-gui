@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-const MAX_NOTIFICATIONS_STORED = 20;
+const MAX_NOTIFICATIONS_STORED = 50;
 export enum NotificationType {
   NODE_STATUS = "NODE_STATUS",
   ERROR = "ERROR",
