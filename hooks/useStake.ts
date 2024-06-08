@@ -9,7 +9,7 @@ type useStakeProps = {
   nominator: string;
   nominee: string;
   stakeAmount: string;
-  onStake?: (amountStaked: number) => void;
+  onStake?: (wasTxnSuccessful: boolean) => void;
   totalStaked: number;
 };
 
@@ -59,7 +59,7 @@ export const useStake = ({ nominator, nominee, stakeAmount, onStake, totalStaked
   async function sendTransaction() {
     setLoading(true);
     let errorFlag = false;
-    let stakedAmount = 0;
+    let wasTxnSuccessful = false;
     try {
       const blobData: string = JSON.stringify({ ...data, nominee: nomineeAddress });
       const provider = new ethers.providers.Web3Provider(
@@ -111,7 +111,8 @@ export const useStake = ({ nominator, nominee, stakeAmount, onStake, totalStaked
 
       const txConfirmation = await wait();
       console.log("TX CONFRIMED: ", txConfirmation);
-      stakedAmount = totalStakeBigNumber.toNumber();
+      wasTxnSuccessful = txConfirmation.status === 1
+      console.log()
     } catch (error: unknown) {
       console.error(error);
       let errorMessage = (error as Error)?.message || String(error);
@@ -124,13 +125,13 @@ export const useStake = ({ nominator, nominee, stakeAmount, onStake, totalStaked
         errorMessage = "Transaction rejected by user";
       }
       if (errorFlag) {
-        onStake?.(0);
+        onStake?.(false);
         setLoading(false);
         return;
       }
     }
     setLoading(false);
-    onStake?.(stakedAmount);
+    onStake?.(wasTxnSuccessful);
   }
 
   useEffect(() => {
