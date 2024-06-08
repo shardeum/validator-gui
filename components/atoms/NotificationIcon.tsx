@@ -10,13 +10,16 @@ import { StepsIcon } from "./StepsIcon";
 type NotificationIconProps = {
   notificationType: NotificationType;
   severity: NotificationSeverity;
+  iconClassName?: string;
+  containerClassName?: string;
 };
 
 export const NotificationIcon = ({
   notificationType,
   severity,
+  iconClassName = "h-3 w-3",
+  containerClassName,
 }: NotificationIconProps) => {
-  const iconClassName = "h-3 w-3";
   const fillColor = `${
     severity === NotificationSeverity.SUCCESS
       ? "rgb(28, 118, 69)"
@@ -27,14 +30,17 @@ export const NotificationIcon = ({
 
   return (
     <span
-      className={`rounded-full border h-5 w-5 flex justify-center items-center
-      ${
-        severity === NotificationSeverity.SUCCESS
-          ? "border-successBorder bg-successBg"
-          : severity === NotificationSeverity.ATTENTION
-          ? "border-attentionBorder bg-attentionBg"
-          : "border-dangerBorder bg-dangerBg"
-      } `}
+      className={
+        (containerClassName + " " ||
+          "rounded-full border h-5 w-5 flex justify-center items-center ") +
+        `${
+          severity === NotificationSeverity.SUCCESS
+            ? "border-successBorder bg-successBg"
+            : severity === NotificationSeverity.ATTENTION
+            ? "border-attentionBorder bg-attentionBg"
+            : "border-dangerBorder bg-dangerBg"
+        } `
+      }
     >
       {notificationType === NotificationType.NODE_STATUS ? (
         <NodesIcon className={iconClassName} fillColor={fillColor} />

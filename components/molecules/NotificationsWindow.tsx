@@ -13,13 +13,15 @@ export const NotificationsWindow = () => {
     }));
 
   return (
-    <div className="absolute top-5 right-0 z-40">
+    <div className="md:absolute md:top-5 md:right-0 z-40">
       {showWindow && (
-        <div className="flex flex-col bg-white border p-3 text-black rounded shadow min-w-[20rem] max-h-72 overflow-scroll">
+        <div className="flex flex-col max-md:grow bg-white md:border md:p-3 text-black md:rounded md:shadow min-w-[20rem] max-h-[85vh] md:max-h-[60vh] overflow-scroll max-md:px-2">
           {/* header */}
-          <div className="flex justify-between items-center px-1 mb-3">
+          <div className="flex justify-between items-center px-1 md:mb-3 mb-7">
             <div className="flex gap-x-2 items-center">
-              <span className="text-sm font-semibold">Notifications</span>
+              <span className="text-lg font-semibold md:text-sm">
+                Notifications
+              </span>
               {notifications.length > 0 && (
                 <span className="px-2 py-1 bg-accentBg text-xs text-accentFg rounded-md">
                   {notifications.length} new
