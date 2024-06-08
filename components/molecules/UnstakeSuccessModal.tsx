@@ -2,15 +2,15 @@ import useModalStore from "../../hooks/useModalStore";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 
-type ForceUnstakeSuccessModalProps = {
+type UnstakeSuccessModalProps = {
   stake: number;
   rewards: number;
 };
 
-export const ForceUnstakeSuccessModal = ({
+export const UnstakeSuccessModal = ({
   stake,
   rewards,
-}: ForceUnstakeSuccessModalProps) => {
+}: UnstakeSuccessModalProps) => {
   const { resetModal } = useModalStore((state: any) => ({
     resetModal: state.resetModal,
   }));
@@ -30,18 +30,12 @@ export const ForceUnstakeSuccessModal = ({
           <CheckCircleIcon className="h-10 w-10 text-green-700 bg-white" />
         </div>
 
-        <span className="text-lg font-semibold">Force Unstake Successful</span>
+        <span className="text-lg font-semibold">Unstake Successful</span>
 
         <span className="text-sm bodyFg text-center">
           You&apos;ve successfully unstaked{" "}
           <span className="font-semibold">{(stake + rewards).toFixed(2)}</span>{" "}
           SHM into your wallet.
-        </span>
-        <hr className="mt-1 w-full" />
-        <span className="text-sm text-dangerFg text-center">
-          You lost{" "}
-          <span className="font-semibold">{rewards.toFixed(0)} SHM</span> earned
-          during current stake due to force removal of stake.
         </span>
         <hr className="mt-1 w-full" />
         <button
