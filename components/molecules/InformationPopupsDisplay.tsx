@@ -67,6 +67,12 @@ export const InformationPopupsDisplay = () => {
       if (wasNewGuiVersionPreviouslyAvailable) {
         localStorage.removeItem(newGuiVersionAvailableKey);
         setShowGuiUpdated(true);
+        setShowGuiUpdatePrompt(false);
+        addNotification({
+          type: NotificationType.VERSION_UPDATE,
+          severity: NotificationSeverity.SUCCESS,
+          title: `Your GUI version has been updated to Version: ${version?.runningGuiVersion}`,
+        });
       }
     }
 
@@ -94,6 +100,12 @@ export const InformationPopupsDisplay = () => {
       if (wasNewValidatorVersionPreviouslyAvailable) {
         localStorage.removeItem(newValidatorVersionAvailableKey);
         setShowValidatorUpdated(true);
+        setShowValidatorUpdatePrompt(false);
+        addNotification({
+          type: NotificationType.VERSION_UPDATE,
+          severity: NotificationSeverity.SUCCESS,
+          title: `Your validator version has been updated to Version: ${version?.runnningValidatorVersion}`,
+        });
       }
     }
   }, [version]);
