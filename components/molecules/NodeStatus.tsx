@@ -330,7 +330,6 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
         default:
           break;
       }
-
       localStorage.setItem(previousNodeStateKey, currentNodeState || "");
     }
   }, [nodeStatus?.state]);
