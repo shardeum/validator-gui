@@ -122,25 +122,34 @@ const PasswordResetForm = () => {
           </div>
 
           <div className="flex justify-end">
-            <button
-              disabled={
-                formState.isSubmitting || !areAllInputsActive || isLoading
-              }
-              className={
-                (areAllInputsActive
-                  ? "bg-primary hover:bg-indigo-700"
-                  : "bg-gray-300") +
-                " text-white text-sm font-semibold py-2 px-4 w-40 rounded-md flex justify-center ease-in-out duration-300 " +
-                GeistSans.className
-              }
-              type="submit"
-            >
-              {formState.isSubmitting ? (
-                <ArrowPathIcon className="w-5 spinner" />
-              ) : (
-                "Reset Password"
-              )}
-            </button>
+            {!formState.isSubmitting && (
+              <button
+                disabled={
+                  formState.isSubmitting || !areAllInputsActive || isLoading
+                }
+                className={
+                  (areAllInputsActive
+                    ? "bg-primary hover:bg-indigo-700"
+                    : "bg-gray-300") +
+                  " text-white text-sm font-semibold py-2 px-4 w-40 rounded-md flex justify-center ease-in-out duration-300 " +
+                  GeistSans.className
+                }
+                type="submit"
+              >
+                Reset Password
+              </button>
+            )}
+            {formState.isSubmitting && (
+              <button
+                className="border border-gray-300 rounded px-4 py-2 w-40 flex items-center justify-center text-sm font-medium"
+                disabled={true}
+              >
+                <div className="spinner flex items-center justify-center mr-3">
+                  <div className="border-2 border-black border-b-white rounded-full h-3.5 w-3.5"></div>
+                </div>{" "}
+                Confirming
+              </button>
+            )}
           </div>
         </form>
       </Card>
