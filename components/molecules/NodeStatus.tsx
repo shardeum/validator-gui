@@ -7,13 +7,13 @@ import { Card } from "../layouts/Card";
 import { useEffect, useState } from "react";
 import { useNodeStatus } from "../../hooks/useNodeStatus";
 import { NodeStatus as NodeStatusModel } from "../../model/node-status";
-import useNotificationsStore, {
+import useToastStore, { ToastSeverity } from "../../hooks/useToastStore";
+import { useNodeStatusHistory } from "../../hooks/useNodeStatusHistory";
+import moment from "moment";
+import {
   NotificationSeverity,
   NotificationType,
 } from "../../hooks/useNotificationsStore";
-import useToastStore from "../../hooks/useToastStore";
-import { useNodeStatusHistory } from "../../hooks/useNodeStatusHistory";
-import moment from "moment";
 
 export enum NodeState {
   ACTIVE = "ACTIVE",
@@ -189,9 +189,6 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
   const titleTextColor = getTitleTextColor(state, isWalletConnected);
 
   const [showMoreInfo, setShowMoreInfo] = useState(false);
-  const { addNotification } = useNotificationsStore((state: any) => ({
-    addNotification: state.addNotification,
-  }));
   const { setCurrentToast, resetToast } = useToastStore((state: any) => ({
     setCurrentToast: state.setCurrentToast,
     resetToast: state.resetToast,
@@ -294,44 +291,45 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
     const previousNodeState = localStorage.getItem(previousNodeStateKey);
     const currentNodeState = nodeStatus?.state || previousNodeState;
     if (previousNodeState !== currentNodeState) {
-      setTimeout(() => {
-        switch (nodeStatus?.state) {
-          case "active":
-            addNotification({
+      switch (nodeStatus?.state) {
+        case "active":
+          setCurrentToast({
+            severity: ToastSeverity.SUCCESS,
+            title: "Node Started Successfully",
+            followupNotification: {
               type: NotificationType.NODE_STATUS,
               severity: NotificationSeverity.SUCCESS,
               title: "Your node status had been updated to: Validating",
-            });
-            setCurrentToast({
-              type: NotificationType.NODE_STATUS,
-              severity: NotificationSeverity.SUCCESS,
-              title: "Node Started Successfully",
-            });
-            break;
-          case "standby":
-          case "need-stake":
-            addNotification({
+            },
+          });
+          break;
+        case "standby":
+        case "need-stake":
+          setCurrentToast({
+            severity: ToastSeverity.ATTENTION,
+            title: "Node is on standby",
+            followupNotification: {
               type: NotificationType.NODE_STATUS,
               severity: NotificationSeverity.ATTENTION,
               title: "Your node status had been updated to: Standby",
-            });
-            break;
-          case "stopped":
-            addNotification({
+            },
+          });
+          break;
+        case "stopped":
+          setCurrentToast({
+            severity: ToastSeverity.SUCCESS,
+            title: "Node Stopped Successfully",
+            followupNotification: {
               type: NotificationType.NODE_STATUS,
               severity: NotificationSeverity.DANGER,
               title: "Your node status had been updated to: Stopped",
-            });
-            setCurrentToast({
-              type: NotificationType.NODE_STATUS,
-              severity: NotificationSeverity.SUCCESS,
-              title: "Node Stopped Successfully",
-            });
-            break;
-          default:
-            break;
-        }
-      }, 5000);
+            },
+          });
+          break;
+        default:
+          break;
+      }
+
       localStorage.setItem(previousNodeStateKey, currentNodeState || "");
     } else {
       resetToast();

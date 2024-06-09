@@ -42,7 +42,7 @@ const fetchPreviousNotifications = () => {
 
 const pendingNotifications = fetchPreviousNotifications();
 
-const useNotificationsStore = create((set) => ({
+export const useNotificationsStore = create((set: any) => ({
   showWindow: false,
   notifications: pendingNotifications || [],
   latestNotification: null,

@@ -4,7 +4,6 @@ import { StakeDisplay } from "../molecules/StakeDisplay";
 import { QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
 import { useNodeVersion } from "../../hooks/useNodeVersion";
 import { useRef, useState } from "react";
-import { SupportOptions } from "../molecules/SupportOptions";
 import { SupportDisplay } from "../molecules/SupportDisplay";
 
 export const OverviewSidebar: React.FC = () => {
