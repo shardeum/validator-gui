@@ -1,7 +1,10 @@
 import { useEffect } from "react";
 import { useNodeStatus } from "../../hooks/useNodeStatus";
 import { NodeStatus as NodeStatusModel } from "../../model/node-status";
-import useNotificationsStore from "../../hooks/useNotificationsStore";
+import {
+  NotificationSeverity,
+  NotificationType,
+} from "../../hooks/useNotificationsStore";
 import useToastStore, { ToastSeverity } from "../../hooks/useToastStore";
 import { ExpansionArrow } from "../atoms/ExpansionArrow";
 import useModalStore from "../../hooks/useModalStore";
@@ -205,33 +208,37 @@ export const NodeStatusRibbon = ({
     if (previousNodeState !== currentNodeState) {
       switch (nodeStatus?.state) {
         case "active":
-          // addNotification({
-          //   type: NotificationType.NODE_STATUS,
-          //   severity: NotificationSeverity.SUCCESS,
-          //   title: "Your node status had been updated to: Validating",
-          // });
           setCurrentToast({
             severity: ToastSeverity.SUCCESS,
             title: "Node Started Successfully",
+            followupNotification: {
+              type: NotificationType.NODE_STATUS,
+              severity: NotificationSeverity.SUCCESS,
+              title: "Your node status had been updated to: Validating",
+            },
           });
           break;
         case "standby":
         case "need-stake":
-          // addNotification({
-          //   type: NotificationType.NODE_STATUS,
-          //   severity: NotificationSeverity.ATTENTION,
-          //   title: "Your node status had been updated to: Standby",
-          // });
+          setCurrentToast({
+            severity: ToastSeverity.ATTENTION,
+            title: "Node is on standby",
+            followupNotification: {
+              type: NotificationType.NODE_STATUS,
+              severity: NotificationSeverity.ATTENTION,
+              title: "Your node status had been updated to: Standby",
+            },
+          });
           break;
         case "stopped":
-          // addNotification({
-          //   type: NotificationType.NODE_STATUS,
-          //   severity: NotificationSeverity.DANGER,
-          //   title: "Your node status had been updated to: Stopped",
-          // });
           setCurrentToast({
             severity: ToastSeverity.SUCCESS,
             title: "Node Stopped Successfully",
+            followupNotification: {
+              type: NotificationType.NODE_STATUS,
+              severity: NotificationSeverity.DANGER,
+              title: "Your node status had been updated to: Stopped",
+            },
           });
           break;
         default:
