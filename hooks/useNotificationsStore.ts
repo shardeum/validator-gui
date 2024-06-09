@@ -50,6 +50,12 @@ export const useNotificationsStore = create((set: any) => ({
     return { ...state, showWindow };
   }),
   addNotification: ({ type, severity, title }: { type: NotificationType, severity: NotificationSeverity, title: string }) => set((state: any) => {
+    if (type === NotificationType.VERSION_UPDATE) {
+      if ((state.notifications || []).find((notification: NotificationInstance) => (notification.title === title && notification.type === type
+      ))) {
+        return state;
+      }
+    }
     const notification = { type, severity, title, timestamp: (new Date()).getTime() } as NotificationInstance
     const newNotifications = [...state.notifications, notification].slice(-MAX_NOTIFICATIONS_STORED);
     persistNotifications(newNotifications)

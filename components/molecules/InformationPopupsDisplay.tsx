@@ -5,6 +5,10 @@ import { onboardingCompletedKey } from "../../pages/onboarding";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import greyLogo from "../../assets/grey-logo.svg";
 import { useRouter } from "next/router";
+import useNotificationsStore, {
+  NotificationSeverity,
+  NotificationType,
+} from "../../hooks/useNotificationsStore";
 
 const newGuiVersionAvailableKey = "newGuiVersionAvailable";
 const newValidatorVersionAvailableKey = "newValidatorVersionAvailable";
@@ -15,6 +19,9 @@ const VERSION_UPDATE_REPOSTORY_URL =
 
 export const InformationPopupsDisplay = () => {
   const router = useRouter();
+  const { addNotification } = useNotificationsStore((state: any) => ({
+    addNotification: state.addNotification,
+  }));
   const { version } = useNodeVersion();
   const [showGuiUpdatePrompt, setShowGuiUpdatePrompt] = useState(false);
   const [showValidatorUpdatePrompt, setShowValidatorUpdatePrompt] =
@@ -30,43 +37,61 @@ export const InformationPopupsDisplay = () => {
   );
 
   useEffect(() => {
-    const newGuiAvailable = true;
-    // (version?.runningGuiVersion || 0) < (version?.latestGuiVersion || 0);
+    const newGuiAvailable =
+      (version?.runningGuiVersion || 0) < (version?.latestGuiVersion || 0);
     const newValidatorAvailable =
       (version?.runnningValidatorVersion || 0) <
       (version?.activeShardeumVersion || 0);
 
     if (newGuiAvailable) {
-      const wasNewGuiVersionAvailable =
+      addNotification({
+        type: NotificationType.VERSION_UPDATE,
+        severity: NotificationSeverity.ATTENTION,
+        title: "New GUI version available",
+        description: `A new GUI version (V ${
+          version?.latestGuiVersion || 0
+        }) is available and ready to update.`,
+      });
+
+      const wasNewGuiVersionPreviouslyAvailable =
         localStorage.getItem(newGuiVersionAvailableKey) === "true";
-      if (!wasNewGuiVersionAvailable) {
+      if (!wasNewGuiVersionPreviouslyAvailable) {
         // user viewing this for the first time
         setShowGuiUpdatePrompt(true);
         localStorage.setItem(newGuiVersionAvailableKey, "true");
         //TODO: if it's not in pending notifications, add it to pending notifications
       }
     } else {
-      const wasNewGuiVersionAvailable =
+      const wasNewGuiVersionPreviouslyAvailable =
         localStorage.getItem(newGuiVersionAvailableKey) === "true";
-      if (wasNewGuiVersionAvailable) {
+      if (wasNewGuiVersionPreviouslyAvailable) {
         localStorage.removeItem(newGuiVersionAvailableKey);
         setShowGuiUpdated(true);
       }
     }
 
     if (newValidatorAvailable) {
-      const wasNewValidatorVersionAvailable =
+      addNotification({
+        type: NotificationType.VERSION_UPDATE,
+        severity: NotificationSeverity.ATTENTION,
+        title: "New Validator version available",
+        description: `A new validator version (V ${
+          version?.activeShardeumVersion || 0
+        }) is available and ready to update.`,
+      });
+
+      const wasNewValidatorVersionPreviouslyAvailable =
         localStorage.getItem(newValidatorVersionAvailableKey) === "true";
-      if (!wasNewValidatorVersionAvailable) {
+      if (!wasNewValidatorVersionPreviouslyAvailable) {
         // user viewing this for the first time
         setShowValidatorUpdatePrompt(true);
         localStorage.setItem(newValidatorVersionAvailableKey, "true");
         //TODO: if it's not in pending notifications, add it to pending notifications
       }
     } else {
-      const wasNewValidatorVersionAvailable =
+      const wasNewValidatorVersionPreviouslyAvailable =
         localStorage.getItem(newValidatorVersionAvailableKey) === "true";
-      if (wasNewValidatorVersionAvailable) {
+      if (wasNewValidatorVersionPreviouslyAvailable) {
         localStorage.removeItem(newValidatorVersionAvailableKey);
         setShowValidatorUpdated(true);
       }
