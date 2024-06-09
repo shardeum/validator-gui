@@ -180,9 +180,6 @@ const Dashboard = () => {
                           <span className="font-medium text-base mb-1">
                             Performance
                           </span>
-                          <span className="text-xs text-gray-500">
-                            Average Usage*
-                          </span>
                         </div>
                         <PerformanceDisplay />
                       </section>
@@ -322,9 +319,6 @@ const Dashboard = () => {
                     <div className="flex items-center gap-x-3">
                       <span className="font-medium text-base mb-1">
                         Performance
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        Average Usage*
                       </span>
                     </div>
                     <PerformanceDisplay />
