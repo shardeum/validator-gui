@@ -25,16 +25,17 @@ import { useStake } from "../../hooks/useStake";
 const tokensClaimedByKey = "tokensClaimedBy";
 export const onboardingCompletedKey = "onboardingCompleted";
 
-const VALIDATOR_GUI_FAQS_URL =
+export const VALIDATOR_GUI_FAQS_URL =
   process.env.VALIDATOR_GUI_FAQS_URL ||
   "https://docs.shardeum.org/faqs/general";
-const VALIDATOR_GUI_DOCS_URL =
+export const VALIDATOR_GUI_DOCS_URL =
   process.env.VALIDATOR_GUI_DOCS_URL ||
   "https://docs.shardeum.org/node/run/validator";
 
 const Onboarding = () => {
   const [isNodeStarted, setIsNodeStarted] = useState(false);
   const [accountBalance, setAccountBalance] = useState("");
+  const [chainId, setChainId] = useState(0);
   const [tokenClaimPhase, setTokenClaimPhase] = useState(0); // 0: hasn't claimed yet, 1: initiated request, 2: has claimed
   const { isConnected, address } = useAccount({
     onConnect: async (args) => {
@@ -63,6 +64,10 @@ const Onboarding = () => {
   }, [address]);
 
   const { chain } = useNetwork();
+
+  useEffect(() => {
+    setChainId(chain?.id || 0);
+  }, [chain?.id]);
 
   const { switchNetwork } = useSwitchNetwork();
   const router = useRouter();
@@ -221,7 +226,7 @@ const Onboarding = () => {
             <div className="w-full max-w-xl flex flex-col items-start gap-y-3">
               {/* Step 1: Connect wallet */}
               <div className="bg-white w-full border p-3 shadow-md rounded-sm">
-                {!(isConnected && chain?.id === CHAIN_ID) && (
+                {!(isConnected && chainId === CHAIN_ID) && (
                   <div className="flex flex-col">
                     <div className="flex items-center gap-x-2 max-w-xl">
                       <span className="flex items-center justify-center h-5 w-5 bg-primary rounded-full text-white text-xs">
@@ -243,7 +248,7 @@ const Onboarding = () => {
                           <div className="basis-0 grow text-white">
                             <WalletConnectButton label="1. Connect Wallet"></WalletConnectButton>
                           </div>
-                          {chain?.id !== CHAIN_ID && (
+                          {isConnected && chainId !== CHAIN_ID && (
                             <div className="basis-0 grow">
                               <button
                                 className={
@@ -258,7 +263,7 @@ const Onboarding = () => {
                             </div>
                           )}
                         </div>
-                        {isConnected && chain?.id !== CHAIN_ID && (
+                        {isConnected && chainId !== CHAIN_ID && (
                           <div className="w-full flex text-xs justify-end mt-1 gap-x-1">
                             <span>Wrong wallet? </span>
                             <button
@@ -279,7 +284,7 @@ const Onboarding = () => {
                     </div>
                   </div>
                 )}
-                {isConnected && chain?.id === CHAIN_ID && (
+                {isConnected && chainId === CHAIN_ID && (
                   <>
                     <div className="flex items-center gap-x-2 max-w-xl">
                       <CheckCircleIcon className="bg-white h-6 w-6 rounded-full text-xs text-green-700" />
@@ -300,92 +305,90 @@ const Onboarding = () => {
 
               {/* Step 2: Claim tokens */}
               <div className="bg-white w-full border p-3 shadow-md rounded-sm">
-                {isConnected &&
-                  chain?.id === CHAIN_ID &&
-                  tokenClaimPhase < 2 && (
-                    <div className="flex flex-col">
-                      <div className="flex items-center gap-x-2 max-w-xl">
-                        <span className="flex items-center justify-center h-5 w-5 bg-primary rounded-full text-white text-xs">
-                          2
-                        </span>
-                        <span className="font-semibold w-full flex items-center justify-between pr-5">
-                          Claim testnet tokens from faucet
-                          <ExpansionArrow isUp={false} />
-                        </span>
-                      </div>
-                      <div className="flex flex-col w-full pl-7">
-                        <span className="text-gray-600 text-sm">
-                          Claim 100 SHM tokens from Shardeum faucet as a reward.
-                        </span>
-                        <div className="flex flex-col mt-4 pr-5">
-                          {tokenClaimPhase === 0 && (
-                            <div className="flex">
-                              <div className="basis-0 grow">
-                                <button
-                                  className={
-                                    "px-3 py-2 text-white text-sm font-semibold rounded w-full " +
-                                    (isConnected ? "bg-primary" : "bg-gray-400")
-                                  }
-                                  disabled={!isConnected}
-                                  onClick={async () => {
-                                    setTokenClaimPhase(1);
-                                    const tokensClaimed = await claimTokens(
-                                      address || ""
-                                    );
-                                    if (tokensClaimed) {
-                                      setTokenClaimPhase(2);
-                                    } else {
-                                      setTokenClaimPhase(0);
-                                    }
-                                  }}
-                                >
-                                  Claim 100 SHM
-                                </button>
-                              </div>
-                              <div className="basis-0 grow ml-2">
-                                <button
-                                  className={
-                                    "ml-2 px-3 py-2 text-primary text-sm font-semibold rounded w-full bg-white border border-gray-300"
-                                  }
-                                  disabled={!isConnected}
-                                  onClick={() => {
-                                    localStorage.setItem(
-                                      tokensClaimedByKey,
-                                      address || ""
-                                    );
+                {isConnected && chainId === CHAIN_ID && tokenClaimPhase < 2 && (
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-x-2 max-w-xl">
+                      <span className="flex items-center justify-center h-5 w-5 bg-primary rounded-full text-white text-xs">
+                        2
+                      </span>
+                      <span className="font-semibold w-full flex items-center justify-between pr-5">
+                        Claim testnet tokens from faucet
+                        <ExpansionArrow isUp={false} />
+                      </span>
+                    </div>
+                    <div className="flex flex-col w-full pl-7">
+                      <span className="text-gray-600 text-sm">
+                        Claim 100 SHM tokens from Shardeum faucet as a reward.
+                      </span>
+                      <div className="flex flex-col mt-4 pr-5">
+                        {tokenClaimPhase === 0 && (
+                          <div className="flex">
+                            <div className="basis-0 grow">
+                              <button
+                                className={
+                                  "px-3 py-2 text-white text-sm font-semibold rounded w-full " +
+                                  (isConnected ? "bg-primary" : "bg-gray-400")
+                                }
+                                disabled={!isConnected}
+                                onClick={async () => {
+                                  setTokenClaimPhase(1);
+                                  const tokensClaimed = await claimTokens(
+                                    address || ""
+                                  );
+                                  if (tokensClaimed) {
                                     setTokenClaimPhase(2);
-                                  }}
-                                >
-                                  I already have SHM to stake
-                                </button>
-                              </div>
+                                  } else {
+                                    setTokenClaimPhase(0);
+                                  }
+                                }}
+                              >
+                                Claim 100 SHM
+                              </button>
                             </div>
-                          )}
-                          {tokenClaimPhase === 1 && (
-                            <button
-                              className="mt-2 border border-gray-300 rounded w-full px-4 py-2 flex items-center justify-center text-sm font-medium"
-                              disabled={true}
-                            >
-                              <div className="spinner flex items-center justify-center mr-3">
-                                <div className="border-2 border-black border-b-white rounded-full h-3.5 w-3.5"></div>
-                              </div>{" "}
-                              Claiming 100 SHM
-                            </button>
-                          )}
-                          {accountBalance !== "" && (
-                            <div className="w-full flex text-xs justify-end mt-1 gap-x-1">
-                              <span>Balance: </span>
-                              <span className="font-semibold">
-                                {accountBalance}
-                              </span>
+                            <div className="basis-0 grow ml-2">
+                              <button
+                                className={
+                                  "ml-2 px-3 py-2 text-primary text-sm font-semibold rounded w-full bg-white border border-gray-300"
+                                }
+                                disabled={!isConnected}
+                                onClick={() => {
+                                  localStorage.setItem(
+                                    tokensClaimedByKey,
+                                    address || ""
+                                  );
+                                  setTokenClaimPhase(2);
+                                }}
+                              >
+                                I already have SHM to stake
+                              </button>
                             </div>
-                          )}
-                        </div>
+                          </div>
+                        )}
+                        {tokenClaimPhase === 1 && (
+                          <button
+                            className="mt-2 border border-gray-300 rounded w-full px-4 py-2 flex items-center justify-center text-sm font-medium"
+                            disabled={true}
+                          >
+                            <div className="spinner flex items-center justify-center mr-3">
+                              <div className="border-2 border-black border-b-white rounded-full h-3.5 w-3.5"></div>
+                            </div>{" "}
+                            Claiming 100 SHM
+                          </button>
+                        )}
+                        {accountBalance !== "" && (
+                          <div className="w-full flex text-xs justify-end mt-1 gap-x-1">
+                            <span>Balance: </span>
+                            <span className="font-semibold">
+                              {accountBalance}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
-                  )}
+                  </div>
+                )}
                 {isConnected &&
-                  chain?.id === CHAIN_ID &&
+                  chainId === CHAIN_ID &&
                   tokenClaimPhase === 2 && (
                     <>
                       <div className="flex items-center gap-x-2">
@@ -400,7 +403,7 @@ const Onboarding = () => {
                       </span>
                     </>
                   )}
-                {!(isConnected && chain?.id === CHAIN_ID) && (
+                {!(isConnected && chainId === CHAIN_ID) && (
                   <div className="flex flex-col">
                     <div className="flex items-center gap-x-2">
                       <span className="flex items-center justify-center bg-gray-400 h-5 w-5 rounded-full text-white text-sm">
