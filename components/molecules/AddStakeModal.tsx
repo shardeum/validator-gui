@@ -6,11 +6,7 @@ import { useNodeStatus } from "../../hooks/useNodeStatus";
 import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 import { useStake } from "../../hooks/useStake";
 import useModalStore from "../../hooks/useModalStore";
-import useToastStore from "../../hooks/useToastStore";
-import {
-  NotificationSeverity,
-  NotificationType,
-} from "../../hooks/useNotificationsStore";
+import useToastStore, { ToastSeverity } from "../../hooks/useToastStore";
 
 export const AddStakeModal = () => {
   const { resetModal } = useModalStore((state: any) => ({
@@ -41,22 +37,16 @@ export const AddStakeModal = () => {
     totalStaked: stakeInfo?.stake ? Number(stakeInfo.stake) : 0,
     onStake: (wasTxnSuccessful: boolean) => {
       if (wasTxnSuccessful) {
-        setTimeout(() => {
-          setCurrentToast({
-            type: NotificationType.NODE_STATUS,
-            severity: NotificationSeverity.SUCCESS,
-            title: "Stake Added",
-            description: `${stakedAmount.toFixed(2)} SHM staked Successfully`,
-          });
-        }, 1200);
+        setCurrentToast({
+          severity: ToastSeverity.SUCCESS,
+          title: "Stake Added",
+          description: `${stakedAmount.toFixed(2)} SHM staked Successfully`,
+        });
       } else {
-        setTimeout(() => {
-          setCurrentToast({
-            type: NotificationType.NODE_STATUS,
-            severity: NotificationSeverity.DANGER,
-            title: "Staking Unsuccessful",
-          });
-        }, 1200);
+        setCurrentToast({
+          severity: ToastSeverity.DANGER,
+          title: "Staking Unsuccessful",
+        });
       }
     },
   });

@@ -1,18 +1,8 @@
-import {
-  ChevronDownIcon,
-  ChevronUpIcon,
-  InformationCircleIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-import { Card } from "../layouts/Card";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNodeStatus } from "../../hooks/useNodeStatus";
 import { NodeStatus as NodeStatusModel } from "../../model/node-status";
-import useNotificationsStore, {
-  NotificationSeverity,
-  NotificationType,
-} from "../../hooks/useNotificationsStore";
-import useToastStore from "../../hooks/useToastStore";
+import useNotificationsStore from "../../hooks/useNotificationsStore";
+import useToastStore, { ToastSeverity } from "../../hooks/useToastStore";
 import { ExpansionArrow } from "../atoms/ExpansionArrow";
 import useModalStore from "../../hooks/useModalStore";
 import { OverviewSidebar } from "../organisms/OverviewSidebar";
@@ -203,10 +193,6 @@ export const NodeStatusRibbon = ({
       setContent: state.setContent,
     })
   );
-
-  const { addNotification } = useNotificationsStore((state: any) => ({
-    addNotification: state.addNotification,
-  }));
   const { setCurrentToast, resetToast } = useToastStore((state: any) => ({
     setCurrentToast: state.setCurrentToast,
     resetToast: state.resetToast,
@@ -218,34 +204,32 @@ export const NodeStatusRibbon = ({
     if (previousNodeState !== currentNodeState) {
       switch (nodeStatus?.state) {
         case "active":
-          addNotification({
-            type: NotificationType.NODE_STATUS,
-            severity: NotificationSeverity.SUCCESS,
-            title: "Your node status had been updated to: Validating",
-          });
+          // addNotification({
+          //   type: NotificationType.NODE_STATUS,
+          //   severity: NotificationSeverity.SUCCESS,
+          //   title: "Your node status had been updated to: Validating",
+          // });
           setCurrentToast({
-            type: NotificationType.NODE_STATUS,
-            severity: NotificationSeverity.SUCCESS,
+            severity: ToastSeverity.SUCCESS,
             title: "Node Started Successfully",
           });
           break;
         case "standby":
         case "need-stake":
-          addNotification({
-            type: NotificationType.NODE_STATUS,
-            severity: NotificationSeverity.ATTENTION,
-            title: "Your node status had been updated to: Standby",
-          });
+          // addNotification({
+          //   type: NotificationType.NODE_STATUS,
+          //   severity: NotificationSeverity.ATTENTION,
+          //   title: "Your node status had been updated to: Standby",
+          // });
           break;
         case "stopped":
-          addNotification({
-            type: NotificationType.NODE_STATUS,
-            severity: NotificationSeverity.DANGER,
-            title: "Your node status had been updated to: Stopped",
-          });
+          // addNotification({
+          //   type: NotificationType.NODE_STATUS,
+          //   severity: NotificationSeverity.DANGER,
+          //   title: "Your node status had been updated to: Stopped",
+          // });
           setCurrentToast({
-            type: NotificationType.NODE_STATUS,
-            severity: NotificationSeverity.SUCCESS,
+            severity: ToastSeverity.SUCCESS,
             title: "Node Stopped Successfully",
           });
           break;
