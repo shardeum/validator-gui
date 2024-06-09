@@ -3,7 +3,9 @@ import { NodeStatus } from "../molecules/NodeStatus";
 import { StakeDisplay } from "../molecules/StakeDisplay";
 import { QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
 import { useNodeVersion } from "../../hooks/useNodeVersion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { SupportOptions } from "../molecules/SupportOptions";
+import { SupportDisplay } from "../molecules/SupportDisplay";
 
 export const OverviewSidebar: React.FC = () => {
   const renderCount = useRef(0);
@@ -11,6 +13,8 @@ export const OverviewSidebar: React.FC = () => {
 
   const { isConnected, address } = useAccount();
   const { version } = useNodeVersion();
+  const [areSupportOptionsVisible, setAreSupportOptionsVisible] =
+    useState(false);
 
   return (
     <div className="flex flex-col gap-y-10 scroll-smooth">
@@ -47,8 +51,19 @@ export const OverviewSidebar: React.FC = () => {
               </span>
             </div>
           </div>
-          <div className="flex justify-center items-center">
-            <QuestionMarkCircleIcon className="h-10 w-10 cursor-pointer" />
+          <div className="flex justify-center items-center relative">
+            <QuestionMarkCircleIcon
+              className="h-10 w-10 cursor-pointer"
+              onClick={() => {
+                setAreSupportOptionsVisible((prevState) => !prevState);
+              }}
+            />
+            <SupportDisplay
+              isVisible={areSupportOptionsVisible}
+              onClose={() => {
+                setAreSupportOptionsVisible(false);
+              }}
+            />
           </div>
         </div>
       </div>
