@@ -12,6 +12,11 @@ export const AddStakeModal = () => {
   const { resetModal } = useModalStore((state: any) => ({
     resetModal: state.resetModal,
   }));
+  const { setCurrentToast, resetToast } = useToastStore((state: any) => ({
+    setCurrentToast: state.setCurrentToast,
+    resetToast: state.resetToast,
+  }));
+
   const stakeInputId = "stakeInput";
 
   const { address } = useAccount();
@@ -36,6 +41,7 @@ export const AddStakeModal = () => {
     stakeAmount: nodeStatus?.stakeRequirement || "20",
     totalStaked: stakeInfo?.stake ? Number(stakeInfo.stake) : 0,
     onStake: (wasTxnSuccessful: boolean) => {
+      resetToast();
       if (wasTxnSuccessful) {
         setCurrentToast({
           severity: ToastSeverity.SUCCESS,
@@ -50,9 +56,6 @@ export const AddStakeModal = () => {
       }
     },
   });
-  const { setCurrentToast } = useToastStore((state: any) => ({
-    setCurrentToast: state.setCurrentToast,
-  }));
 
   useEffect(() => {
     const nomineeAddress = nodeStatus?.nomineeAddress;

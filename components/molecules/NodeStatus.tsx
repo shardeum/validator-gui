@@ -290,6 +290,7 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
   useEffect(() => {
     const previousNodeState = localStorage.getItem(previousNodeStateKey);
     const currentNodeState = nodeStatus?.state || previousNodeState;
+    resetToast();
     if (previousNodeState !== currentNodeState) {
       switch (nodeStatus?.state) {
         case "active":
@@ -331,8 +332,6 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
       }
 
       localStorage.setItem(previousNodeStateKey, currentNodeState || "");
-    } else {
-      resetToast();
     }
   }, [nodeStatus?.state]);
 
