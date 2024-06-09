@@ -43,14 +43,14 @@ export const RewardsCard = () => {
     isConnected &&
       chain?.id === CHAIN_ID &&
       nodeStatus?.state !== "active" &&
-      parseFloat(stakeInfo?.stake || "0") >= 0
+      parseFloat(stakeInfo?.stake || "0") > 0
   );
   useEffect(() => {
     setCanRedeem(
       isConnected &&
         chain?.id === CHAIN_ID &&
         nodeStatus?.state === "stopped" &&
-        parseFloat(stakeInfo?.stake || "0") >= 0
+        parseFloat(stakeInfo?.stake || "0") > 0
     );
   }, [nodeStatus?.state, stakeInfo?.stake, isConnected, chain?.id]);
 
