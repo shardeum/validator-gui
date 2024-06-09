@@ -284,7 +284,6 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
         stoppedDuration: 0,
       });
     }
-    console.log("STATUS HISTORIES:", statusHistories);
     setNodeStatusHistories(statusHistories);
     setTotalValidatingTimeThisWeek(
       getDurationBreakdownString(timeSpentValidatingInPastWeek)
