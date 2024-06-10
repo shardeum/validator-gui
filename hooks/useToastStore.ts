@@ -4,7 +4,7 @@ import { NotificationInstance, NotificationSeverity, NotificationType, useNotifi
 export enum ToastSeverity {
   DANGER = "DANGER",
   ATTENTION = "ATTENTION",
-  LOADER = "LOADER",
+  LOADING = "LOADING",
   SUCCESS = "SUCCESS"
 }
 
@@ -47,10 +47,10 @@ export const showSuccessMessage = (msg: string) => {
 
 const useToastStore = create((set: any) => ({
   currentToast: null,
-  setCurrentToast: (currentToast: ToastInstance) => set((state: any) => {
-    if (state.currentToast?.upgradeTimeout) {
-      clearTimeout(state.currentToast?.upgradeTimeout);
-    }
+  setCurrentToast: (currentToast: ToastInstance, loadingCompletionCheck: () => boolean) => set((state: any) => {
+    // if (state.currentToast?.upgradeTimeout) {
+    //   clearTimeout(state.currentToast?.upgradeTimeout);
+    // }
     const newTimeout = setTimeout(() => {
       if (currentToast.followupNotification) {
         useNotificationsStore.getState().addNotification(currentToast?.followupNotification)

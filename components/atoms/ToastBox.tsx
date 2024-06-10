@@ -25,16 +25,18 @@ export const ToastBox = ({
   const totalDuration = toast?.duration || DEFAULT_TOAST_DURATION;
 
   useEffect(() => {
-    const startTime = Date.now();
-    const widthSetterInterval = setInterval(() => {
-      const decreasePercentage =
-        ((Date.now() - startTime) / totalDuration) * 100.0;
-      setWidthPercentage(100.0 - decreasePercentage);
-    }, INTERVAL_DURATION);
+    if (toast.severity !== ToastSeverity.LOADING) {
+      const startTime = Date.now();
+      const widthSetterInterval = setInterval(() => {
+        const decreasePercentage =
+          ((Date.now() - startTime) / totalDuration) * 100.0;
+        setWidthPercentage(100.0 - decreasePercentage);
+      }, INTERVAL_DURATION);
 
-    setTimeout(() => {
-      clearInterval(widthSetterInterval);
-    }, toast?.duration || DEFAULT_TOAST_DURATION);
+      setTimeout(() => {
+        clearInterval(widthSetterInterval);
+      }, toast?.duration || DEFAULT_TOAST_DURATION);
+    }
   }, []);
 
   return (
@@ -57,10 +59,12 @@ export const ToastBox = ({
                 {toast.title}
               </span>
               {toast.description && (
-                <span className="">{toast.description}</span>
+                <span className="text-xs bodyFg font-light">
+                  {toast.description}
+                </span>
               )}
               {toast.severity === ToastSeverity.DANGER && (
-                <div className="flex gap-x-3">
+                <div className="flex text-xs gap-x-3">
                   <button className="text-primary" onClick={viewLogsOnClick}>
                     View Logs
                   </button>
@@ -89,6 +93,8 @@ export const ToastBox = ({
             ? "bg-successFg"
             : toast.severity === ToastSeverity.ATTENTION
             ? "bg-attentionFg"
+            : toast.severity === ToastSeverity.LOADING
+            ? "bg-primary"
             : "bg-dangerFg"
         }`}
         style={{
