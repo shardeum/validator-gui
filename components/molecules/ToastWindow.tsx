@@ -6,9 +6,9 @@ type ToastWindowProps = {
 };
 
 export const ToastWindow = ({ viewLogsOnClick }: ToastWindowProps) => {
-  const { currentToast, resetToast } = useToastStore((state: any) => ({
+  const { currentToast, cancelToastUpgrade } = useToastStore((state: any) => ({
     currentToast: state.currentToast,
-    resetToast: state.resetToast,
+    cancelToastUpgrade: state.cancelToastUpgrade,
   }));
 
   return (
@@ -17,7 +17,7 @@ export const ToastWindow = ({ viewLogsOnClick }: ToastWindowProps) => {
         <ToastBox
           toast={currentToast}
           onClose={() => {
-            resetToast();
+            cancelToastUpgrade();
           }}
           viewLogsOnClick={viewLogsOnClick}
         />
