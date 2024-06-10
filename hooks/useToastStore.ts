@@ -60,10 +60,13 @@ const useToastStore = create((set: any) => ({
     currentToast.upgradeTimeout = newTimeout;
     return { ...state, currentToast };
   }),
-  resetToast: () => set((state: any) => {
+  cancelToastUpgrade: () => set((state: any) => {
     if (state.currentToast?.upgradeTimeout) {
       clearTimeout(state.currentToast?.upgradeTimeout);
     }
+    return ({ ...state, currentToast: null });
+  }),
+  resetToast: () => set((state: any) => {
     return ({ ...state, currentToast: null });
   })
 }));
