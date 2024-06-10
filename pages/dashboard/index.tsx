@@ -97,12 +97,7 @@ const Dashboard = () => {
                     data-tip="Logout"
                     onClick={async () => await authService.logout(apiBase)}
                   />
-                  <ToastWindow
-                    viewLogsOnClick={setToLogsDisplay}
-                    supportOnClick={() => {
-                      //pass
-                    }}
-                  />
+                  <ToastWindow viewLogsOnClick={setToLogsDisplay} />
                 </div>
               </div>
               <div className="flex justify-start gap-x-3 text-black text-xs mb-2">
@@ -276,12 +271,7 @@ const Dashboard = () => {
                 </button>
               )}
             </div>
-            <ToastWindow
-              viewLogsOnClick={setToLogsDisplay}
-              supportOnClick={() => {
-                //pass
-              }}
-            />
+            <ToastWindow viewLogsOnClick={setToLogsDisplay} />
           </nav>
           <NodeStatusRibbon isWalletConnected={isConnected} />
           {/* dashboard metrics */}

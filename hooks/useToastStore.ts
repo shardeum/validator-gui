@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { NotificationInstance, useNotificationsStore } from './useNotificationsStore';
+import { NotificationInstance, NotificationSeverity, NotificationType, useNotificationsStore } from './useNotificationsStore';
 
 export enum ToastSeverity {
   DANGER = "DANGER",
@@ -13,11 +13,37 @@ export type ToastInstance = {
   title: string;
   description?: string;
   duration?: number;
-  followupNotification?: NotificationInstance;
+  followupNotification?: Omit<NotificationInstance, 'timestamp'>;
   upgradeTimeout?: ReturnType<typeof setTimeout>;
 }
 
 export const DEFAULT_TOAST_DURATION = 7000; // in ms
+
+export const showErrorMessage = (msg: string) => {
+  useToastStore.getState().resetToast();
+  useToastStore.getState().setCurrentToast({
+    severity: ToastSeverity.DANGER,
+    title: msg,
+    followupNotification: {
+      type: NotificationType.ERROR,
+      severity: NotificationSeverity.DANGER,
+      title: msg
+    }
+  });
+}
+
+export const showSuccessMessage = (msg: string) => {
+  useToastStore.getState().resetToast();
+  useToastStore.getState().setCurrentToast({
+    severity: ToastSeverity.SUCCESS,
+    title: msg,
+    followupNotification: {
+      type: NotificationType.NODE_STATUS,
+      severity: NotificationSeverity.SUCCESS,
+      title: msg
+    }
+  });
+}
 
 const useToastStore = create((set: any) => ({
   currentToast: null,
