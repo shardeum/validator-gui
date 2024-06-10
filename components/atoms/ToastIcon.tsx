@@ -23,6 +23,10 @@ export const ToastIcon = ({ severity }: ToastIconProps) => {
         <CheckCircleIcon className={iconClassName + " text-green-700"} />
       ) : severity === ToastSeverity.ATTENTION ? (
         <NodesIcon className={iconClassName} fillColor={fillColor} />
+      ) : severity === ToastSeverity.LOADING ? (
+        <div className="spinner flex items-center justify-center mt-1">
+          <div className="border-2 border-black border-b-white rounded-full h-3.5 w-3.5"></div>
+        </div>
       ) : (
         <ErrorIcon
           className={

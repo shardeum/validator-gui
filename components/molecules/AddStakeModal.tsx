@@ -7,6 +7,10 @@ import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 import { useStake } from "../../hooks/useStake";
 import useModalStore from "../../hooks/useModalStore";
 import useToastStore, { ToastSeverity } from "../../hooks/useToastStore";
+import {
+  NotificationSeverity,
+  NotificationType,
+} from "../../hooks/useNotificationsStore";
 
 export const AddStakeModal = () => {
   const { resetModal } = useModalStore((state: any) => ({
@@ -47,11 +51,21 @@ export const AddStakeModal = () => {
           severity: ToastSeverity.SUCCESS,
           title: "Stake Added",
           description: `${stakedAmount.toFixed(2)} SHM staked Successfully`,
+          followupNotification: {
+            title: "Stake Added",
+            type: NotificationType.REWARD,
+            severity: NotificationSeverity.SUCCESS,
+          },
         });
       } else {
         setCurrentToast({
           severity: ToastSeverity.DANGER,
           title: "Staking Unsuccessful",
+          followupNotification: {
+            title: "Staking Unsuccessful",
+            type: NotificationType.REWARD,
+            severity: NotificationSeverity.DANGER,
+          },
         });
       }
     },
@@ -63,6 +77,16 @@ export const AddStakeModal = () => {
       setNomineeAddress(nomineeAddress);
     }
   }, [nodeStatus?.nomineeAddress, setNomineeAddress]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setCurrentToast({
+        severity: ToastSeverity.LOADING,
+        title: "Processing Adding Stake",
+        description: "Your add stake transaction is in process.",
+      });
+    }
+  }, [isLoading]);
 
   return (
     <>
