@@ -1,24 +1,26 @@
 import { fetcher } from './fetcher';
 import { useGlobals } from '../utils/globals';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { hashSha256 } from '../utils/sha256-hash';
-import { ToastContext } from '../components/ToastContextProvider';
+import { showErrorMessage, showSuccessMessage } from './useToastStore';
+
+type usePasswordInput = {
+  setError?: (field: any, errorData: any, options: any) => void
+}
 
 export type ChangePasswordResult = {
   isLoading: boolean,
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>
 }
 
-export const usePassword = (): ChangePasswordResult => {
-  const {apiBase} = useGlobals()
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const { showErrorMessage } = useContext(ToastContext);
-  const {showTemporarySuccessMessage, showTemporaryErrorMessage} = useContext(ToastContext);
+export const usePassword = ({ setError }: usePasswordInput): ChangePasswordResult => {
+  const { apiBase } = useGlobals();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
     setIsLoading(true)
-    if(currentPassword === newPassword){
-      showTemporaryErrorMessage("The new password must differ from the existing password.")
+    if (currentPassword === newPassword) {
+      showErrorMessage("The new password must differ from the existing password.")
       setIsLoading(false)
       return;
     }
@@ -27,13 +29,15 @@ export const usePassword = (): ChangePasswordResult => {
       const newPwSha256digest = await hashSha256(newPassword)
       await fetcher(`${apiBase}/api/password`, {
         method: 'POST',
-        body: JSON.stringify({currentPassword: currentPwSha256digest, newPassword: newPwSha256digest})
+        body: JSON.stringify({ currentPassword: currentPwSha256digest, newPassword: newPwSha256digest })
       }, showErrorMessage)
-      showTemporarySuccessMessage('Password changed successfully!')
+      showSuccessMessage('Password changed successfully!');
     } catch (e) {
       console.error(e)
       if (typeof e === 'string') {
-        showTemporaryErrorMessage(e)
+        if (setError) {
+          setError("root", { message: e }, { shouldFocus: true });
+        }
       }
     }
     setIsLoading(false)

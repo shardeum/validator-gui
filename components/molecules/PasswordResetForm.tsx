@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import { usePassword } from "../../hooks/usePasswordChange";
 import { Card } from "../layouts/Card";
 import { PasswordInput } from "../atoms/PasswordInput";
@@ -17,7 +16,7 @@ const PasswordResetForm = () => {
     useForm<FormData>({
       mode: "onChange",
     });
-  const { changePassword, isLoading } = usePassword();
+  const { changePassword, isLoading } = usePassword({ setError });
   const [isCurrentPasswordInputActive, setIsCurrentPasswordInputActive] =
     useState(false);
   const [isNewPasswordInputActive, setIsNewPasswordInputActive] =
@@ -120,7 +119,9 @@ const PasswordResetForm = () => {
               )}
             </span>
           </div>
-
+          <span className="text-right text-sm text-warning">
+            {formState.errors.root && <p>{formState.errors.root.message}</p>}
+          </span>
           <div className="flex justify-end">
             {!formState.isSubmitting && (
               <button
