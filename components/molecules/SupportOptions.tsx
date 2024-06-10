@@ -41,10 +41,10 @@ export const SupportOptions = ({ onClose }: SupportOptionsProps) => {
         <hr className="my-2" />
 
         {/* Telegram */}
-        <div className="flex gap-x-3">
-          <div className="flex flex-col justify-start">
-            {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
-            <img src={telegramIcon.src} className="h-4 w-5 mt-1" />
+        {/* <div className="flex gap-x-3">
+          <div className="flex flex-col justify-start"> */}
+        {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
+        {/* <img src={telegramIcon.src} className="h-4 w-5 mt-1" />
           </div>
           <div className="flex flex-col">
             <Link
@@ -60,7 +60,7 @@ export const SupportOptions = ({ onClose }: SupportOptionsProps) => {
             </span>
           </div>
         </div>
-        <hr className="my-2" />
+        <hr className="my-2" /> */}
 
         {/* Github */}
         <div className="flex gap-x-3">
@@ -82,13 +82,13 @@ export const SupportOptions = ({ onClose }: SupportOptionsProps) => {
             </span>
           </div>
         </div>
-        <hr className="my-2" />
+        {/* <hr className="my-2" /> */}
 
         {/* Mail */}
-        <div className="flex gap-x-3">
-          <div className="flex flex-col justify-start">
-            {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
-            <img src={envelopeIcon.src} className="h-4 w-5 mt-1" />
+        {/* <div className="flex gap-x-3">
+          <div className="flex flex-col justify-start"> */}
+        {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
+        {/* <img src={envelopeIcon.src} className="h-4 w-5 mt-1" />
           </div>
           <div className="flex flex-col">
             <Link
@@ -104,7 +104,7 @@ export const SupportOptions = ({ onClose }: SupportOptionsProps) => {
               Get support from Shardeum team.
             </span>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="flex mt-4 gap-x-3 w-full">
         <Link href={VALIDATOR_GUI_FAQS_URL} target="_blank" className="w-full">
