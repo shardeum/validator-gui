@@ -3,7 +3,6 @@ import { FieldValues, useForm } from "react-hook-form";
 import { GeistSans } from "geist/font";
 import { authService, isFirstTimeUserKey } from "../../services/auth.service";
 import { useRouter } from "next/router";
-import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import { useDevice } from "../../context/device";
 import { PasswordInput } from "../atoms/PasswordInput";
 

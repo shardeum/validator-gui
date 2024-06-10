@@ -24,7 +24,13 @@ export const ToastIcon = ({ severity }: ToastIconProps) => {
       ) : severity === ToastSeverity.ATTENTION ? (
         <NodesIcon className={iconClassName} fillColor={fillColor} />
       ) : (
-        <ErrorIcon className={iconClassName} fillColor={fillColor} />
+        <ErrorIcon
+          className={
+            iconClassName +
+            " bg-dangerBg rounded-full h-5 w-5 p-0.5 border border-dangerBorder"
+          }
+          fillColor={fillColor}
+        />
       )}
     </>
   );

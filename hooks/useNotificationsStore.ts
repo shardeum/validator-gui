@@ -49,7 +49,7 @@ export const useNotificationsStore = create((set: any) => ({
   setShowWindow: (showWindow: boolean) => set((state: any) => {
     return { ...state, showWindow };
   }),
-  addNotification: ({ type, severity, title }: { type: NotificationType, severity: NotificationSeverity, title: string }) => set((state: any) => {
+  addNotification: ({ type, severity, title }: { type: Omit<NotificationType, 'timestamp'>, severity: NotificationSeverity, title: string }) => set((state: any) => {
     if (type === NotificationType.VERSION_UPDATE) {
       if ((state.notifications || []).find((notification: NotificationInstance) => (notification.title === title && notification.type === type
       ))) {

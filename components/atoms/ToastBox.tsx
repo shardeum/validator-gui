@@ -6,12 +6,12 @@ import {
 } from "../../hooks/useToastStore";
 import { ToastIcon } from "./ToastIcon";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type ToastBoxProps = {
   toast: ToastInstance;
   onClose?: () => void;
   viewLogsOnClick: () => void;
-  supportOnClick: () => void;
 };
 
 const INTERVAL_DURATION = 10; // in ms
@@ -20,7 +20,6 @@ export const ToastBox = ({
   toast,
   onClose,
   viewLogsOnClick,
-  supportOnClick,
 }: ToastBoxProps) => {
   const [widthPercentage, setWidthPercentage] = useState(100.0);
   const totalDuration = toast?.duration || DEFAULT_TOAST_DURATION;
@@ -46,25 +45,28 @@ export const ToastBox = ({
             <div className="flex flex-col justify-start">
               <ToastIcon severity={toast.severity} />
             </div>
-            <div className="flex flex-col justify-start">
-              <span className="text-sm font-semibold">{toast.title}</span>
+            <div className="flex flex-col justify-start gap-y-1">
+              <span
+                className={
+                  "font-semibold " +
+                  (toast.severity === ToastSeverity.DANGER
+                    ? "text-xs"
+                    : "text-sm")
+                }
+              >
+                {toast.title}
+              </span>
               {toast.description && (
-                <span className="text-xs">{toast.description}</span>
+                <span className="">{toast.description}</span>
               )}
               {toast.severity === ToastSeverity.DANGER && (
                 <div className="flex gap-x-3">
-                  <button
-                    className="text-sm font-semibold"
-                    onClick={viewLogsOnClick}
-                  >
+                  <button className="text-primary" onClick={viewLogsOnClick}>
                     View Logs
                   </button>
-                  <button
-                    className="text-sm font-semibold"
-                    onClick={supportOnClick}
-                  >
-                    Get Help
-                  </button>
+                  <Link href="mailto:support@shardeum.org" target="_blank">
+                    <button className="text-primary">Get Help</button>
+                  </Link>
                 </div>
               )}
             </div>
