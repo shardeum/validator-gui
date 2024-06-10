@@ -1,7 +1,6 @@
-import { fetcher } from './fetcher'
-import { useGlobals } from '../utils/globals'
-import { useContext } from 'react';
-import { ToastContext } from '../components/ToastContextProvider';
+import { fetcher } from './fetcher';
+import { useGlobals } from '../utils/globals';
+import { showErrorMessage } from './useToastStore';
 
 type TXLogsResponse = {
   writeUnstakeLog: Function
@@ -9,8 +8,7 @@ type TXLogsResponse = {
 }
 
 export const useTXLogs = (): TXLogsResponse => {
-  const { apiBase } = useGlobals()
-  const { showErrorMessage } = useContext(ToastContext);
+  const { apiBase } = useGlobals();
   const writeStakeLog = async (data: string): Promise<void> => {
     try {
       await fetcher(`${apiBase}/api/log/stake`, {
