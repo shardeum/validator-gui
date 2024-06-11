@@ -48,9 +48,6 @@ export const InformationPopupsDisplay = () => {
         type: NotificationType.VERSION_UPDATE,
         severity: NotificationSeverity.ATTENTION,
         title: "New GUI version available",
-        description: `A new GUI version (V ${
-          version?.latestGuiVersion || 0
-        }) is available and ready to update.`,
       });
 
       const wasNewGuiVersionPreviouslyAvailable =
@@ -81,9 +78,6 @@ export const InformationPopupsDisplay = () => {
         type: NotificationType.VERSION_UPDATE,
         severity: NotificationSeverity.ATTENTION,
         title: "New Validator version available",
-        description: `A new validator version (V ${
-          version?.activeShardeumVersion || 0
-        }) is available and ready to update.`,
       });
 
       const wasNewValidatorVersionPreviouslyAvailable =
