@@ -1,12 +1,12 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ethers } from "ethers";
 import { useTXLogs } from "./useTXLogs";
 import { isMetaMaskError } from "../utils/isMetaMaskError";
 import { isEthersError } from "../utils/isEthersError";
 import { ExternalProvider } from "@ethersproject/providers";
-import { ToastContext } from "../components/ToastContextProvider";
 import { Address } from 'wagmi';
+import { showErrorMessage, showSuccessMessage } from "./useToastStore";
 
 type useStakeProps = {
   nominator: string;
@@ -15,7 +15,6 @@ type useStakeProps = {
 };
 
 export const useUnstake = ({ nominator, nominee, force }: useStakeProps) => {
-  const { showTemporarySuccessMessage, showErrorDetails } = useContext(ToastContext);
   const { writeUnstakeLog } = useTXLogs();
   const ethereum = window.ethereum;
 
@@ -70,7 +69,7 @@ export const useUnstake = ({ nominator, nominee, force }: useStakeProps) => {
 
       const txConfirmation = await wait();
       console.log("TX CONFRIMED: ", txConfirmation);
-      showTemporarySuccessMessage('Unstake successful!');
+      showSuccessMessage('Unstake successful!');
       setLoading(false);
       return true;
     } catch (error) {
@@ -82,7 +81,7 @@ export const useUnstake = ({ nominator, nominee, force }: useStakeProps) => {
         || (isEthersError(error) && error.code === 'ACTION_REJECTED')) {
         errorMessage = 'Transaction rejected by user';
       }
-      showErrorDetails(errorMessage);
+      showErrorMessage(errorMessage);
     }
     setLoading(false);
     return false;
