@@ -47,7 +47,7 @@ export const showSuccessMessage = (msg: string) => {
 
 const useToastStore = create((set: any) => ({
   currentToast: null,
-  setCurrentToast: (currentToast: ToastInstance, loadingCompletionCheck: () => boolean) => set((state: any) => {
+  setCurrentToast: (currentToast: ToastInstance) => set((state: any) => {
     // if (state.currentToast?.upgradeTimeout) {
     //   clearTimeout(state.currentToast?.upgradeTimeout);
     // }
