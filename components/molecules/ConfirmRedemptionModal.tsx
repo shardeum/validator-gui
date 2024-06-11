@@ -3,6 +3,8 @@ import useModalStore from "../../hooks/useModalStore";
 import { useUnstake } from "../../hooks/useUnstake";
 import { RedemptionSuccessModal } from "./RedemptionSuccessModal";
 import { MobileModalWrapper } from "../layouts/MobileModalWrapper";
+import { useEffect } from "react";
+import useToastStore, { ToastSeverity } from "../../hooks/useToastStore";
 
 type ConfirmRedemptionModalProps = {
   nominator: string;
@@ -29,6 +31,20 @@ export const ConfirmRedemptionModal = ({
     nominee,
     force: false,
   });
+
+  const { setCurrentToast } = useToastStore((state: any) => ({
+    setCurrentToast: state.setCurrentToast,
+  }));
+
+  useEffect(() => {
+    if (isLoading) {
+      setCurrentToast({
+        severity: ToastSeverity.LOADING,
+        title: "Redeeming rewards...",
+        description: "Your reward redemption transaction is in process.",
+      });
+    }
+  }, [isLoading]);
 
   return (
     <div className="bg-white text-subtleFg flex flex-col p-4 max-w-lg w-full gap-y-3 rounded">

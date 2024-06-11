@@ -8,6 +8,8 @@ import { ForceUnstakeSuccessModal } from "./ForceUnstakeSuccessModal";
 import { MobileModalWrapper } from "../layouts/MobileModalWrapper";
 import { useDevice } from "../../context/device";
 import { UnstakeSuccessModal } from "./UnstakeSuccessModal";
+import { useEffect } from "react";
+import useToastStore, { ToastSeverity } from "../../hooks/useToastStore";
 
 type ConfirmUnstakeModalProps = {
   nominator: string;
@@ -37,6 +39,20 @@ export const ConfirmUnstakeModal = ({
     nominee,
     force: isNormalUnstake,
   });
+
+  const { setCurrentToast } = useToastStore((state: any) => ({
+    setCurrentToast: state.setCurrentToast,
+  }));
+
+  useEffect(() => {
+    if (isLoading) {
+      setCurrentToast({
+        severity: ToastSeverity.LOADING,
+        title: "Processing  Unstake",
+        description: "Your unstake transaction is in process.",
+      });
+    }
+  }, [isLoading]);
 
   return (
     <div className="bg-white text-subtleFg flex flex-col p-4 max-w-lg w-full gap-y-3 rounded">
@@ -129,37 +145,39 @@ export const ConfirmUnstakeModal = ({
               onClick={async () => {
                 const wasUnstakeSuccessful = await handleRemoveStake();
                 resetModal();
-                if (wasUnstakeSuccessful && !isNormalUnstake) {
-                  setTimeout(() => {
-                    setContent(
-                      <MobileModalWrapper
-                        closeButtonRequired={false}
-                        contentOnTop={false}
-                        wrapperClassName="fixed bottom-0 flex flex-col items-center justify-start p-3 rounded-t-2xl min-h-2/3 overflow-scroll bg-white w-screen dropdown-300 text-black"
-                      >
-                        <ForceUnstakeSuccessModal
-                          stake={currentStake}
-                          rewards={currentRewards}
-                        />
-                      </MobileModalWrapper>
-                    );
-                    setShowModal(true);
-                  }, 1000);
-                } else if (wasUnstakeSuccessful && isMobile) {
-                  setTimeout(() => {
-                    setContent(
-                      <MobileModalWrapper
-                        closeButtonRequired={false}
-                        contentOnTop={false}
-                      >
-                        <UnstakeSuccessModal
-                          stake={currentStake}
-                          rewards={currentRewards}
-                        />
-                      </MobileModalWrapper>
-                    );
-                    setShowModal(true);
-                  }, 1000);
+                if (wasUnstakeSuccessful) {
+                  if (!isNormalUnstake) {
+                    setTimeout(() => {
+                      setContent(
+                        <MobileModalWrapper
+                          closeButtonRequired={false}
+                          contentOnTop={false}
+                          wrapperClassName="fixed bottom-0 flex flex-col items-center justify-start p-3 rounded-t-2xl min-h-2/3 overflow-scroll bg-white w-screen dropdown-300 text-black"
+                        >
+                          <ForceUnstakeSuccessModal
+                            stake={currentStake}
+                            rewards={currentRewards}
+                          />
+                        </MobileModalWrapper>
+                      );
+                      setShowModal(true);
+                    }, 1000);
+                  } else if (isMobile) {
+                    setTimeout(() => {
+                      setContent(
+                        <MobileModalWrapper
+                          closeButtonRequired={false}
+                          contentOnTop={false}
+                        >
+                          <UnstakeSuccessModal
+                            stake={currentStake}
+                            rewards={currentRewards}
+                          />
+                        </MobileModalWrapper>
+                      );
+                      setShowModal(true);
+                    }, 1000);
+                  }
                 }
               }}
             >
