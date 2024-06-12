@@ -323,6 +323,25 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
 
   const isNodeStopped = state === NodeState.STOPPED;
 
+  const statusTip = new Map<string, string>(
+    Object.entries({
+      active:
+        "Your node is part of Active validator group. You will start receiving rewards for being an active validator. The network will swap your node back to Standby at an appropriate time.",
+      standby:
+        "Your node is connected to the network. It is in a Standby Pool and each cycle it has a chance to be randomly selected to go into Validating state",
+      stopped: "Your node is not running and not participating in the network.",
+      syncing:
+        "This node is syncing with the network and will begin validating transactions soon.",
+      "need-stake":
+        "Your node is running, but it will not join the network until you stake.",
+      "waiting-for-network":
+        "Node is trying to connect to the Shardeum network. If your node is stuck in this for more than 5 minutes then please contact us so we can debug and solve this.",
+      selected:
+        "Your node has been selected from standby list and will be validating soon",
+      ready: "Your node is getting ready to join active validator list",
+    })
+  );
+
   return (
     <Card>
       <div>
@@ -339,7 +358,12 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
             className={`flex items-center gap-x-2 p-3 font-medium text-lg bg-${titleBgColor}`}
           >
             <span className={`text-${titleTextColor}`}>{title}</span>
-            <InformationCircleIcon className="h-4 w-4 stroke-2 cursor-pointer" />
+            <span
+              className="tooltip tooltip-right"
+              data-tip={statusTip.get(nodeStatus?.state || "")}
+            >
+              <InformationCircleIcon className="h-4 w-4 stroke-2" />
+            </span>
           </div>
           <div className="flex flex-col p-3 gap-y-2">
             <div className="flex justify-between">
