@@ -19,7 +19,6 @@ import { GeistSans } from "geist/font";
 import Link from "next/link";
 import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 import { useGlobals } from "../../utils/globals";
-import { ExpansionArrow } from "../../components/atoms/ExpansionArrow";
 import { useStake } from "../../hooks/useStake";
 
 const tokensClaimedByKey = "tokensClaimedBy";
@@ -223,6 +222,7 @@ const Onboarding = () => {
 
           {/* right pane */}
           <div className="grow h-full w-full">
+            <div className="absolute top-10 right-60"></div>
             <div className="w-full max-w-xl flex flex-col items-start gap-y-3">
               {/* Step 1: Connect wallet */}
               <div className="bg-white w-full border p-3 shadow-md rounded-sm">
@@ -235,7 +235,6 @@ const Onboarding = () => {
 
                       <span className="font-semibold w-full flex items-center justify-between pr-5">
                         Connect your wallet
-                        <ExpansionArrow isUp={false} />
                       </span>
                     </div>
                     <div className="flex flex-col w-full pl-7">
@@ -290,7 +289,6 @@ const Onboarding = () => {
                       <CheckCircleIcon className="bg-white h-6 w-6 rounded-full text-xs text-green-700" />
                       <span className="font-semibold flex justify-between items-center w-full pr-5">
                         Successfully connected to the Shardeum Network
-                        <ExpansionArrow isUp={false} />
                       </span>
                     </div>
                     <span className="text-gray-600 text-sm ml-8">
@@ -313,7 +311,6 @@ const Onboarding = () => {
                       </span>
                       <span className="font-semibold w-full flex items-center justify-between pr-5">
                         Claim testnet tokens from faucet
-                        <ExpansionArrow isUp={false} />
                       </span>
                     </div>
                     <div className="flex flex-col w-full pl-7">
@@ -395,7 +392,6 @@ const Onboarding = () => {
                         <CheckCircleIcon className="bg-white h-6 w-6 rounded-full text-xs text-green-700" />
                         <span className="font-semibold flex justify-between items-center w-full pr-5">
                           Successfully claimed SHM
-                          <ExpansionArrow isUp={false} />
                         </span>
                       </div>
                       <span className="text-gray-600 text-sm ml-8">
@@ -429,7 +425,6 @@ const Onboarding = () => {
 
                       <span className="font-semibold w-full flex items-center justify-between pr-5">
                         Start your node
-                        <ExpansionArrow isUp={false} />
                       </span>
                     </div>
                     <div className="flex flex-col w-full pl-7">
@@ -471,7 +466,6 @@ const Onboarding = () => {
                       <CheckCircleIcon className="bg-white h-6 w-6 rounded-full text-xs text-green-700" />
                       <span className="font-semibold flex justify-between items-center w-full pr-5">
                         Node initiated successfully.
-                        <ExpansionArrow isUp={false} />
                       </span>
                     </div>
                     <span className="text-gray-600 text-sm ml-8">
@@ -521,7 +515,6 @@ const Onboarding = () => {
 
                         <span className="font-semibold w-full flex items-center justify-between pr-5">
                           Stake your SHM
-                          <ExpansionArrow isUp={false} />
                         </span>
                       </div>
                       <div className="flex flex-col w-full pl-7">
@@ -618,7 +611,6 @@ const Onboarding = () => {
                         <CheckCircleIcon className="bg-white h-6 w-6 rounded-full text-xs text-green-700" />
                         <span className="font-semibold flex justify-between items-center w-full pr-5">
                           Successfully staked SHM
-                          <ExpansionArrow isUp={false} />
                         </span>
                       </div>
                       <span className="text-gray-600 text-sm ml-8">
