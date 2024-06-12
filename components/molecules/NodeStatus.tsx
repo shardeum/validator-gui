@@ -14,6 +14,8 @@ import {
   NotificationSeverity,
   NotificationType,
 } from "../../hooks/useNotificationsStore";
+import { wasLoggedOutKey } from "../../services/auth.service";
+import useStatusUpdateStore from "../../hooks/useStatusUpdateStore";
 
 export enum NodeState {
   ACTIVE = "ACTIVE",
@@ -65,7 +67,7 @@ export const getNodeState = (
   return nodeState;
 };
 
-const getTitle = (state: NodeState, isWalletConnected: boolean) => {
+export const getTitle = (state: NodeState, isWalletConnected: boolean) => {
   if (!isWalletConnected) {
     return "Connect Wallet";
   }
@@ -95,7 +97,10 @@ const getTitle = (state: NodeState, isWalletConnected: boolean) => {
   return title;
 };
 
-const getTitleBgColor = (state: NodeState, isWalletConnected: boolean) => {
+export const getTitleBgColor = (
+  state: NodeState,
+  isWalletConnected: boolean
+) => {
   if (!isWalletConnected) {
     return "subtleBg";
   }
@@ -110,7 +115,10 @@ const getTitleBgColor = (state: NodeState, isWalletConnected: boolean) => {
     : "subtleBg";
 };
 
-const getTitleTextColor = (state: NodeState, isWalletConnected: boolean) => {
+export const getTitleTextColor = (
+  state: NodeState,
+  isWalletConnected: boolean
+) => {
   if (!isWalletConnected) {
     return "subtleFg";
   }
@@ -193,49 +201,10 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
     setCurrentToast: state.setCurrentToast,
     resetToast: state.resetToast,
   }));
-  //   {
-  //     day: "Sun",
-  //     activeDuration: 10,
-  //     standbyDuration: 30,
-  //     stoppedDuration: 25,
-  //   },
-  //   {
-  //     day: "Mon",
-  //     activeDuration: 20,
-  //     standbyDuration: 0,
-  //     stoppedDuration: 0,
-  //   },
-  //   {
-  //     day: "Tue",
-  //     activeDuration: 0,
-  //     standbyDuration: 0,
-  //     stoppedDuration: 0,
-  //   },
-  //   {
-  //     day: "Wed",
-  //     activeDuration: 25,
-  //     standbyDuration: 0,
-  //     stoppedDuration: 70,
-  //   },
-  //   {
-  //     day: "Thu",
-  //     activeDuration: 10,
-  //     standbyDuration: 40,
-  //     stoppedDuration: 30,
-  //   },
-  //   {
-  //     day: "Fri",
-  //     activeDuration: 15,
-  //     standbyDuration: 50,
-  //     stoppedDuration: 35,
-  //   },
-  //   {
-  //     day: "Sat",
-  //     activeDuration: 10,
-  //     standbyDuration: 30,
-  //     stoppedDuration: 20,
-  //   },
-  // ];
+
+  const { setCurrentStatus } = useStatusUpdateStore((state: any) => ({
+    setCurrentStatus: state.setCurrentStatus,
+  }));
 
   const [nodeStatusHistories, setNodeStatusHistories] = useState<
     DailyNodeStatus[]
@@ -291,7 +260,21 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
     const previousNodeState = localStorage.getItem(previousNodeStateKey);
     const currentNodeState = nodeStatus?.state || previousNodeState;
     resetToast();
+
     if (previousNodeState !== currentNodeState) {
+      const wasLoggedOut = localStorage.getItem(wasLoggedOutKey) === "true";
+      if (
+        wasLoggedOut &&
+        ["active", "stopped", "waiting-for-network", "need-stake"].includes(
+          nodeStatus?.state || ""
+        )
+      ) {
+        if (wasLoggedOut) {
+          setCurrentStatus(nodeStatus?.state || "");
+          localStorage.removeItem(wasLoggedOutKey);
+        }
+      }
+
       switch (nodeStatus?.state) {
         case "active":
           setCurrentToast({
