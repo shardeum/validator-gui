@@ -101,7 +101,7 @@ export const StakeDisplay = () => {
                           <ConfirmUnstakeModal
                             nominator={address?.toString() || ""}
                             nominee={nodeStatus?.nomineeAddress || ""}
-                            isNormalUnstake={!hasNodeStopped}
+                            isNormalUnstake={hasNodeStopped}
                             currentRewards={parseFloat(
                               nodeStatus?.currentRewards || "0"
                             )}
