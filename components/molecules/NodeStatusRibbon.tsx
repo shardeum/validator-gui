@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useNodeStatus } from "../../hooks/useNodeStatus";
-import { NodeStatus as NodeStatusModel } from "../../model/node-status";
 import {
   NotificationSeverity,
   NotificationType,
@@ -10,6 +9,14 @@ import { ExpansionArrow } from "../atoms/ExpansionArrow";
 import useModalStore from "../../hooks/useModalStore";
 import { OverviewSidebar } from "../organisms/OverviewSidebar";
 import { MobileModalWrapper } from "../layouts/MobileModalWrapper";
+import { wasLoggedOutKey } from "../../services/auth.service";
+import {
+  getNodeState,
+  getTitle,
+  getTitleBgColor,
+  getTitleTextColor,
+} from "./NodeStatus";
+import useStatusUpdateStore from "../../hooks/useStatusUpdateStore";
 
 export enum NodeState {
   ACTIVE = "ACTIVE",
@@ -20,105 +27,11 @@ export enum NodeState {
   WAITING_FOR_NETWORK = "WAITING_FOR_NETWORK",
 }
 
-type DailyNodeStatus = {
-  day: string;
-  activeDuration: number; // in %of total time
-  standbyDuration: number; // in %of total time -> includes time spent syncing
-  stoppedDuration: number; // in %of total time
-};
-
 type NodeStatusRibbonProps = {
   isWalletConnected: boolean;
 };
 
 const previousNodeStateKey = "previousNodeState";
-
-export const getNodeState = (
-  nodeStatus: NodeStatusModel | undefined
-): NodeState => {
-  let nodeState: NodeState = NodeState.STOPPED;
-  switch (nodeStatus?.state) {
-    case "active":
-      nodeState = NodeState.ACTIVE;
-      break;
-    case "standby":
-      nodeState = NodeState.STANDBY;
-      break;
-    case "stopped":
-      nodeState = NodeState.STOPPED;
-      break;
-    case "syncing":
-      nodeState = NodeState.SYNCING;
-      break;
-    case "need-stake":
-      nodeState = NodeState.NEED_STAKE;
-      break;
-    case "waiting-for-network":
-      nodeState = NodeState.WAITING_FOR_NETWORK;
-      break;
-  }
-  return nodeState;
-};
-
-const getTitle = (state: NodeState, isWalletConnected: boolean) => {
-  if (!isWalletConnected) {
-    return "Connect Wallet";
-  }
-  let title = "";
-  switch (state) {
-    case NodeState.ACTIVE:
-      title = "Validating";
-      break;
-    case NodeState.STANDBY:
-      title = "On Standby";
-      break;
-    case NodeState.STOPPED:
-      title = "Stopped";
-      break;
-    case NodeState.SYNCING:
-      title = "On Standby";
-      break;
-    case NodeState.NEED_STAKE:
-      title = "No SHM Staked";
-      break;
-    case NodeState.WAITING_FOR_NETWORK:
-      title = "Waiting for network";
-      break;
-    default:
-      title = "";
-  }
-  return title;
-};
-
-const getTitleBgColor = (state: NodeState, isWalletConnected: boolean) => {
-  if (!isWalletConnected) {
-    return "subtleBg";
-  }
-  return state === NodeState.ACTIVE
-    ? "successBg"
-    : state === NodeState.STOPPED
-    ? "dangerBg"
-    : state === NodeState.NEED_STAKE
-    ? "severeBg"
-    : state === NodeState.WAITING_FOR_NETWORK
-    ? "attentionBg"
-    : "subtleBg";
-};
-
-const getTitleTextColor = (state: NodeState, isWalletConnected: boolean) => {
-  if (!isWalletConnected) {
-    return "subtleFg";
-  }
-  return state === NodeState.ACTIVE
-    ? "successFg"
-    : state === NodeState.STOPPED
-    ? "dangerFg"
-    : state === NodeState.NEED_STAKE
-    ? "severeFg"
-    : state === NodeState.WAITING_FOR_NETWORK
-    ? "attentionFg"
-    : "subtleFg";
-};
 
 const getBorderColor = (state: NodeState, isWalletConnected: boolean) => {
   if (!isWalletConnected) {
@@ -133,48 +46,6 @@ const getBorderColor = (state: NodeState, isWalletConnected: boolean) => {
     : state === NodeState.WAITING_FOR_NETWORK
     ? "attentionBorder"
     : "subtleBg";
-};
-
-export const getTimeTags = (dateStr: string) => {
-  const weekday = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const month = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const date = new Date(dateStr);
-  let dateTag = `${weekday[date.getDay()]}, ${date.getDate()} ${
-    month[date.getMonth()]
-  } ${date.getFullYear()}`;
-  let hour = date.getHours();
-  let meridian = "AM";
-  if (hour > 12) {
-    hour -= 12;
-    meridian = "PM";
-  }
-  let timeTag = `${date.getHours()}:${date.getMinutes()} ${meridian}`;
-  if (!dateStr) {
-    dateTag = "";
-    timeTag = "";
-  }
-  return [dateTag, timeTag];
 };
 
 export const NodeStatusRibbon = ({
@@ -201,11 +72,28 @@ export const NodeStatusRibbon = ({
     resetToast: state.resetToast,
   }));
 
+  const { setCurrentStatus } = useStatusUpdateStore((state: any) => ({
+    setCurrentStatus: state.setCurrentStatus,
+  }));
+
   useEffect(() => {
     const previousNodeState = localStorage.getItem(previousNodeStateKey);
     const currentNodeState = nodeStatus?.state || previousNodeState;
     resetToast();
     if (previousNodeState !== currentNodeState) {
+      const wasLoggedOut = localStorage.getItem(wasLoggedOutKey) === "true";
+      if (
+        wasLoggedOut &&
+        ["active", "stopped", "waiting-for-network", "need-stake"].includes(
+          nodeStatus?.state || ""
+        )
+      ) {
+        if (wasLoggedOut) {
+          setCurrentStatus(nodeStatus?.state || "");
+          localStorage.removeItem(wasLoggedOutKey);
+        }
+      }
+
       switch (nodeStatus?.state) {
         case "active":
           setCurrentToast({

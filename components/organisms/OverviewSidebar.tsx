@@ -5,6 +5,7 @@ import { QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
 import { useNodeVersion } from "../../hooks/useNodeVersion";
 import { useRef, useState } from "react";
 import { SupportDisplay } from "../molecules/SupportDisplay";
+import { NodeStatusUpdate } from "../atoms/NodeStatusUpdate";
 
 export const OverviewSidebar: React.FC = () => {
   const renderCount = useRef(0);
@@ -16,11 +17,19 @@ export const OverviewSidebar: React.FC = () => {
     useState(false);
 
   return (
-    <div className="flex flex-col gap-y-10 scroll-smooth">
+    <div className="flex flex-col gap-y-16 scroll-smooth">
       <div className="flex flex-col gap-y-2">
         <span className="font-semibold">Node Status</span>
         <div className="flex flex-col shadow border border-gray-200 rounded">
-          <NodeStatus isWalletConnected={isConnected} address={address || ""} />
+          <div className="z-30">
+            <NodeStatus
+              isWalletConnected={isConnected}
+              address={address || ""}
+            />
+          </div>
+          <div className="relative">
+            <NodeStatusUpdate />
+          </div>
         </div>
       </div>
       <div className="flex flex-col gap-y-2">
