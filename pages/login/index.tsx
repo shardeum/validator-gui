@@ -51,13 +51,12 @@ const Login = () => {
                 GeistSans.className
               }
             >
-              Thank you for helping make Shardeum more decentralized and stable
-              by running a node
+              Your node operation is key to Shardeum&apos;s success—thank you!
             </span>
             <div className="flex justify-start ml-3">
               <div className="max-w-[200px] break-normal flex flex-col justify-start">
                 <CheckCircleIcon className="h-5 w-5 mb-2" />
-                <span>Ensure shardeum is up almost all the time</span>
+                <span>Keeps platform uptime consistently high </span>
               </div>
               <div className="max-w-[200px] break-normal flex flex-col justify-start">
                 <CheckCircleIcon className="h-5 w-5 mb-2" />
