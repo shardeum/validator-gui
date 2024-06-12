@@ -113,21 +113,13 @@ export const InformationPopupsDisplay = () => {
               <span className="text-sm font-semibold">
                 Finish setting up your node
               </span>
-              <span className="text-xs bodyFg font-light">
-                Follow this step by step guide to setup your validator node.
-              </span>
               <div className="flex justify-start mt-3">
-                <button
-                  className="text-primary border rounded px-3 py-1 bg-white text-sm"
-                  onClick={() => {
-                    router.push("/onboarding");
-                  }}
-                >
-                  Continue
-                </button>
+                <span className="bodyFg text-xs font-light">
+                  Start your node, add stake and begin validating.
+                </span>
               </div>
             </div>
-            <div className="flex flex-col justify-center items-center max-w-[7rem] w-full mx-3">
+            <div className="flex flex-col justify-center items-center max-w-[5rem] w-full mr-6">
               <div
                 className="fill-bg h-full w-full"
                 style={{
@@ -139,6 +131,7 @@ export const InformationPopupsDisplay = () => {
               <XMarkIcon
                 className="h-3 w-3 cursor-pointer"
                 onClick={() => {
+                  localStorage.setItem(onboardingCompletedKey, "true");
                   setShowOnboardingPrompt(false);
                 }}
               />
@@ -147,7 +140,7 @@ export const InformationPopupsDisplay = () => {
         </div>
       )}
       {!showOnboardingPrompt && (
-        <span className="text-4xl font-semibold">Welcome Back!</span>
+        <span className="text-4xl font-semibold">Welcome Validator!</span>
       )}
       {showValidatorUpdatePrompt && (
         <div className="w-full h-full shadow border border-attentionBorder bg-attentionBg rounded p-4">
