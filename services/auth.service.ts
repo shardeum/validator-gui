@@ -4,6 +4,7 @@ import { hashSha256 } from '../utils/sha256-hash';
 import { useCallback } from "react";
 
 const isLoggedInKey = 'isLoggedIn'
+export const wasLoggedOutKey = 'wasLoggedOut'
 export const isFirstTimeUserKey = 'isFirstTimeUser'
 
 function useLogin() {
@@ -43,6 +44,7 @@ async function logout(apiBase: string) {
     throw new Error('Error logging out!');
   }
   localStorage.removeItem(isLoggedInKey)
+  localStorage.setItem(wasLoggedOutKey, "true")
   Router.push('/login')
 }
 
