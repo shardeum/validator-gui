@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { GeistSans } from "geist/font";
 import { useAccount, useBalance } from "wagmi";
 import { useNodeStatus } from "../../hooks/useNodeStatus";
-import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 import { useStake } from "../../hooks/useStake";
 import useModalStore from "../../hooks/useModalStore";
 import useToastStore, { ToastSeverity } from "../../hooks/useToastStore";
@@ -25,13 +24,16 @@ export const AddStakeModal = () => {
 
   const { address } = useAccount();
   const { data } = useBalance({ address });
-  const { stakeInfo } = useAccountStakeInfo(address);
   const { nodeStatus } = useNodeStatus();
   const stakeInputRef = useRef<HTMLInputElement>(null);
   const [stakedAmount, setStakedAmount] = useState(0);
-  const minimumStakeRequirement = parseFloat(
-    nodeStatus?.stakeRequirement || "10"
-  );
+  const minimumStakeRequirement = useMemo(() => {
+    return Math.max(
+      parseFloat(nodeStatus?.stakeRequirement || "10") -
+        parseFloat(nodeStatus?.lockedStake || "0"),
+      0
+    );
+  }, [nodeStatus?.stakeRequirement, nodeStatus?.lockedStake]);
 
   const {
     sendTransaction,
@@ -42,8 +44,9 @@ export const AddStakeModal = () => {
   } = useStake({
     nominator: address?.toString() || "",
     nominee: nodeStatus?.nomineeAddress || "",
-    stakeAmount: nodeStatus?.stakeRequirement || "20",
-    totalStaked: stakeInfo?.stake ? Number(stakeInfo.stake) : 0,
+    stakeAmount:
+      nodeStatus?.stakeRequirement || minimumStakeRequirement.toString(),
+    totalStaked: nodeStatus?.lockedStake ? Number(nodeStatus?.lockedStake) : 0,
     onStake: (wasTxnSuccessful: boolean) => {
       resetToast();
       if (wasTxnSuccessful) {
@@ -115,7 +118,7 @@ export const AddStakeModal = () => {
             <input
               type="number"
               step="0.00000000000000000001"
-              min={nodeStatus?.stakeRequirement || "10"}
+              min={minimumStakeRequirement}
               id={stakeInputId}
               ref={stakeInputRef}
               placeholder="10"

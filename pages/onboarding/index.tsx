@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useMemo, useState } from "react";
 import onboardingBg from "../../assets/onboarding-bg.svg";
 import {
   BookOpenIcon,
@@ -17,7 +17,6 @@ import { useRouter } from "next/router";
 import { WalletConnectButton } from "../../components/molecules/WalletConnectButton";
 import { GeistSans } from "geist/font";
 import Link from "next/link";
-import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 import { useGlobals } from "../../utils/globals";
 import { useStake } from "../../hooks/useStake";
 import { ToastWindow } from "../../components/molecules/ToastWindow";
@@ -56,7 +55,6 @@ const Onboarding = () => {
       setAccountBalance("");
     },
   });
-  const { stakeInfo } = useAccountStakeInfo(address);
   const [isStakingComplete, setIsStakingComplete] = useState(
     localStorage.getItem(onboardingCompletedKey) === "true"
   );
@@ -82,6 +80,14 @@ const Onboarding = () => {
   const { isMobile } = useDevice();
   const { disconnect } = useDisconnect();
   const { nodeStatus, isLoading, startNode } = useNodeStatus();
+  const minimumStakeRequirement = useMemo(() => {
+    return Math.max(
+      parseFloat(nodeStatus?.stakeRequirement || "10") -
+        parseFloat(nodeStatus?.lockedStake || "0"),
+      0
+    );
+  }, [nodeStatus?.stakeRequirement, nodeStatus?.lockedStake]);
+
   const {
     sendTransaction,
     handleStakeChange,
@@ -91,15 +97,13 @@ const Onboarding = () => {
   } = useStake({
     nominator: address?.toString() || "",
     nominee: nodeStatus?.nomineeAddress || "",
-    stakeAmount: nodeStatus?.stakeRequirement || "20",
-    totalStaked: stakeInfo?.stake ? Number(stakeInfo.stake) : 0,
+    stakeAmount:
+      nodeStatus?.stakeRequirement || minimumStakeRequirement.toString(),
+    totalStaked: nodeStatus?.lockedStake ? Number(nodeStatus?.lockedStake) : 0,
     onStake: (wasTxnSuccessful: boolean) => {
       setIsStakingComplete(wasTxnSuccessful);
     },
   });
-  const minimumStakeRequirement = parseFloat(
-    nodeStatus?.stakeRequirement || "10"
-  );
 
   const { apiBase } = useGlobals();
 
@@ -127,6 +131,16 @@ const Onboarding = () => {
   useEffect(() => {
     if (isStakingComplete) {
       localStorage.setItem(onboardingCompletedKey, "true");
+      setCurrentToast({
+        severity: ToastSeverity.SUCCESS,
+        title: "Stake Added",
+        description: `${stakedAmount.toFixed(2)} SHM staked Successfully`,
+        followupNotification: {
+          title: "Stake Added",
+          type: NotificationType.REWARD,
+          severity: NotificationSeverity.SUCCESS,
+        },
+      });
       const delay = setTimeout(() => {
         setShowSuccessScreen(true);
       }, 3000);
@@ -134,6 +148,17 @@ const Onboarding = () => {
       return () => clearTimeout(delay);
     }
   }, [isStakingComplete]);
+
+  useEffect(() => {
+    if (isStaking) {
+      setCurrentToast({
+        severity: ToastSeverity.LOADING,
+        title: "Processing Adding Stake",
+        description: "Your add stake transaction is in process.",
+        duration: 300000, // 300 seconds
+      });
+    }
+  }, [isStaking]);
 
   const claimTokens = async (address: string) => {
     const claimUrl = `${apiBase}/api/claim-tokens?address=${address}`;
@@ -553,7 +578,8 @@ const Onboarding = () => {
                               placeholder="10"
                               type="number"
                               step="0.00000000000000000001"
-                              min={nodeStatus?.stakeRequirement || "10"}
+                              min={minimumStakeRequirement}
+                              disabled={isStaking}
                               onChange={(e) => {
                                 const amount = e.target.value;
                                 if (amount) {
@@ -600,10 +626,7 @@ const Onboarding = () => {
                             <div className="flex justify-between">
                               <div
                                 className={`text-xs ${
-                                  stakedAmount <
-                                  parseFloat(
-                                    nodeStatus?.stakeRequirement || "10.0"
-                                  )
+                                  stakedAmount < minimumStakeRequirement
                                     ? "text-dangerFg"
                                     : ""
                                 }`}
