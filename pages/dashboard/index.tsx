@@ -273,7 +273,7 @@ const Dashboard = () => {
             </div>
             <ToastWindow viewLogsOnClick={setToLogsDisplay} />
           </nav>
-          <NodeStatusRibbon isWalletConnected={isConnected} />
+          <NodeStatusRibbon />
           {/* dashboard metrics */}
           <div className="grow h-screen pt-8 w-full flex flex-col justify-between">
             {contentPane === Content.MAIN && (
