@@ -31,7 +31,7 @@ export const ForceRemoveStake = ({
       <Card>
         <div className="p-5 flex flex-col gap-y-4">
           <div className="flex max-md:flex-col justify-between">
-            <div className="flex flex-col gap-y-2">
+            <div className="flex flex-col gap-y-2 w-full">
               <span className="font-semibold">Force Remove Stake</span>
               <span className="bodyFg text-sm">
                 This action will try to forcefully remove your stake.
