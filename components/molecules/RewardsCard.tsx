@@ -65,7 +65,7 @@ export const RewardsCard = () => {
                   <span>
                     {nodeStatus?.currentRewards || (0.0).toFixed(2)} SHM
                   </span>
-                  <span className="text-xs leading-9 bodyFg">(~0.00$)</span>
+                  {/* <span className="text-xs leading-9 bodyFg">(~0.00$)</span> */}
                 </span>
                 <div className="text-xs flex justify-between w-full bodyFg">
                   <span>Earned since last validating cycle</span>
