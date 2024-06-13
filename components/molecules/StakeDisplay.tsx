@@ -4,7 +4,6 @@ import { useAccount, useNetwork } from "wagmi";
 import { useNodeStatus } from "../../hooks/useNodeStatus";
 import useModalStore from "../../hooks/useModalStore";
 import { AddStakeModal } from "./AddStakeModal";
-import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 import { CHAIN_ID } from "../../pages/_app";
 import { WalletConnectButton } from "./WalletConnectButton";
 import { ConfirmUnstakeModal } from "./ConfirmUnstakeModal";
@@ -14,7 +13,6 @@ import { MobileModalWrapper } from "../layouts/MobileModalWrapper";
 export const StakeDisplay = () => {
   const addressRef = useRef<HTMLSpanElement>(null);
   const { address, isConnected } = useAccount();
-  const { stakeInfo } = useAccountStakeInfo(address);
   const { chain } = useNetwork();
   const { nodeStatus } = useNodeStatus();
   const { setShowModal, setContent, resetModal } = useModalStore(
@@ -39,7 +37,9 @@ export const StakeDisplay = () => {
       <div className="flex flex-col text-subtleFg">
         <div className={`flex flex-col gap-y-2 p-3 font-semibold text-xl`}>
           <span>
-            {parseFloat(stakeInfo?.stake ? stakeInfo.stake : "0").toFixed(2)}{" "}
+            {parseFloat(
+              nodeStatus?.lockedStake ? nodeStatus?.lockedStake : "0"
+            ).toFixed(2)}{" "}
             SHM
           </span>
           <div className="flex gap-x-1">
@@ -76,10 +76,11 @@ export const StakeDisplay = () => {
                   <button
                     className={
                       "bg-white border border-bodyFg text-sm px-3 py-2 rounded basis-0 grow " +
-                      (hasNodeStopped && parseFloat(stakeInfo?.stake || "0") > 0
+                      (hasNodeStopped &&
+                      parseFloat(nodeStatus?.lockedStake || "0") > 0
                         ? "text-primary"
                         : `text-gray-400 ${
-                            parseFloat(stakeInfo?.stake || "0") > 0
+                            parseFloat(nodeStatus?.lockedStake || "0") > 0
                               ? "tooltip tooltip-bottom"
                               : ""
                           }`)
@@ -88,7 +89,7 @@ export const StakeDisplay = () => {
                     If absolutely necessary, use the force remove option in settings to remove stake (Not Recommended)."
                     disabled={
                       !hasNodeStopped ||
-                      parseFloat(stakeInfo?.stake || "0") === 0
+                      parseFloat(nodeStatus?.lockedStake || "0") === 0
                     }
                     onClick={() => {
                       resetModal();
@@ -105,7 +106,9 @@ export const StakeDisplay = () => {
                             currentRewards={parseFloat(
                               nodeStatus?.currentRewards || "0"
                             )}
-                            currentStake={parseFloat(stakeInfo?.stake || "0")}
+                            currentStake={parseFloat(
+                              nodeStatus?.lockedStake || "0"
+                            )}
                           ></ConfirmUnstakeModal>
                         </MobileModalWrapper>
                       );
