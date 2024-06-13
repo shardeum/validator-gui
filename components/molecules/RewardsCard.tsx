@@ -3,7 +3,6 @@ import rewardsCardBg from "../../assets/rewards-card.png";
 import { useNodeStatus } from "../../hooks/useNodeStatus";
 import { Card } from "../layouts/Card";
 import { useAccount, useNetwork } from "wagmi";
-import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 import { CHAIN_ID } from "../../pages/_app";
 import useModalStore from "../../hooks/useModalStore";
 import { ConfirmRedemptionModal } from "./ConfirmRedemptionModal";
@@ -38,21 +37,20 @@ export const RewardsCard = () => {
   const { nodeStatus } = useNodeStatus();
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
-  const { stakeInfo } = useAccountStakeInfo(address);
   const [canRedeem, setCanRedeem] = useState(
     isConnected &&
       chain?.id === CHAIN_ID &&
       nodeStatus?.state === "stopped" &&
-      parseFloat(stakeInfo?.stake || "0") > 0
+      parseFloat(nodeStatus?.lockedStake || "0") > 0
   );
   useEffect(() => {
     setCanRedeem(
       isConnected &&
         chain?.id === CHAIN_ID &&
         nodeStatus?.state === "stopped" &&
-        parseFloat(stakeInfo?.stake || "0") > 0
+        parseFloat(nodeStatus?.lockedStake || "0") > 0
     );
-  }, [nodeStatus?.state, stakeInfo?.stake, isConnected, chain?.id]);
+  }, [nodeStatus?.state, nodeStatus?.lockedStake, isConnected, chain?.id]);
 
   return (
     <Card>
@@ -111,7 +109,7 @@ export const RewardsCard = () => {
                       currentRewards={parseFloat(
                         nodeStatus?.currentRewards || "0"
                       )}
-                      currentStake={parseFloat(stakeInfo?.stake || "0")}
+                      currentStake={parseFloat(nodeStatus?.lockedStake || "0")}
                     ></ConfirmRedemptionModal>
                   </MobileModalWrapper>
                 );
