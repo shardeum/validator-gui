@@ -67,10 +67,7 @@ export const getNodeState = (
   return nodeState;
 };
 
-export const getTitle = (state: NodeState, isWalletConnected: boolean) => {
-  if (!isWalletConnected) {
-    return "Connect Wallet";
-  }
+export const getTitle = (state: NodeState) => {
   let title = "";
   switch (state) {
     case NodeState.ACTIVE:
@@ -97,13 +94,7 @@ export const getTitle = (state: NodeState, isWalletConnected: boolean) => {
   return title;
 };
 
-export const getTitleBgColor = (
-  state: NodeState,
-  isWalletConnected: boolean
-) => {
-  if (!isWalletConnected) {
-    return "subtleBg";
-  }
+export const getTitleBgColor = (state: NodeState) => {
   return state === NodeState.ACTIVE
     ? "successBg"
     : state === NodeState.STOPPED
@@ -115,13 +106,7 @@ export const getTitleBgColor = (
     : "subtleBg";
 };
 
-export const getTitleTextColor = (
-  state: NodeState,
-  isWalletConnected: boolean
-) => {
-  if (!isWalletConnected) {
-    return "subtleFg";
-  }
+export const getTitleTextColor = (state: NodeState) => {
   return state === NodeState.ACTIVE
     ? "successFg"
     : state === NodeState.STOPPED
@@ -138,6 +123,8 @@ const getNodeStatusHistoryChart = (nodeStatusHistories: DailyNodeStatus[]) => {
     <div className="flex bg-subtleBg p-2 h-full">
       <div className="w-full h-20 flex justify-around gap-x-5">
         {nodeStatusHistories.map((nodeStatusHistory) => {
+          const activeDuration = nodeStatusHistory.activeDuration;
+          const inactiveDuration = 100 - activeDuration;
           return (
             <div
               className="flex flex-col gap-y-2 items-center"
@@ -146,25 +133,32 @@ const getNodeStatusHistoryChart = (nodeStatusHistories: DailyNodeStatus[]) => {
               <div className="h-20 w-2 flex flex-col-reverse gap-y-0.5">
                 <div
                   className="bg-successFg tooltip dropdown-400"
-                  data-tip={`${nodeStatusHistory.activeDuration.toFixed(2)}%`}
+                  data-tip={`${activeDuration.toFixed(2)}%`}
                   style={{
-                    height: `${nodeStatusHistory.activeDuration}%`,
+                    height: `${activeDuration}%`,
                   }}
                 ></div>
                 <div
-                  className="bg-attentionBorder tooltip dropdown-500"
-                  data-tip={`${nodeStatusHistory.standbyDuration}%`}
+                  className="bg-greyFg tooltip dropdown-500"
+                  data-tip={`${inactiveDuration.toFixed(2)}%`}
                   style={{
-                    height: `${nodeStatusHistory.standbyDuration}%`,
+                    height: `${inactiveDuration}%`,
+                  }}
+                ></div>
+                {/* <div
+                  className="bg-attentionBorder tooltip dropdown-500"
+                  data-tip={`${standbyDuration}%`}
+                  style={{
+                    height: `${standbyDuration}%`,
                   }}
                 ></div>
                 <div
                   className="bg-severeFg tooltip dropdown-600"
-                  data-tip={`${nodeStatusHistory.stoppedDuration}%`}
+                  data-tip={`${stoppedDuration}%`}
                   style={{
-                    height: `${nodeStatusHistory.stoppedDuration}%`,
+                    height: `${stoppedDuration}%`,
                   }}
-                ></div>
+                ></div> */}
               </div>
               <span className="text-xs font-medium">
                 {nodeStatusHistory.day}
@@ -192,9 +186,9 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
   const { nodeStatusHistory } = useNodeStatusHistory(address || "");
 
   const state: NodeState = getNodeState(nodeStatus);
-  const title = getTitle(state, isWalletConnected);
-  const titleBgColor = getTitleBgColor(state, isWalletConnected);
-  const titleTextColor = getTitleTextColor(state, isWalletConnected);
+  const title = getTitle(state);
+  const titleBgColor = getTitleBgColor(state);
+  const titleTextColor = getTitleTextColor(state);
 
   const [showMoreInfo, setShowMoreInfo] = useState(false);
   const { setCurrentToast, resetToast } = useToastStore((state: any) => ({
@@ -359,8 +353,12 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
           >
             <span className={`text-${titleTextColor}`}>{title}</span>
             <span
-              className="tooltip tooltip-right"
-              data-tip={statusTip.get(nodeStatus?.state || "")}
+              className="tooltip tooltip-right text-xs bodyFg font-light"
+              data-tip={
+                isWalletConnected
+                  ? statusTip.get(nodeStatus?.state || "stopped")
+                  : "Connect your wallet to the Shardeum network"
+              }
             >
               <InformationCircleIcon className="h-4 w-4 stroke-2" />
             </span>
@@ -368,14 +366,23 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
           <div className="flex flex-col p-3 gap-y-2">
             <div className="flex justify-between">
               <span className="font-light text-xs">Previously active</span>
-              <div className="flex flex-col">
-                <span className="text-xs">
-                  {nodeStatus?.state === "stopped"
-                    ? moment(nodeStatus?.lastActive).format("dddd, D MMM YYYY")
-                    : moment(nodeStatus?.lastActive).fromNow()}
-                </span>
+              <div className="flex flex-col text-xs">
+                {nodeStatus?.lastActive && (
+                  <span>
+                    <>
+                      {nodeStatus?.state === "stopped"
+                        ? moment(nodeStatus?.lastActive).format(
+                            "dddd, D MMM YYYY"
+                          )
+                        : moment(nodeStatus?.lastActive).fromNow()}
+                    </>
+                  </span>
+                )}
+                {!nodeStatus?.lastActive && (
+                  <span className="font-medium">NA</span>
+                )}
                 {nodeStatus?.state === "stopped" && (
-                  <span className="text-xs flex justify-end">
+                  <span className="flex justify-end">
                     {moment(nodeStatus?.lastActive).format("LTS")}
                   </span>
                 )}
@@ -384,7 +391,12 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
             <div className="flex justify-between">
               <div className="flex items-center gap-x-1">
                 <span className="font-light text-xs">Rotation index</span>
-                <InformationCircleIcon className="h-3 w-3" />
+                <span
+                  className="tooltip text-xs bodyFg font-light"
+                  data-tip="Indicates the node's position during the most recent rotation cycle"
+                >
+                  <InformationCircleIcon className="h-3 w-3" />
+                </span>
               </div>
               <span className="text-xs font-medium">
                 {nodeStatus?.lastRotationIndex || "NA"}
@@ -419,7 +431,7 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
                   </div>
                   <div className="flex justify-between">
                     <span className="font-light text-xs">
-                      Total time this week
+                      Validating time this week
                     </span>
                     <span className="text-xs font-medium">
                       {totalValidatingTimeThisWeek}
