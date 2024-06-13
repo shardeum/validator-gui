@@ -550,7 +550,7 @@ const Onboarding = () => {
                           <div className="flex justify-between gap-x-2 bg-white">
                             <input
                               className="basis-0 grow bg-white border border-gray-300 shadow-sm rounded px-3 py-1"
-                              placeholder="Enter Amount to stake"
+                              placeholder="10"
                               type="number"
                               step="0.00000000000000000001"
                               min={nodeStatus?.stakeRequirement || "10"}
