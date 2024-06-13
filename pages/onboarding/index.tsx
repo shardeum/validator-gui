@@ -20,6 +20,12 @@ import Link from "next/link";
 import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 import { useGlobals } from "../../utils/globals";
 import { useStake } from "../../hooks/useStake";
+import { ToastWindow } from "../../components/molecules/ToastWindow";
+import useToastStore, { ToastSeverity } from "../../hooks/useToastStore";
+import {
+  NotificationSeverity,
+  NotificationType,
+} from "../../hooks/useNotificationsStore";
 
 const tokensClaimedByKey = "tokensClaimedBy";
 export const onboardingCompletedKey = "onboardingCompleted";
@@ -56,6 +62,9 @@ const Onboarding = () => {
   );
   const [stakedAmount, setStakedAmount] = useState(0);
   const [showSuccessScreen, setShowSuccessScreen] = useState(false);
+  const { setCurrentToast } = useToastStore((state: any) => ({
+    setCurrentToast: state.setCurrentToast,
+  }));
 
   useEffect(() => {
     const claimantAddress = localStorage.getItem(tokensClaimedByKey);
@@ -139,8 +148,19 @@ const Onboarding = () => {
     const tokenClaimComplete = data && data?.transfer;
     if (tokenClaimComplete) {
       localStorage.setItem(tokensClaimedByKey, address);
+    } else {
+      setCurrentToast({
+        severity: ToastSeverity.DANGER,
+        title: "Claiming Unsuccessful",
+        description: data?.message,
+        followupNotification: {
+          title: "Claiming SHM Unsuccessful",
+          type: NotificationType.REWARD,
+          severity: NotificationSeverity.DANGER,
+        },
+      });
     }
-    return true;
+    return tokenClaimComplete;
   };
 
   return (
@@ -171,9 +191,7 @@ const Onboarding = () => {
                   </div>
                   <div className="flex gap-x-1 items-center">
                     <CheckCircleIcon className="h-5 w-5" />
-                    <span className="text-sm">
-                      Get SHM tokens from Discord for staking.
-                    </span>
+                    <span className="text-sm">Get SHM tokens for staking.</span>
                   </div>
                   <div className="flex gap-x-1 items-center">
                     <CheckCircleIcon className="h-5 w-5" />
@@ -222,7 +240,14 @@ const Onboarding = () => {
 
           {/* right pane */}
           <div className="grow h-full w-full">
-            <div className="absolute top-10 right-60"></div>
+            <div className="absolute top-0 right-60">
+              <ToastWindow
+                viewLogsOnClick={() => {
+                  return;
+                }}
+                disableActions={true}
+              />
+            </div>
             <div className="w-full max-w-xl flex flex-col items-start gap-y-3">
               {/* Step 1: Connect wallet */}
               <div className="bg-white w-full border p-3 shadow-md rounded-sm">
@@ -245,7 +270,7 @@ const Onboarding = () => {
                       <div className="flex flex-col mt-4 pr-5">
                         <div className="flex">
                           <div className="basis-0 grow text-white">
-                            <WalletConnectButton label="1. Connect Wallet"></WalletConnectButton>
+                            <WalletConnectButton label="Connect Wallet"></WalletConnectButton>
                           </div>
                           {isConnected && chainId !== CHAIN_ID && (
                             <div className="basis-0 grow">

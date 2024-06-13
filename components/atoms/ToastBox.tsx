@@ -12,6 +12,7 @@ type ToastBoxProps = {
   toast: ToastInstance;
   onClose?: () => void;
   viewLogsOnClick: () => void;
+  disableActions?: boolean;
 };
 
 const INTERVAL_DURATION = 10; // in ms
@@ -20,6 +21,7 @@ export const ToastBox = ({
   toast,
   onClose,
   viewLogsOnClick,
+  disableActions = false,
 }: ToastBoxProps) => {
   const [widthPercentage, setWidthPercentage] = useState(100.0);
   const totalDuration = toast?.duration || DEFAULT_TOAST_DURATION;
@@ -63,7 +65,7 @@ export const ToastBox = ({
                   {toast.description}
                 </span>
               )}
-              {toast.severity === ToastSeverity.DANGER && (
+              {!disableActions && toast.severity === ToastSeverity.DANGER && (
                 <div className="flex text-xs gap-x-3">
                   <button className="text-primary" onClick={viewLogsOnClick}>
                     View Logs
