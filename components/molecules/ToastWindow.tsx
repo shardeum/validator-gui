@@ -3,9 +3,13 @@ import { ToastBox } from "../atoms/ToastBox";
 
 type ToastWindowProps = {
   viewLogsOnClick: () => void;
+  disableActions?: boolean;
 };
 
-export const ToastWindow = ({ viewLogsOnClick }: ToastWindowProps) => {
+export const ToastWindow = ({
+  viewLogsOnClick,
+  disableActions = false,
+}: ToastWindowProps) => {
   const { currentToast, cancelToastUpgrade } = useToastStore((state: any) => ({
     currentToast: state.currentToast,
     cancelToastUpgrade: state.cancelToastUpgrade,
@@ -20,6 +24,7 @@ export const ToastWindow = ({ viewLogsOnClick }: ToastWindowProps) => {
             cancelToastUpgrade();
           }}
           viewLogsOnClick={viewLogsOnClick}
+          disableActions={disableActions}
         />
       )}
     </div>
