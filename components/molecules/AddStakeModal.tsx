@@ -118,7 +118,7 @@ export const AddStakeModal = () => {
               min={nodeStatus?.stakeRequirement || "10"}
               id={stakeInputId}
               ref={stakeInputRef}
-              placeholder="Enter the amount to stake"
+              placeholder="10"
               className="outline-none flex-1 bg-white"
               disabled={isLoading}
               onChange={(e) => {
