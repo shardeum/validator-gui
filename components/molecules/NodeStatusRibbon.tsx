@@ -33,10 +33,7 @@ type NodeStatusRibbonProps = {
 
 const previousNodeStateKey = "previousNodeState";
 
-const getBorderColor = (state: NodeState, isWalletConnected: boolean) => {
-  if (!isWalletConnected) {
-    return "subtleFg";
-  }
+const getBorderColor = (state: NodeState) => {
   return state === NodeState.ACTIVE
     ? "successBorder"
     : state === NodeState.STOPPED
@@ -48,16 +45,14 @@ const getBorderColor = (state: NodeState, isWalletConnected: boolean) => {
     : "subtleBg";
 };
 
-export const NodeStatusRibbon = ({
-  isWalletConnected,
-}: NodeStatusRibbonProps) => {
+export const NodeStatusRibbon = () => {
   const { nodeStatus } = useNodeStatus();
   const state: NodeState = getNodeState(nodeStatus);
-  const title = getTitle(state, isWalletConnected);
+  const title = getTitle(state);
 
-  const titleBgColor = getTitleBgColor(state, isWalletConnected);
-  const titleTextColor = getTitleTextColor(state, isWalletConnected);
-  const borderColor = getBorderColor(state, isWalletConnected);
+  const titleBgColor = getTitleBgColor(state);
+  const titleTextColor = getTitleTextColor(state);
+  const borderColor = getBorderColor(state);
   const { showModal, setShowModal, setContent } = useModalStore(
     (state: any) => ({
       showModal: state.showModal,
