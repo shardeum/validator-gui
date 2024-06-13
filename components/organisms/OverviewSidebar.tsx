@@ -16,6 +16,11 @@ export const OverviewSidebar: React.FC = () => {
   const [areSupportOptionsVisible, setAreSupportOptionsVisible] =
     useState(false);
 
+  const isGuiUpdatePending =
+    version?.runningCliVersion !== version?.latestCliVersion;
+  const isValidatorUpdatePending =
+    version?.runnningValidatorVersion !== version?.activeShardeumVersion;
+
   return (
     <div className="flex flex-col gap-y-16 scroll-smooth">
       <div className="flex flex-col gap-y-2">
@@ -43,18 +48,55 @@ export const OverviewSidebar: React.FC = () => {
         <div className="flex mt-1 justify-between items-center">
           <div className="flex flex-col gap-y-1">
             <div className="flex items-center gap-x-2">
-              <div className="bg-successBorder rounded-full h-2 w-2 flex items-center justify-center">
-                <div className="bg-successFg rounded-full h-1 w-1"></div>
+              <div
+                className={
+                  "rounded-full h-2 w-2 flex items-center justify-center " +
+                  (isGuiUpdatePending
+                    ? "bg-severeBorder tooltip"
+                    : "bg-successBorder")
+                }
+              >
+                <div
+                  className={
+                    "rounded-full h-1 w-1 " +
+                    (isGuiUpdatePending ? "bg-severeFg" : "bg-successFg")
+                  }
+                ></div>
               </div>
-              <span className="font-light text-xs">
-                GUI Version <u>{version?.runningGuiVersion}</u>
+              <span
+                className={`font-light text-xs ${
+                  isGuiUpdatePending ? "tooltip" : ""
+                }`}
+                data-tip={`Your GUI version is out of date. Please update to the latest version (${version?.latestCliVersion})`}
+              >
+                GUI Version <u>{version?.runningCliVersion}</u>
               </span>
             </div>
             <div className="flex items-center gap-x-2">
-              <div className="bg-severeBorder rounded-full h-2 w-2 flex items-center justify-center">
-                <div className="bg-severeFg rounded-full h-1 w-1"></div>
+              <div
+                className={
+                  "rounded-full h-2 w-2 flex items-center justify-center " +
+                  (isValidatorUpdatePending
+                    ? "bg-severeBorder"
+                    : "bg-successBorder")
+                }
+              >
+                <div
+                  className={
+                    "rounded-full h-1 w-1 " +
+                    (isValidatorUpdatePending
+                      ? "bg-severeFg tooltip"
+                      : "bg-successFg")
+                  }
+                  data-tip={`Your validator version is out of date. Please update to the latest version (${version?.activeShardeumVersion})`}
+                ></div>
               </div>
-              <span className="font-light text-xs">
+              <span
+                className={`font-light text-xs ${
+                  isGuiUpdatePending ? "tooltip" : ""
+                }`}
+                data-tip={`Your Validator version is out of date. Please update to the latest version (${version?.activeShardeumVersion})`}
+              >
                 Validator Version <u>{version?.runnningValidatorVersion}</u>
               </span>
             </div>
