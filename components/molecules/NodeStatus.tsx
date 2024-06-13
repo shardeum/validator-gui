@@ -357,7 +357,7 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
               data-tip={
                 isWalletConnected
                   ? statusTip.get(nodeStatus?.state || "stopped")
-                  : "Connect your wallet to the Shardeum network"
+                  : "Please connect your wallet to the Shardeum network"
               }
             >
               <InformationCircleIcon className="h-4 w-4 stroke-2" />
