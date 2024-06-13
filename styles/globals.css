@@ -296,5 +296,5 @@ li.li-right {
 }
 
 .tooltip:before {
-  @apply border rounded-lg flex items-center py-4 z-50;
+  @apply border rounded-lg flex items-center py-4 z-50 max-w-[12rem];
 }
