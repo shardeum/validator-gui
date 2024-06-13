@@ -38,7 +38,7 @@ export const InformationPopupsDisplay = () => {
 
   useEffect(() => {
     const newGuiAvailable =
-      (version?.runningGuiVersion || 0) < (version?.latestGuiVersion || 0);
+      (version?.runningCliVersion || 0) < (version?.latestCliVersion || 0);
     const newValidatorAvailable =
       (version?.runnningValidatorVersion || 0) <
       (version?.activeShardeumVersion || 0);
@@ -68,7 +68,7 @@ export const InformationPopupsDisplay = () => {
         addNotification({
           type: NotificationType.VERSION_UPDATE,
           severity: NotificationSeverity.SUCCESS,
-          title: `Your GUI version has been updated to Version: ${version?.runningGuiVersion}`,
+          title: `Your GUI version has been updated to Version: ${version?.runningCliVersion}`,
         });
       }
     }
@@ -185,7 +185,7 @@ export const InformationPopupsDisplay = () => {
                 New GUI version available
               </span>
               <span className="bodyFg font-light text-xs">
-                A new GUI version (V {version?.latestGuiVersion}) is available
+                A new GUI version (V {version?.latestCliVersion}) is available
                 and ready to update.
               </span>
             </div>
@@ -246,7 +246,7 @@ export const InformationPopupsDisplay = () => {
               </span>
               <span className="bodyFg font-light text-xs">
                 Your validator has been updated to Version{" "}
-                {version?.runningGuiVersion} and is ready to be used.
+                {version?.runningCliVersion} and is ready to be used.
               </span>
             </div>
             <div className="flex justify-end gap-x-3 w-full">
