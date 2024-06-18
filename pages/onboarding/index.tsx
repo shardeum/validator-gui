@@ -97,8 +97,7 @@ const Onboarding = () => {
   } = useStake({
     nominator: address?.toString() || "",
     nominee: nodeStatus?.nomineeAddress || "",
-    stakeAmount:
-      nodeStatus?.stakeRequirement || minimumStakeRequirement.toString(),
+    stakeAmount: minimumStakeRequirement.toString(),
     totalStaked: nodeStatus?.lockedStake ? Number(nodeStatus?.lockedStake) : 0,
     onStake: (wasTxnSuccessful: boolean) => {
       setIsStakingComplete(wasTxnSuccessful);
