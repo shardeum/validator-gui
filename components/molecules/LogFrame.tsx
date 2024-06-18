@@ -47,21 +47,22 @@ export const LogFrame = ({ logId }: LogFrameProps) => {
   return (
     <div className="w-full flex flex-col my-1 border border-bodyFg shadow">
       <div className="flex justify-between p-5 border-b border-bodyFg bg-white rounded">
-        <div className="flex gap-x-4">
+        <div className="flex gap-x-4 items-center">
           <span className="font-semibold text-md">{logId}</span>
           <div className="flex gap-x-3 items-center">
-            <ArrowDownTrayIcon
-              className="h-3 w-3 text-gray-500 hover:scale-110 cursor-pointer"
-              onClick={async () => {
-                await downloadLog(logId);
-              }}
-            />
-            <button
-              className="h-3 w-3 hover:scale-110"
-              onClick={copyLogContent}
-            >
-              <ClipboardIcon fillColor="#7C7C7B" />
-            </button>
+            <span className="cursor-pointer hover:scale-110 px-1 py-1 ease-in-out duration-150">
+              <ArrowDownTrayIcon
+                className="h-3 w-3 text-gray-500"
+                onClick={async () => {
+                  await downloadLog(logId);
+                }}
+              />
+            </span>
+            <span className="hover:scale-110 py-1 px-1 cursor-pointer ease-in-out duration-150">
+              <button className="h-3 w-3" onClick={copyLogContent}>
+                <ClipboardIcon fillColor="#7C7C7B" />
+              </button>
+            </span>
           </div>
         </div>
         <div
