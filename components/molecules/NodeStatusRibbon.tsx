@@ -27,10 +27,6 @@ export enum NodeState {
   WAITING_FOR_NETWORK = "WAITING_FOR_NETWORK",
 }
 
-type NodeStatusRibbonProps = {
-  isWalletConnected: boolean;
-};
-
 const previousNodeStateKey = "previousNodeState";
 
 const getBorderColor = (state: NodeState) => {
@@ -157,9 +153,7 @@ export const NodeStatusRibbon = () => {
         <div
           className={`flex justify-between w-full items-center text-xs gap-x-2 p-3 font-semibold`}
         >
-          <span className="text-subtleFg">
-            Node Status: {showModal ? "true" : "false"}
-          </span>
+          <span className="text-subtleFg">Node Status: {title}</span>
           <div className={`flex items-center gap-x-2 text-${titleTextColor}`}>
             <span>{title}</span>
             <ExpansionArrow
