@@ -64,20 +64,17 @@ export const LogFrame = ({ logId }: LogFrameProps) => {
             </button>
           </div>
         </div>
-        <div className="flex gap-x-2 items-center">
+        <div
+          className="flex gap-x-2 items-center px-3 py-1 cursor-pointer"
+          onClick={toggleExpansion}
+        >
           <span className="font-light text-sm">
             {isExpanded ? "Collapse" : "View log"}
           </span>
           {isExpanded ? (
-            <ChevronUpIcon
-              className="h-3 w-3 cursor-pointer"
-              onClick={toggleExpansion}
-            />
+            <ChevronUpIcon className="h-3 w-3" />
           ) : (
-            <ChevronDownIcon
-              className="h-3 w-3 cursor-pointer"
-              onClick={toggleExpansion}
-            />
+            <ChevronDownIcon className="h-3 w-3" />
           )}
         </div>
       </div>
