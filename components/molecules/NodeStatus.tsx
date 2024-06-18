@@ -381,7 +381,7 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
                 {!nodeStatus?.lastActive && (
                   <span className="font-medium">NA</span>
                 )}
-                {nodeStatus?.state === "stopped" && (
+                {nodeStatus?.lastActive && nodeStatus?.state === "stopped" && (
                   <span className="flex justify-end">
                     {moment(nodeStatus?.lastActive).format("LTS")}
                   </span>
