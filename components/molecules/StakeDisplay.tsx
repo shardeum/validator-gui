@@ -1,5 +1,5 @@
 import { Card } from "../layouts/Card";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useAccount, useNetwork } from "wagmi";
 import { useNodeStatus } from "../../hooks/useNodeStatus";
 import useModalStore from "../../hooks/useModalStore";
@@ -24,6 +24,14 @@ export const StakeDisplay = () => {
   );
   const [hasNodeStopped, setHasNodeStopped] = useState(false);
 
+  const minimumStakeRequirement = useMemo(() => {
+    return Math.max(
+      parseFloat(nodeStatus?.stakeRequirement || "10") -
+        parseFloat(nodeStatus?.lockedStake || "0"),
+      0
+    );
+  }, [nodeStatus?.stakeRequirement, nodeStatus?.lockedStake]);
+
   useEffect(() => {
     if (nodeStatus?.state === "stopped") {
       setHasNodeStopped(true);
@@ -44,7 +52,7 @@ export const StakeDisplay = () => {
           </span>
           <div className="flex gap-x-1">
             <span className="font-light text-xs">Min. requirement: </span>
-            <span className="text-xs">{nodeStatus?.stakeRequirement} SHM</span>
+            <span className="text-xs">{minimumStakeRequirement} SHM</span>
           </div>
         </div>
         <hr className="my-1 mx-3" />
