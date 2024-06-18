@@ -61,7 +61,8 @@ export const RewardsCard = () => {
               <div className="flex flex-col w-full gap-y-2">
                 <span className="font-semibold text-2xl flex gap-x-2">
                   <span>
-                    {nodeStatus?.currentRewards || (0.0).toFixed(2)} SHM
+                    {parseFloat(nodeStatus?.currentRewards || "0").toFixed(2)}{" "}
+                    SHM
                   </span>
                   {/* <span className="text-xs leading-9 bodyFg">(~0.00$)</span> */}
                 </span>
