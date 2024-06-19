@@ -6,7 +6,7 @@ import { ReactElement, useRef, useState } from "react";
 import { OverviewSidebar } from "../../components/organisms/OverviewSidebar";
 import { TabButton } from "../../components/atoms/TabButton";
 import Head from "next/head";
-import dashboardBg from "../../assets/dashboard-bg.svg";
+import dashboardBg from "../../assets/dashboard-bg.webp";
 import notebookIcon from "../../assets/notebook-icon.svg";
 import { PerformanceDisplay } from "../../components/molecules/PerformanceDisplay";
 import { RewardsCard } from "../../components/molecules/RewardsCard";
@@ -26,6 +26,7 @@ import { MobileMenu } from "../../components/molecules/MobileMenu";
 import { authService } from "../../services/auth.service";
 import { useGlobals } from "../../utils/globals";
 import { InformationPopupsDisplay } from "../../components/molecules/InformationPopupsDisplay";
+import { BgImage } from "../../components/atoms/BgImage";
 
 enum Content {
   MAIN = "MAIN",
@@ -122,7 +123,7 @@ const Dashboard = () => {
                 )}
                 {contentPane !== Content.MAIN && (
                   <button
-                    className="flex gap-x-1 p-2 items-center rounded hover:font-semibold text-sm ease-in-out duration-200"
+                    className="flex gap-x-1 px-3 py-2 items-center rounded hover:scale-105 text-sm ease-in-out duration-200"
                     onClick={() => {
                       setContentPane(Content.MAIN);
                     }}
@@ -137,7 +138,7 @@ const Dashboard = () => {
 
           {/* content */}
           <div className="w-full flex flex-col text-black relative scroll-smooth">
-            <div className="flex pr-[32rem]">
+            <div className="flex pr-[32rem] max-lg:pr-[26rem] max-md:pr-[24rem]">
               {/* dashboard metrics */}
               <div className="grow h-screen pt-32 w-full flex flex-col justify-between">
                 {contentPane === Content.MAIN && (
@@ -179,14 +180,7 @@ const Dashboard = () => {
                         <PerformanceDisplay />
                       </section>
                     </div>
-                    {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
-                    <img
-                      src={dashboardBg.src}
-                      className="w-full"
-                      style={{
-                        backgroundImage: `url(${dashboardBg.src})`,
-                      }}
-                    ></img>
+                    <BgImage src={dashboardBg} alt="dashboard-bg" />
                   </>
                 )}
                 {contentPane === Content.LOGS && <LogsDisplay />}
@@ -194,7 +188,7 @@ const Dashboard = () => {
               </div>
 
               {/* overview sidebar */}
-              <div className="max-w-lg h-screen w-full px-12 pt-32 bg-white fixed right-0 border overflow-scroll hidden-scrollar scroll-smooth pb-48">
+              <div className="max-w-lg h-screen w-full px-12 pt-32 bg-white fixed right-0 border overflow-scroll hidden-scrollar scroll-smooth pb-48 max-lg:max-w-md max-md:max-w-sm max-sm:max-w-xs">
                 <OverviewSidebar />
               </div>
             </div>
@@ -206,7 +200,7 @@ const Dashboard = () => {
           {/* navbar */}
           <nav className="px-4 shadow fixed top-0 bg-white w-full z-10 h-20">
             <div className="flex flex-col w-full">
-              <div className="flex justify-between py-3 w-full">
+              <div className="flex justify-between py-3 w-full items-center">
                 <Logo className="w-8" isMinimalLogo={true} />
                 <div className="flex items-center gap-x-3 relative">
                   <WalletConnectButton
@@ -315,13 +309,7 @@ const Dashboard = () => {
                   </section>
                 </div>
                 {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
-                <img
-                  src={dashboardBg.src}
-                  className="w-full"
-                  style={{
-                    backgroundImage: `url(${dashboardBg.src})`,
-                  }}
-                ></img>
+                <BgImage src={dashboardBg} alt="dashboard-bg" />
               </>
             )}
             {contentPane === Content.SETTINGS && <SettingsDisplay />}

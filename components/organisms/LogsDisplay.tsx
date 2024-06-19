@@ -1,9 +1,10 @@
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
-import dashboardBg from "../../assets/dashboard-bg.svg";
+import dashboardBg from "../../assets/dashboard-bg.webp";
 import { useNodeLogs } from "../../hooks/useNodeLogs";
 import { LogFrame } from "../molecules/LogFrame";
 import { Pagination } from "../molecules/Pagination";
 import { useState } from "react";
+import { BgImage } from "../atoms/BgImage";
 
 export const LogsDisplay = () => {
   const { logs, downloadAllLogs, clearAllLogs } = useNodeLogs();
@@ -67,14 +68,7 @@ export const LogsDisplay = () => {
           range={1}
         />
       </div>
-      {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
-      <img
-        src={dashboardBg.src}
-        className="w-full"
-        style={{
-          backgroundImage: `url(${dashboardBg.src})`,
-        }}
-      ></img>
+      <BgImage src={dashboardBg} alt="dashboard-bg" />
     </div>
   );
 };
