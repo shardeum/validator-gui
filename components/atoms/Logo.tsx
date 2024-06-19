@@ -14,13 +14,19 @@ export const Logo: React.FC<LogoProps> = ({
   return (
     <>
       {!isMinimalLogo && (
-        <Image className={className || "w-32"} src={logo} alt="Shardeum Logo" />
+        <Image
+          className={className || "w-32"}
+          src={logo}
+          alt="Shardeum Logo"
+          priority
+        />
       )}
       {isMinimalLogo && (
         <Image
           className={className || "w-32"}
           src={minimalLogo}
           alt="Shardeum Logo"
+          priority
         />
       )}
     </>

@@ -5,6 +5,7 @@ import githubIcon from "../../assets/github-icon.svg";
 import envelopeIcon from "../../assets/envelope-icon.svg";
 import Link from "next/link";
 import { VALIDATOR_GUI_FAQS_URL } from "../../pages/onboarding";
+import { BgImage } from "../atoms/BgImage";
 
 type SupportOptionsProps = {
   onClose: () => void;
@@ -21,8 +22,9 @@ export const SupportOptions = ({ onClose }: SupportOptionsProps) => {
         {/* Discord */}
         <div className="flex gap-x-3">
           <div className="flex flex-col justify-start">
-            {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
-            <img src={discordIcon.src} className="h-4 w-6 mt-1" />
+            <span className="h-4 w-6 mt-1">
+              <BgImage src={discordIcon} alt="disk-icon" />
+            </span>
           </div>
           <div className="flex flex-col">
             <Link
@@ -43,8 +45,10 @@ export const SupportOptions = ({ onClose }: SupportOptionsProps) => {
         {/* Telegram */}
         {/* <div className="flex gap-x-3">
           <div className="flex flex-col justify-start"> */}
-        {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
-        {/* <img src={telegramIcon.src} className="h-4 w-5 mt-1" />
+        {/* <span className="h-4 w-5 mt-1">
+          <BgImage src={telegramIcon} alt="disk-icon" />
+        </span> */}
+        {/*
           </div>
           <div className="flex flex-col">
             <Link
@@ -65,8 +69,9 @@ export const SupportOptions = ({ onClose }: SupportOptionsProps) => {
         {/* Github */}
         <div className="flex gap-x-3">
           <div className="flex flex-col justify-start">
-            {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
-            <img src={githubIcon.src} className="h-4 w-5 mt-1" />
+            <span className="h-4 w-5 mt-1">
+              <BgImage src={githubIcon} alt="disk-icon" />
+            </span>
           </div>
           <div className="flex flex-col">
             <Link
@@ -87,8 +92,10 @@ export const SupportOptions = ({ onClose }: SupportOptionsProps) => {
         {/* Mail */}
         {/* <div className="flex gap-x-3">
           <div className="flex flex-col justify-start"> */}
-        {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
-        {/* <img src={envelopeIcon.src} className="h-4 w-5 mt-1" />
+        {/* <span className="h-4 w-5 mt-1">
+          <BgImage src={envelopeIcon} alt="disk-icon" />
+        </span> */}
+        {/*
           </div>
           <div className="flex flex-col">
             <Link

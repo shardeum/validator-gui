@@ -7,6 +7,7 @@ import networkIcon from "../../assets/network-icon.svg";
 import { useNodeStatus } from "../../hooks/useNodeStatus";
 import { useNodePerformance } from "../../hooks/useNodePerformance";
 import { useNodeNetwork } from "../../hooks/useNodeNetwork";
+import { BgImage } from "../atoms/BgImage";
 
 export const PerformanceDisplay = () => {
   const { performance } = useNodePerformance();
@@ -40,8 +41,9 @@ export const PerformanceDisplay = () => {
             {/* DISK */}
             <div className="flex flex-col grow max-md:gap-y-2 max-md:border-b md:border-r p-3 py-5 md:p-5">
               <div className="flex items-center">
-                {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
-                <img src={diskIcon.src} className="h-5 w-5 text-gray-400" />
+                <span className="h-5 w-5 text-gray-400">
+                  <BgImage src={diskIcon} alt="disk-icon" />
+                </span>
                 <span className="text-gray-600 ml-3">Disk</span>
               </div>
               <span className="font-semibold text-xl md:text-lg">
@@ -55,8 +57,9 @@ export const PerformanceDisplay = () => {
             {/* RAM */}
             <div className="flex flex-col grow max-md:gap-y-2 border-b md:border-b p-3 py-5 md:p-5">
               <div className="flex items-center">
-                {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
-                <img src={ramIcon.src} className="h-5 w-5 text-gray-400" />
+                <span className="h-5 w-5 text-gray-400">
+                  <BgImage src={ramIcon} alt="ram-icon" />
+                </span>
                 <span className="text-gray-600 ml-3">RAM</span>
               </div>
               <span className="font-semibold text-xl md:text-lg">
@@ -68,8 +71,9 @@ export const PerformanceDisplay = () => {
             {/* NETWORK */}
             <div className="flex flex-col grow max-md:gap-y-2 p-3 py-5 md:p-5">
               <div className="flex items-center">
-                {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
-                <img src={networkIcon.src} className="h-5 w-5 text-gray-400" />
+                <span className="h-5 w-5 text-gray-400">
+                  <BgImage src={networkIcon} alt="network-icon" />
+                </span>
                 <span className="text-gray-600 ml-3">Network</span>
               </div>
               <span className="font-semibold text-xl md:text-lg">
