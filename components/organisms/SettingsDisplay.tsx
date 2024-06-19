@@ -1,5 +1,5 @@
 import { useAccount, useNetwork } from "wagmi";
-import dashboardBg from "../../assets/dashboard-bg.svg";
+import dashboardBg from "../../assets/dashboard-bg.webp";
 import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 import { useSettings } from "../../hooks/useSettings";
 import { AutoRestartNodeToggle } from "../molecules/AutoRestartNodeToggle";
@@ -9,6 +9,7 @@ import PasswordResetForm from "../molecules/PasswordResetForm";
 import { CHAIN_ID } from "../../pages/_app";
 import { useNodeStatus } from "../../hooks/useNodeStatus";
 import { useEffect, useState } from "react";
+import { BgImage } from "../atoms/BgImage";
 
 export const SettingsDisplay = () => {
   const {
@@ -67,14 +68,7 @@ export const SettingsDisplay = () => {
         )}
         <PasswordResetForm />
       </div>
-      {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
-      <img
-        src={dashboardBg.src}
-        className="w-full"
-        style={{
-          backgroundImage: `url(${dashboardBg.src})`,
-        }}
-      ></img>
+      <BgImage src={dashboardBg} alt="dashboard-bg" />
     </div>
   );
 };

@@ -7,6 +7,7 @@ import { CHAIN_ID } from "../../pages/_app";
 import useModalStore from "../../hooks/useModalStore";
 import { ConfirmRedemptionModal } from "./ConfirmRedemptionModal";
 import { MobileModalWrapper } from "../layouts/MobileModalWrapper";
+import { BgImage } from "../atoms/BgImage";
 
 function formatDate(date: Date) {
   // Format date and time separately
@@ -121,9 +122,8 @@ export const RewardsCard = () => {
             </button>
           </div>
         </div>
-        <div className="h-full max-md:hidden">
-          {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
-          <img src={rewardsCardBg.src} className="h-full max-h-48" />
+        <div className="w-full max-w-[8rem] max-md:hidden">
+          <BgImage src={rewardsCardBg} alt="rewards-card-bg" />
         </div>
       </div>
     </Card>
