@@ -445,11 +445,14 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
                   <button
                     disabled={
                       nodeStatus?.state !== "standby" &&
-                      nodeStatus?.state !== "need-stake"
+                      nodeStatus?.state !== "need-stake" &&
+                      nodeStatus?.state !== "waiting-for-network"
                     }
                     className={
                       "border-bodyFg border text-sm px-3 py-2 rounded font-semibold " +
-                      (state === NodeState.ACTIVE
+                      (nodeStatus?.state !== "standby" &&
+                      nodeStatus?.state !== "need-stake" &&
+                      nodeStatus?.state !== "waiting-for-network"
                         ? "text-gray-400"
                         : "text-dangerFg")
                     }
