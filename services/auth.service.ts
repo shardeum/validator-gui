@@ -17,8 +17,11 @@ function useLogin() {
       method: 'POST',
       body: JSON.stringify({ password: sha256digest }),
     });
-    await res.json();
+    const data = await res.json();
     if (!res.ok) {
+      if (data.errorMessage === "Blocked") {
+        throw new Error('IpAddress has been blocked for too many failed Attempts!');
+      }
       if (res.status === 403) {
         throw new Error('The password you’ve entered is invalid. Please enter the correct password');
       }
