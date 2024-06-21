@@ -364,7 +364,7 @@ const Onboarding = () => {
                     </div>
                     <div className="flex flex-col w-full pl-7">
                       <span className="text-gray-600 text-sm">
-                        Claim 100 SHM tokens from Shardeum faucet as a reward.
+                        Claim 15 SHM tokens from Shardeum faucet as a reward.
                       </span>
                       <div className="flex flex-col mt-4 pr-5">
                         {tokenClaimPhase === 0 && (
@@ -388,7 +388,7 @@ const Onboarding = () => {
                                   }
                                 }}
                               >
-                                Claim 100 SHM
+                                Claim 15 SHM
                               </button>
                             </div>
                             <div className="basis-0 grow ml-2">
@@ -418,7 +418,7 @@ const Onboarding = () => {
                             <div className="spinner flex items-center justify-center mr-3">
                               <div className="border-2 border-black border-b-white rounded-full h-3.5 w-3.5"></div>
                             </div>{" "}
-                            Claiming 100 SHM
+                            Claiming 15 SHM
                           </button>
                         )}
                         {accountBalance !== "" && (
