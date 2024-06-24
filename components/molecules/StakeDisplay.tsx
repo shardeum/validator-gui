@@ -9,10 +9,12 @@ import { WalletConnectButton } from "./WalletConnectButton";
 import { ConfirmUnstakeModal } from "./ConfirmUnstakeModal";
 import { ClipboardIcon } from "../atoms/ClipboardIcon";
 import { MobileModalWrapper } from "../layouts/MobileModalWrapper";
+import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 
 export const StakeDisplay = () => {
   const addressRef = useRef<HTMLSpanElement>(null);
   const { address, isConnected } = useAccount();
+  const { stakeInfo } = useAccountStakeInfo(address);
   const { chain } = useNetwork();
   const { nodeStatus } = useNodeStatus();
   const { setShowModal, setContent, resetModal } = useModalStore(
@@ -109,7 +111,7 @@ export const StakeDisplay = () => {
                         >
                           <ConfirmUnstakeModal
                             nominator={address?.toString() || ""}
-                            nominee={nodeStatus?.nomineeAddress || ""}
+                            nominee={stakeInfo?.nominee || ""}
                             isNormalUnstake={hasNodeStopped}
                             currentRewards={parseFloat(
                               nodeStatus?.currentRewards || "0"
