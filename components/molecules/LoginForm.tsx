@@ -59,7 +59,7 @@ export const LoginForm: React.FC = () => {
         <div className="flex justify-end">
           {!formState.isSubmitting && (
             <button
-              disabled={formState.isSubmitting}
+              disabled={formState.isSubmitting || !isInputActive}
               className={
                 (isInputActive
                   ? "bg-indigo-600 hover:bg-indigo-700"
