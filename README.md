@@ -17,19 +17,28 @@ cd validator-gui
 npm install
 ```
 
-### Set environment variables & link to Operator CLI
+### Set Environment Variables & Link to Operator CLI
 
-Create a `.env` file in the root directory and configure necessary environment variables as required
+1. Create a `.env` file in the root directory and configure necessary environment variables as required. If running the RPC locally, set the NEXT_PUBLIC_RPC_URL variable.
+
+```bash
+export NEXT_PUBLIC_RPC_URL=http://127.0.0.1:8081
+```
+
+Adjust the port (8081 in this example) as needed.
+
+2. Link to the Operator CLI and set the environment to development:
 
 ```bash
 npm link operator-cli
 export NODE_ENV=development
 ```
 
-### Start the Development Server
+### Build and Start the Development Server
 
 ```bash
-npm run dev
+npm run build
+npm run start
 ```
 
 ## Contributing
