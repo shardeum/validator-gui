@@ -45,7 +45,7 @@ export const useUnstake = ({ nominator, nominee, force }: useStakeProps) => {
       const unstakeData = {
         isInternalTx: true,
         internalTXType: 7,
-        nominator,
+        nominator: nominator.toLowerCase(),
         timestamp: Date.now(),
         nominee,
         force
