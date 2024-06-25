@@ -4,7 +4,10 @@ import telegramIcon from "../../assets/telegram-icon.svg";
 import githubIcon from "../../assets/github-icon.svg";
 import envelopeIcon from "../../assets/envelope-icon.svg";
 import Link from "next/link";
-import { VALIDATOR_GUI_FAQS_URL } from "../../pages/onboarding";
+import {
+  VALIDATOR_GUI_DOCS_URL,
+  VALIDATOR_GUI_FAQS_URL,
+} from "../../pages/onboarding";
 import { BgImage } from "../atoms/BgImage";
 
 type SupportOptionsProps = {
@@ -119,7 +122,7 @@ export const SupportOptions = ({ onClose }: SupportOptionsProps) => {
             FAQs
           </button>
         </Link>
-        <Link href={VALIDATOR_GUI_FAQS_URL} target="_blank">
+        <Link href={VALIDATOR_GUI_DOCS_URL} target="_blank">
           <button className="text-primary border py-1.5 px-4 text-sm rounded font-medium">
             Documentation
           </button>
