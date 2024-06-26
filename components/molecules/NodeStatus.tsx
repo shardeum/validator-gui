@@ -285,7 +285,7 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
           });
           break;
         case "standby":
-        case "need-stake":
+          // case "need-stake":
           setCurrentToast({
             severity: ToastSeverity.ATTENTION,
             title: "Node is on standby",
