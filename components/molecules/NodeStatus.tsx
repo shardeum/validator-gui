@@ -196,9 +196,12 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
     resetToast: state.resetToast,
   }));
 
-  const { setCurrentStatus } = useStatusUpdateStore((state: any) => ({
-    setCurrentStatus: state.setCurrentStatus,
-  }));
+  const { setCurrentStatus, currentStatus } = useStatusUpdateStore(
+    (state: any) => ({
+      setCurrentStatus: state.setCurrentStatus,
+      currentStatus: state.currentStatus,
+    })
+  );
 
   const [nodeStatusHistories, setNodeStatusHistories] = useState<
     DailyNodeStatus[]
@@ -263,10 +266,10 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
           nodeStatus?.state || ""
         )
       ) {
-        if (wasLoggedOut) {
-          setCurrentStatus(nodeStatus?.state || "");
-          localStorage.removeItem(wasLoggedOutKey);
-        }
+        setCurrentStatus(nodeStatus?.state || "");
+        localStorage.removeItem(wasLoggedOutKey);
+      } else if (!wasLoggedOut) {
+        setCurrentStatus("");
       }
 
       switch (nodeStatus?.state) {
@@ -309,7 +312,7 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
       }
       localStorage.setItem(previousNodeStateKey, currentNodeState || "");
     }
-  }, [nodeStatus?.state]);
+  }, [nodeStatus?.state, currentStatus]);
 
   const toggleShowMoreInfo = () => {
     setShowMoreInfo((prevState: boolean) => !prevState);
