@@ -34,14 +34,13 @@ function getDefaultLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 }
 
-export const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL ?? "45.33.18.134:8080";
+export const RPC_URL =
+  process.env.NEXT_PUBLIC_RPC_URL ?? "http://45.33.18.134:8080";
 export const EXPLORER_URL =
   process.env.NEXT_EXPLORER_URL ?? "https://explorer-sphinx.shardeum.org/";
 export const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
   ? +process.env.NEXT_PUBLIC_CHAIN_ID
   : 8082;
-
-console.log("RPC_URL:", RPC_URL);
 
 export const devnet: Chain = {
   id: CHAIN_ID,
