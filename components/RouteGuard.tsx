@@ -41,5 +41,10 @@ export default function RouteGuard({ children }: { children: ReactNode }) {
     }
   }
 
-  return <>{authorized && children}</>;
+  return (
+    <div>
+      {authorized && children}
+      {!authorized && <></>}
+    </div>
+  );
 }
