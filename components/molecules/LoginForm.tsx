@@ -5,15 +5,16 @@ import { authService, isFirstTimeUserKey } from "../../services/auth.service";
 import { useRouter } from "next/router";
 import { useDevice } from "../../context/device";
 import { PasswordInput } from "../atoms/PasswordInput";
+import { useGlobals } from "../../utils/globals";
 
 export const LoginForm: React.FC = () => {
   const { register, handleSubmit, formState } = useForm();
   const [isInputActive, setIsInputActive] = useState(false);
 
   const [apiError, setApiError] = useState<Error | null>(null);
+  const { apiBase } = useGlobals();
 
   const router = useRouter();
-  const login = authService.useLogin();
   const { isMobile } = useDevice();
 
   const isFirstTimeUser = () => {
@@ -22,17 +23,18 @@ export const LoginForm: React.FC = () => {
 
   async function onSubmit({ password }: FieldValues) {
     setApiError(null);
-
-    try {
-      await login(password);
-      if (isFirstTimeUser() && !isMobile) {
-        router.push("/onboarding");
-      } else {
-        router.push("/dashboard");
-      }
-    } catch (error) {
-      setApiError(error as SetStateAction<Error | null>);
-    }
+    await authService
+      .login(apiBase, password)
+      .then(() => {
+        if (isFirstTimeUser() && !isMobile) {
+          router.push("/onboarding");
+        } else {
+          router.push("/dashboard");
+        }
+      })
+      .catch((error) => {
+        setApiError(error as SetStateAction<Error | null>);
+      });
   }
 
   return (
