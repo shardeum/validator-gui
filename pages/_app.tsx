@@ -42,8 +42,6 @@ export const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
   ? +process.env.NEXT_PUBLIC_CHAIN_ID
   : 8082;
 
-console.log("RPC_URL:", RPC_URL);
-
 export const devnet: Chain = {
   id: CHAIN_ID,
   name: 'Shardeum',
