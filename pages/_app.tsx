@@ -42,6 +42,8 @@ export const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
   ? +process.env.NEXT_PUBLIC_CHAIN_ID
   : 8082;
 
+console.log("RPC_URL:", RPC_URL);
+
 export const devnet: Chain = {
   id: CHAIN_ID,
   name: 'Shardeum',
@@ -68,7 +70,7 @@ const connectors = connectorsForWallets([
       metaMaskWallet({ chains, projectId: "shm-dashboard" }),
       walletConnectWallet({
         chains,
-        projectId: "shm-dashboard",
+        projectId: "2a112e8a6e0681c79921b5c5325e0f53",
       }),
     ],
   },
