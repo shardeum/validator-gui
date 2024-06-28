@@ -66,6 +66,10 @@ const connectors = connectorsForWallets([
     wallets: [
       injectedWallet({ chains }),
       metaMaskWallet({ chains, projectId: "shm-dashboard" }),
+      // walletConnectWallet({
+      //   chains,
+      //   projectId: "shm-dashboard",
+      // }),
     ],
   },
 ]);
