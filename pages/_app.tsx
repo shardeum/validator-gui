@@ -34,8 +34,7 @@ function getDefaultLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 }
 
-export const RPC_URL =
-  process.env.NEXT_PUBLIC_RPC_URL ?? "http://45.33.18.134:8080";
+export const RPC_URL = process.env.RPC_SERVER_URL ?? "http://45.33.18.134:8080";
 export const EXPLORER_URL =
   process.env.NEXT_EXPLORER_URL ?? "https://explorer-sphinx.shardeum.org/";
 export const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
@@ -66,6 +65,10 @@ const connectors = connectorsForWallets([
     wallets: [
       injectedWallet({ chains }),
       metaMaskWallet({ chains, projectId: "shm-dashboard" }),
+      // walletConnectWallet({
+      //   chains,
+      //   projectId: "shm-dashboard",
+      // }),
     ],
   },
 ]);
