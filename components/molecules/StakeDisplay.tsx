@@ -130,11 +130,11 @@ export const StakeDisplay = () => {
                   <button
                     className={
                       "px-3 py-2 rounded text-sm basis-0 grow max-w-[12rem] " +
-                      (hasNodeStopped
+                      (hasNodeStopped || !nodeStatus?.nomineeAddress
                         ? "text-gray-400 border border-bodyFg"
                         : "bg-primary text-white")
                     }
-                    disabled={hasNodeStopped}
+                    disabled={hasNodeStopped || !nodeStatus?.nomineeAddress}
                     onClick={() => {
                       resetModal();
                       setContent(
