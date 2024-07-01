@@ -30,11 +30,9 @@ const tokensClaimedByKey = "tokensClaimedBy";
 export const onboardingCompletedKey = "onboardingCompleted";
 
 export const VALIDATOR_GUI_FAQS_URL =
-  process.env.VALIDATOR_GUI_FAQS_URL ||
-  "https://docs.shardeum.org/faqs/general";
+  process.env.VALIDATOR_GUI_FAQS_URL || "https://shardeum.org/faq/general";
 export const VALIDATOR_GUI_DOCS_URL =
-  process.env.VALIDATOR_GUI_DOCS_URL ||
-  "https://docs.shardeum.org/node/run/validator";
+  process.env.VALIDATOR_GUI_DOCS_URL || "https://docs.shardeum.org";
 
 const Onboarding = () => {
   const [isNodeStarted, setIsNodeStarted] = useState(false);
