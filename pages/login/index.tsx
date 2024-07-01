@@ -10,13 +10,11 @@ import mobileLoginBg from "../../assets/mobile-login-bg.svg";
 import { Logo } from "../../components/atoms/Logo";
 import { Title } from "../../components/atoms/Title";
 import { LoginForm } from "../../components/molecules/LoginForm";
-import { useNodeVersion } from "../../hooks/useNodeVersion";
 import { useDevice } from "../../context/device";
 import { onboardingCompletedKey } from "../onboarding";
 
 const Login = () => {
   const router = useRouter();
-  const { publicVersion } = useNodeVersion();
   const { isMobile } = useDevice();
 
   useEffect(() => {
@@ -81,8 +79,6 @@ const Login = () => {
                 {!isMobile && (
                   <div className="flex justify-between w-full">
                     <span>
-                      Validator Version :{" "}
-                      {publicVersion?.runnningValidatorVersion}
                     </span>
                     <span>Running on Localhost</span>
                   </div>
