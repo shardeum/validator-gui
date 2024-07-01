@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { GeistSans } from "geist/font";
 import { authService, isFirstTimeUserKey } from "../../services/auth.service";
@@ -8,8 +8,9 @@ import { PasswordInput } from "../atoms/PasswordInput";
 import { useGlobals } from "../../utils/globals";
 
 export const LoginForm: React.FC = () => {
-  const { register, handleSubmit, formState } = useForm();
+  const { register, handleSubmit, watch, formState } = useForm();
   const [isInputActive, setIsInputActive] = useState(false);
+  const passwordInput = watch("password");
 
   const [apiError, setApiError] = useState<Error | null>(null);
   const { apiBase } = useGlobals();
@@ -20,6 +21,14 @@ export const LoginForm: React.FC = () => {
   const isFirstTimeUser = () => {
     return localStorage.getItem(isFirstTimeUserKey) !== "false";
   };
+
+  useEffect(() => {
+    if (passwordInput && passwordInput.length > 0) {
+      setIsInputActive(true);
+    } else {
+      setIsInputActive(false);
+    }
+  }, [passwordInput]);
 
   async function onSubmit({ password }: FieldValues) {
     setApiError(null);

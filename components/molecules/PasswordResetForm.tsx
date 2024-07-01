@@ -12,7 +12,7 @@ type FormData = {
 };
 
 const PasswordResetForm = () => {
-  const { register, handleSubmit, formState, setError, reset } =
+  const { register, handleSubmit, formState, setError, reset, watch } =
     useForm<FormData>({
       mode: "onChange",
     });
@@ -23,6 +23,9 @@ const PasswordResetForm = () => {
     useState(false);
   const [isConfirmNewPasswordInputActive, setIsConfirmNewPasswordInputActive] =
     useState(false);
+  const currentPasswordInput = watch("currentPassword");
+  const newPasswordInput = watch("newPassword");
+  const confirmNewPasswordInput = watch("confirmNewPassword");
 
   const [areAllInputsActive, setAreAllInputsActive] = useState(false);
 
@@ -32,6 +35,24 @@ const PasswordResetForm = () => {
     setIsNewPasswordInputActive(false);
     setIsConfirmNewPasswordInputActive(false);
   };
+
+  useEffect(() => {
+    if (currentPasswordInput && currentPasswordInput.length > 0) {
+      setIsCurrentPasswordInputActive(true);
+    } else {
+      setIsCurrentPasswordInputActive(false);
+    }
+    if (newPasswordInput && newPasswordInput.length > 0) {
+      setIsNewPasswordInputActive(true);
+    } else {
+      setIsNewPasswordInputActive(false);
+    }
+    if (confirmNewPasswordInput && confirmNewPasswordInput.length > 0) {
+      setIsConfirmNewPasswordInputActive(true);
+    } else {
+      setIsConfirmNewPasswordInputActive(false);
+    }
+  }, [currentPasswordInput, newPasswordInput, confirmNewPasswordInput]);
 
   useEffect(() => {
     setAreAllInputsActive(
