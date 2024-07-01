@@ -35,14 +35,6 @@ export const PasswordInput = ({
           placeholder="Enter Password Here"
           className="outline-none flex-1 bg-white"
           {...inputProps}
-          onChange={(e) => {
-            const password = e.target.value;
-            if (password.length > 0) {
-              setIsInputActive(true);
-            } else {
-              setIsInputActive(false);
-            }
-          }}
         />
         <span>
           {isInputVisible ? (
