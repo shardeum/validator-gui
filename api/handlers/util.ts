@@ -23,3 +23,20 @@ export function unautorizedResponse(req: Request, res: Response) {
   })
   console.log(`ERROR HTTP 403: ${req.url}`)
 }
+export const fetchWithTimeout = (url: string, options: RequestInit, timeout = 5000): any => {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error('Request timed out'))
+    }, timeout)
+
+    fetch(url, options)
+      .then(response => {
+        clearTimeout(timer)
+        resolve(response)
+      })
+      .catch(err => {
+        clearTimeout(timer)
+        reject(err)
+      })
+  })
+}
