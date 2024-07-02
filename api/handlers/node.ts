@@ -145,35 +145,6 @@ export default function configureNodeHandlers(apiRouter: Router) {
     })
   );
 
-  apiRouter.post(
-    '/node/status/history',
-    asyncRouteHandler(async (req: Request, res: Response<NodeStatusHistoryResponse>) => {
-      const fromDate = req.query.from;
-
-      if (!fromDate) {
-        badRequestResponse(res, `invalid from Date parameter: '${fromDate}'`);
-        return;
-      }
-
-      // Exec the CLI validator stop command
-      execFile('operator-cli', ['status'], (err, stdout, stderr) => {
-        console.log('operator-cli status --from <date>: ', err, stdout, stderr);
-        // res.end();
-      });
-      console.log(
-        `executing operator-cli status --from ${fromDate.toString()}...`
-      );
-
-      // mock response
-      res.json({
-        state: 'active', //standby/syncing/active
-        stakeAmount: '123456.78',
-        lifetimeEarnings: '123.45',
-        date: fromDate.toString(),
-      });
-    })
-  );
-
   apiRouter.get('/node/version', nodeVersionHandler);
 
   apiRouter.get(
