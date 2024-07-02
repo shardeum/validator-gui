@@ -12,24 +12,24 @@ import { Title } from "../../components/atoms/Title";
 import { LoginForm } from "../../components/molecules/LoginForm";
 import { useDevice } from "../../context/device";
 import { onboardingCompletedKey } from "../onboarding";
+import { useNodeVersion } from "../../hooks/useNodeVersion";
 
 const Login = () => {
   const router = useRouter();
   const { isMobile } = useDevice();
 
-  useEffect(() => {
-    // redirect to home if already logged in
-    if (authService.isLogged) {
-      const onboardingCompleted =
-        localStorage.getItem(onboardingCompletedKey) === "true";
-      if (onboardingCompleted) {
-        router.push("/onboarding");
-      } else {
-        router.push("/dashboard");
-      }
+  // redirect to home if already logged in
+  if (authService.isLogged) {
+    const onboardingCompleted =
+      localStorage.getItem(onboardingCompletedKey) === "true";
+    if (onboardingCompleted) {
+      router.push("/onboarding");
+    } else {
+      router.push("/dashboard");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }
+
+  const { version } = useNodeVersion(true);
 
   return (
     <div className="flex flex-col h-screen justify-between relative">
@@ -79,6 +79,7 @@ const Login = () => {
                 {!isMobile && (
                   <div className="flex justify-between w-full">
                     <span>
+                      Validator Version : {version?.runnningValidatorVersion}
                     </span>
                     <span>Running on Localhost</span>
                   </div>

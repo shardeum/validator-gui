@@ -11,15 +11,37 @@ type NodeVersionResult = {
   isError: boolean
   update: () => Promise<Response>
   version: NodeVersion | undefined
-  publicVersion: NodeVersion | undefined
-  isPublicError: boolean
 }
 
-export const useNodeVersion = (): NodeVersionResult => {
+const nodeVersionDataKey = 'nodeVersionData';
+let data: NodeVersion | undefined;
+let error: Error | undefined;
+let lastFetchedAt: Date;
+
+export const useNodeVersion = (isPublic: boolean = false): NodeVersionResult => {
   const { apiBase } = useGlobals()
   const fetcherWithContext = useContext(FetcherContext);
-  const { data, error } = useSWR<NodeVersion, Error>(`${apiBase}/api/node/version`, fetcherWithContext)
-  const { data: publicData, error: publicError } = useSWR<NodeVersion, Error>(`${apiBase}/node/version`, fetcherWithContext)
+
+  let hasExpired = true;
+  if (lastFetchedAt) {
+    hasExpired = (lastFetchedAt.getTime() - (new Date()).getTime()) >= (1000 * 3600 * 24 * 2); // gte 2 days
+  }
+  let shouldFetchVersion = !data || hasExpired
+
+
+  const publicVersion = useSWR<NodeVersion, Error>((shouldFetchVersion && isPublic) ? `${apiBase}/node/version` : null, fetcherWithContext)
+  if (shouldFetchVersion && isPublic && !publicVersion.error) {
+    data = publicVersion.data;
+    lastFetchedAt = new Date();
+  }
+  error = publicVersion.error;
+
+  const authVersion = useSWR<NodeVersion, Error>((shouldFetchVersion && !isPublic) ? `${apiBase}/api/node/version` : null, fetcherWithContext)
+  if (shouldFetchVersion && !isPublic && !authVersion.error) {
+    data = authVersion.data;
+    lastFetchedAt = new Date();
+  }
+  error = authVersion.error;
 
   const update = (): Promise<Response> => {
     return fetcher<Response>(`${apiBase}/api/node/update`, { method: 'POST' }, showErrorMessage)
@@ -27,8 +49,6 @@ export const useNodeVersion = (): NodeVersionResult => {
 
   return {
     version: data,
-    publicVersion: publicData,
-    isPublicError: !!publicError,
     isLoading: !data && !error,
     isError: !!error,
     update,
