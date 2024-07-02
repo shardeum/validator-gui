@@ -12,10 +12,12 @@ import { Title } from "../../components/atoms/Title";
 import { LoginForm } from "../../components/molecules/LoginForm";
 import { useDevice } from "../../context/device";
 import { onboardingCompletedKey } from "../onboarding";
+import { useNodeVersion } from "../../hooks/useNodeVersion";
 
 const Login = () => {
   const router = useRouter();
   const { isMobile } = useDevice();
+  const { version } = useNodeVersion(true);
 
   useEffect(() => {
     // redirect to home if already logged in
@@ -79,6 +81,7 @@ const Login = () => {
                 {!isMobile && (
                   <div className="flex justify-between w-full">
                     <span>
+                      Validator Version : {version?.runnningValidatorVersion}
                     </span>
                     <span>Running on Localhost</span>
                   </div>
