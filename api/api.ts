@@ -5,6 +5,7 @@ import fs from 'fs'
 import path from 'path'
 import { Request, Response } from 'express';
 import asyncRouteHandler from './handlers/async-router-handler'
+import {fetchWithTimeout} from "./handlers/util";
 const yaml = require('js-yaml')
 
 const ACCOUNT_INFO_URL = process.env.ACCOUNT_INFO_URL ?? "https://explorer-sphinx.shardeum.org/api/account";
@@ -29,21 +30,28 @@ configureNodeHandlers(apiRouter)
 // });
 
 apiRouter.get('/node/status/history', async (req, res) => {
-  console.log('fetching node history')
-  const { address: accountAddress } = req.query;
+  try {
+    console.log('fetching node history')
+    const { address: accountAddress } = req.query;
 
-  const accInfoResponse = await fetch(
-    `${ACCOUNT_INFO_URL}?address=${accountAddress}`,
-    {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+    const accInfoResponse = await fetchWithTimeout(
+      `${ACCOUNT_INFO_URL}?address=${accountAddress}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await accInfoResponse.json();
+    res.status(200).json(data?.accounts?.[0]?.account?.operatorAccountInfo?.operatorStats || {})
+  } catch (e) {
+    if (e instanceof Error) {
+      return res.status(500).json({errorMessage: e.message})
     }
-  );
-  const data = await accInfoResponse.json();
-  res.status(200).json(data?.accounts?.[0]?.account?.operatorAccountInfo?.operatorStats || {})
+    res.status(500).json({errorMessage: e})
+  }
 })
 
 apiRouter.get('/node/performance', (req, res) => {
@@ -94,7 +102,7 @@ apiRouter.post(
   '/claim-tokens',
   asyncRouteHandler(async (req: Request, res: Response) => {
     const { address: accountAddress } = req.query;
-    const claimResponse = await fetch(
+    const claimResponse = await fetchWithTimeout(
       `${FAUCET_CLAIM_URL}?address=${accountAddress}`,
       {
         method: "POST",
