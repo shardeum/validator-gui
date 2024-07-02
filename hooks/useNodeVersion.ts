@@ -28,15 +28,19 @@ export const useNodeVersion = (isPublic: boolean = false): NodeVersionResult => 
   }
 
   if (!data || hasExpired) {
-    if (!isPublic) {
+    if (isPublic) {
       const publicVersion = useSWR<NodeVersion, Error>(`${apiBase}/node/version`, fetcherWithContext)
-      data = publicVersion.data;
+      if (!publicVersion.error) {
+        data = publicVersion.data;
+      }
       error = publicVersion.error;
       lastUpdatedAt = new Date();
     }
     else {
       const authVersion = useSWR<NodeVersion, Error>(`${apiBase}/api/node/version`, fetcherWithContext)
-      data = authVersion.data;
+      if (!authVersion.error) {
+        data = authVersion.data;
+      }
       error = authVersion.error;
       lastUpdatedAt = new Date();
     }
