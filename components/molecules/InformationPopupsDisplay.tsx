@@ -12,8 +12,8 @@ import useNotificationsStore, {
 const newGuiVersionAvailableKey = "newGuiVersionAvailable";
 const newValidatorVersionAvailableKey = "newValidatorVersionAvailable";
 
-const VERSION_UPDATE_REPOSTORY_URL =
-  process.env.VERSION_UPDATE_REPOSTORY_URL ??
+const VERSION_UPDATE_REPOSITORY_URL =
+  process.env.VERSION_UPDATE_REPOSITORY_URL ??
   "https://github.com/shardeum/validator-dashboard";
 
 export const InformationPopupsDisplay = () => {
@@ -163,7 +163,7 @@ export const InformationPopupsDisplay = () => {
                 Dismiss
               </button>
               <Link
-                href={VERSION_UPDATE_REPOSTORY_URL}
+                href={VERSION_UPDATE_REPOSITORY_URL}
                 onClick={() => {
                   setShowValidatorUpdatePrompt(false);
                 }}
@@ -198,7 +198,7 @@ export const InformationPopupsDisplay = () => {
                 Dismiss
               </button>
               <Link
-                href={VERSION_UPDATE_REPOSTORY_URL}
+                href={VERSION_UPDATE_REPOSITORY_URL}
                 onClick={() => {
                   setShowGuiUpdatePrompt(false);
                 }}
