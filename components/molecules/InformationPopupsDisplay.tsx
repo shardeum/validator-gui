@@ -4,7 +4,6 @@ import Link from "next/link";
 import { onboardingCompletedKey } from "../../pages/onboarding";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import greyLogo from "../../assets/grey-logo.svg";
-import { useRouter } from "next/router";
 import useNotificationsStore, {
   NotificationSeverity,
   NotificationType,
@@ -18,23 +17,10 @@ const VERSION_UPDATE_REPOSTORY_URL =
   "https://github.com/shardeum/validator-dashboard";
 
 export const InformationPopupsDisplay = () => {
-  const router = useRouter();
   const { addNotification } = useNotificationsStore((state: any) => ({
     addNotification: state.addNotification,
   }));
   const { version } = useNodeVersion();
-  const [showGuiUpdatePrompt, setShowGuiUpdatePrompt] = useState(false);
-  const [showValidatorUpdatePrompt, setShowValidatorUpdatePrompt] =
-    useState(false);
-  const [showGuiUpdated, setShowGuiUpdated] = useState(false);
-  const [showValidatorUpdated, setShowValidatorUpdated] = useState(false);
-
-  const isOnboardingCompleted =
-    localStorage.getItem(onboardingCompletedKey) === "true";
-
-  const [showOnboardingPrompt, setShowOnboardingPrompt] = useState(
-    !isOnboardingCompleted
-  );
 
   useEffect(() => {
     const newGuiAvailable =
@@ -103,6 +89,19 @@ export const InformationPopupsDisplay = () => {
       }
     }
   }, [version]);
+
+  const [showGuiUpdatePrompt, setShowGuiUpdatePrompt] = useState(false);
+  const [showValidatorUpdatePrompt, setShowValidatorUpdatePrompt] =
+    useState(false);
+  const [showGuiUpdated, setShowGuiUpdated] = useState(false);
+  const [showValidatorUpdated, setShowValidatorUpdated] = useState(false);
+
+  const isOnboardingCompleted =
+    localStorage.getItem(onboardingCompletedKey) === "true";
+
+  const [showOnboardingPrompt, setShowOnboardingPrompt] = useState(
+    !isOnboardingCompleted
+  );
 
   return (
     <div className="flex flex-col gap-y-3">
