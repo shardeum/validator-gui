@@ -16,35 +16,32 @@ type NodeVersionResult = {
 const nodeVersionDataKey = 'nodeVersionData';
 let data: NodeVersion | undefined;
 let error: Error | undefined;
-let lastUpdatedAt: Date;
+let lastFetchedAt: Date;
 
 export const useNodeVersion = (isPublic: boolean = false): NodeVersionResult => {
   const { apiBase } = useGlobals()
   const fetcherWithContext = useContext(FetcherContext);
 
   let hasExpired = true;
-  if (lastUpdatedAt) {
-    hasExpired = (lastUpdatedAt.getTime() - (new Date()).getTime()) >= (1000 * 3600 * 24 * 2); // gte 2 days
+  if (lastFetchedAt) {
+    hasExpired = (lastFetchedAt.getTime() - (new Date()).getTime()) >= (1000 * 3600 * 24 * 2); // gte 2 days
   }
+  let shouldFetchVersion = !data || hasExpired
 
-  if (!data || hasExpired) {
-    if (isPublic) {
-      const publicVersion = useSWR<NodeVersion, Error>(`${apiBase}/node/version`, fetcherWithContext)
-      if (!publicVersion.error) {
-        data = publicVersion.data;
-      }
-      error = publicVersion.error;
-      lastUpdatedAt = new Date();
-    }
-    else {
-      const authVersion = useSWR<NodeVersion, Error>(`${apiBase}/api/node/version`, fetcherWithContext)
-      if (!authVersion.error) {
-        data = authVersion.data;
-      }
-      error = authVersion.error;
-      lastUpdatedAt = new Date();
-    }
+
+  const publicVersion = useSWR<NodeVersion, Error>((shouldFetchVersion && isPublic) ? `${apiBase}/node/version` : null, fetcherWithContext)
+  if (shouldFetchVersion && isPublic && !publicVersion.error) {
+    data = publicVersion.data;
+    lastFetchedAt = new Date();
   }
+  error = publicVersion.error;
+
+  const authVersion = useSWR<NodeVersion, Error>((shouldFetchVersion && !isPublic) ? `${apiBase}/api/node/version` : null, fetcherWithContext)
+  if (shouldFetchVersion && !isPublic && !authVersion.error) {
+    data = authVersion.data;
+    lastFetchedAt = new Date();
+  }
+  error = authVersion.error;
 
   const update = (): Promise<Response> => {
     return fetcher<Response>(`${apiBase}/api/node/update`, { method: 'POST' }, showErrorMessage)
