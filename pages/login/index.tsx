@@ -17,21 +17,19 @@ import { useNodeVersion } from "../../hooks/useNodeVersion";
 const Login = () => {
   const router = useRouter();
   const { isMobile } = useDevice();
-  const { version } = useNodeVersion(true);
 
-  useEffect(() => {
-    // redirect to home if already logged in
-    if (authService.isLogged) {
-      const onboardingCompleted =
-        localStorage.getItem(onboardingCompletedKey) === "true";
-      if (onboardingCompleted) {
-        router.push("/onboarding");
-      } else {
-        router.push("/dashboard");
-      }
+  // redirect to home if already logged in
+  if (authService.isLogged) {
+    const onboardingCompleted =
+      localStorage.getItem(onboardingCompletedKey) === "true";
+    if (onboardingCompleted) {
+      router.push("/onboarding");
+    } else {
+      router.push("/dashboard");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }
+
+  const { version } = useNodeVersion(true);
 
   return (
     <div className="flex flex-col h-screen justify-between relative">
