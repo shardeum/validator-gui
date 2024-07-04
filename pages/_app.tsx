@@ -65,11 +65,7 @@ const connectors = connectorsForWallets([
     groupName: "Recommended",
     wallets: [
       injectedWallet({ chains }),
-      metaMaskWallet({
-        chains,
-        projectId: "shm-dashboard",
-        shimDisconnect: true,
-      }),
+      metaMaskWallet({ chains, projectId: "shm-dashboard" }),
       // walletConnectWallet({
       //   chains,
       //   projectId: "shm-dashboard",
