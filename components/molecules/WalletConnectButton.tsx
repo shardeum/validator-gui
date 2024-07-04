@@ -19,6 +19,7 @@ export const WalletConnectButton = ({
         chain,
         openAccountModal,
         openConnectModal,
+        openChainModal,
         authenticationStatus,
         mounted,
       }) => {
@@ -53,6 +54,21 @@ export const WalletConnectButton = ({
                   </button>
                 );
               }
+
+              if (chain.unsupported) {
+                return (
+                  <button
+                    onClick={openChainModal}
+                    type="button"
+                    className={
+                      "text-green-700 font-medium bg-white" + buttonClassName
+                    }
+                  >
+                    {label || "Switch network"}
+                  </button>
+                );
+              }
+
               return (
                 <>
                   {!toShowAddress && (
@@ -67,7 +83,7 @@ export const WalletConnectButton = ({
                     </button>
                   )}
                   {toShowAddress && (
-                    <div
+                    <button
                       className="flex gap-x-2 max-w-sm cursor-pointer rounded-full bg-gray-200 px-2 py-1 text-black text-sm"
                       onClick={openAccountModal}
                     >
@@ -80,7 +96,7 @@ export const WalletConnectButton = ({
                       <span className="font-semibold text-sm">
                         {account.displayName}
                       </span>
-                    </div>
+                    </button>
                   )}
                 </>
               );
