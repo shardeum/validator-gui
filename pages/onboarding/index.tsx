@@ -516,7 +516,7 @@ const Onboarding = () => {
                       </span>
                     </div>
                     <span className="text-gray-600 text-sm ml-8">
-                      Your node is on standby waiting for stake
+                      Your node has been started and is waiting for stake
                     </span>
                   </>
                 )}
