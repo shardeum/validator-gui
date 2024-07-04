@@ -19,7 +19,7 @@ export const LogsDisplay = () => {
 
   return (
     <div className="grow flex flex-col justify-between">
-      <div className="md:px-16 px-4 grow flex flex-col justify-between max-h-[80vh] gap-y-10 mb-20">
+      <div className="md:px-16 px-4 grow flex flex-col justify-between gap-y-10 mb-20">
         <div className="flex flex-col gap-y-12">
           <div className="flex flex-col gap-y-2">
             <span className="text-2xl font-semibold">Validator Logs</span>
