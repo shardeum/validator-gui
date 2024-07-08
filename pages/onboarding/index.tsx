@@ -33,6 +33,9 @@ export const VALIDATOR_GUI_FAQS_URL =
   process.env.VALIDATOR_GUI_FAQS_URL || "https://shardeum.org/faq/general";
 export const VALIDATOR_GUI_DOCS_URL =
   process.env.VALIDATOR_GUI_DOCS_URL || "https://docs.shardeum.org";
+export const FAUCET_CLAIM_DOCS_URL =
+  process.env.FAUCET_CLAIM_DOCS_URL ||
+  "https://docs.shardeum.org/docs/faucet/claim";
 
 const Onboarding = () => {
   const [isNodeStarted, setIsNodeStarted] = useState(false);
@@ -362,7 +365,7 @@ const Onboarding = () => {
                     </div>
                     <div className="flex flex-col w-full pl-7">
                       <span className="text-gray-600 text-sm">
-                        Claim 15 SHM tokens from Shardeum faucet as a reward.
+                        Claim SHM tokens from Shardeum faucet as a reward.
                       </span>
                       <div className="flex flex-col mt-4 pr-5">
                         {tokenClaimPhase === 0 && (
@@ -374,19 +377,17 @@ const Onboarding = () => {
                                   (isConnected ? "bg-primary" : "bg-gray-400")
                                 }
                                 disabled={!isConnected}
-                                onClick={async () => {
-                                  setTokenClaimPhase(1);
-                                  const tokensClaimed = await claimTokens(
-                                    address || ""
-                                  );
-                                  if (tokensClaimed) {
-                                    setTokenClaimPhase(2);
-                                  } else {
-                                    setTokenClaimPhase(0);
+                                onClick={() => {
+                                  if (window) {
+                                    window.open(
+                                      FAUCET_CLAIM_DOCS_URL,
+                                      "_blank"
+                                    );
                                   }
+                                  setTokenClaimPhase(2);
                                 }}
                               >
-                                Claim 15 SHM
+                                Claim SHM
                               </button>
                             </div>
                             <div className="basis-0 grow ml-2">
@@ -416,7 +417,7 @@ const Onboarding = () => {
                             <div className="spinner flex items-center justify-center mr-3">
                               <div className="border-2 border-black border-b-white rounded-full h-3.5 w-3.5"></div>
                             </div>{" "}
-                            Claiming 15 SHM
+                            Claiming SHM
                           </button>
                         )}
                         {accountBalance !== "" && (
