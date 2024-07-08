@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useNodeStatus } from "../../hooks/useNodeStatus";
 import { NodeStatus as NodeStatusModel } from "../../model/node-status";
 import useToastStore, { ToastSeverity } from "../../hooks/useToastStore";
-import { useNodeStatusHistory } from "../../hooks/useNodeStatusHistory";
+// import { useNodeStatusHistory } from "../../hooks/useNodeStatusHistory";
 import moment from "moment";
 import {
   NotificationSeverity,
@@ -183,7 +183,7 @@ export const getDurationBreakdownString = (duration: number) => {
 
 export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
   const { nodeStatus, isLoading, startNode, stopNode } = useNodeStatus();
-  const { nodeStatusHistory } = useNodeStatusHistory(address || "");
+  // const { nodeStatusHistory } = useNodeStatusHistory(address || "");
 
   const state: NodeState = getNodeState(nodeStatus);
   const title = getTitle(state);
@@ -203,55 +203,55 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
     })
   );
 
-  const [nodeStatusHistories, setNodeStatusHistories] = useState<
-    DailyNodeStatus[]
-  >([]);
-  const [totalValidatingTime, setTotalValidatingTime] = useState("0s");
-  const [totalValidatingTimeThisWeek, setTotalValidatingTimeThisWeek] =
-    useState("0s");
+  // const [nodeStatusHistories, setNodeStatusHistories] = useState<
+  //   DailyNodeStatus[]
+  // >([]);
+  // const [totalValidatingTime, setTotalValidatingTime] = useState("0s");
+  // const [totalValidatingTimeThisWeek, setTotalValidatingTimeThisWeek] =
+  //   useState("0s");
 
-  useEffect(() => {
-    setTotalValidatingTime(
-      getDurationBreakdownString(nodeStatusHistory?.totalNodeTime)
-    );
+  // useEffect(() => {
+  //   setTotalValidatingTime(
+  //     getDurationBreakdownString(nodeStatusHistory?.totalNodeTime)
+  //   );
 
-    const pastWeekValidatingTimes: number[] = [];
-    const pastDay = moment().subtract(6, "d").startOf("day"); // 1 week ago
-    const pastWeekReferenceTimes: number[][] = [];
-    for (let i = 0; i < 6; i++) {
-      pastWeekReferenceTimes.push([pastDay.unix(), pastDay.add(1, "d").unix()]);
-      pastWeekValidatingTimes.push(0);
-    }
-    pastWeekValidatingTimes.push(0);
-    pastWeekReferenceTimes.push([pastDay.unix(), moment().unix()]);
+  //   const pastWeekValidatingTimes: number[] = [];
+  //   const pastDay = moment().subtract(6, "d").startOf("day"); // 1 week ago
+  //   const pastWeekReferenceTimes: number[][] = [];
+  //   for (let i = 0; i < 6; i++) {
+  //     pastWeekReferenceTimes.push([pastDay.unix(), pastDay.add(1, "d").unix()]);
+  //     pastWeekValidatingTimes.push(0);
+  //   }
+  //   pastWeekValidatingTimes.push(0);
+  //   pastWeekReferenceTimes.push([pastDay.unix(), moment().unix()]);
 
-    (nodeStatusHistory?.history || []).forEach((session: any) => {
-      for (let i = 0; i < 7; i++) {
-        const [startOfDay, endOfDay] = pastWeekReferenceTimes[i];
-        const secondsOverlapWithTheDay = Math.max(
-          Math.min(endOfDay, session.e) - Math.max(startOfDay, session.b),
-          0
-        );
-        pastWeekValidatingTimes[i] += secondsOverlapWithTheDay;
-      }
-    });
+  //   (nodeStatusHistory?.history || []).forEach((session: any) => {
+  //     for (let i = 0; i < 7; i++) {
+  //       const [startOfDay, endOfDay] = pastWeekReferenceTimes[i];
+  //       const secondsOverlapWithTheDay = Math.max(
+  //         Math.min(endOfDay, session.e) - Math.max(startOfDay, session.b),
+  //         0
+  //       );
+  //       pastWeekValidatingTimes[i] += secondsOverlapWithTheDay;
+  //     }
+  //   });
 
-    let timeSpentValidatingInPastWeek = 0;
-    const statusHistories = [];
-    for (let i = 0; i < 7; i++) {
-      timeSpentValidatingInPastWeek += pastWeekValidatingTimes[i];
-      statusHistories.push({
-        day: moment.unix(pastWeekReferenceTimes[i][0]).format("ddd	"),
-        activeDuration: (pastWeekValidatingTimes[i] / 86400) * 100,
-        standbyDuration: 0,
-        stoppedDuration: 0,
-      });
-    }
-    setNodeStatusHistories(statusHistories);
-    setTotalValidatingTimeThisWeek(
-      getDurationBreakdownString(timeSpentValidatingInPastWeek)
-    );
-  }, [nodeStatusHistory?.history, nodeStatusHistory?.totalNodeTime]);
+  //   let timeSpentValidatingInPastWeek = 0;
+  //   const statusHistories = [];
+  //   for (let i = 0; i < 7; i++) {
+  //     timeSpentValidatingInPastWeek += pastWeekValidatingTimes[i];
+  //     statusHistories.push({
+  //       day: moment.unix(pastWeekReferenceTimes[i][0]).format("ddd	"),
+  //       activeDuration: (pastWeekValidatingTimes[i] / 86400) * 100,
+  //       standbyDuration: 0,
+  //       stoppedDuration: 0,
+  //     });
+  //   }
+  //   setNodeStatusHistories(statusHistories);
+  //   setTotalValidatingTimeThisWeek(
+  //     getDurationBreakdownString(timeSpentValidatingInPastWeek)
+  //   );
+  // }, [nodeStatusHistory?.history, nodeStatusHistory?.totalNodeTime]);
 
   useEffect(() => {
     const previousNodeState = localStorage.getItem(previousNodeStateKey);
@@ -407,7 +407,7 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
             </div>
             <hr className="my-1" />
             <div className="flex flex-col gap-y-3">
-              <div className="flex items-center justify-between">
+              {/* <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold">More Info</span>
                 {!showMoreInfo && (
                   <ChevronDownIcon
@@ -421,27 +421,28 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
                     onClick={toggleShowMoreInfo}
                   />
                 )}
-              </div>
+              </div> */}
               {showMoreInfo && (
-                <div className="flex flex-col gap-y-2 text-subtleFg dropdown-300">
-                  <div className="flex justify-between">
-                    <span className="font-light text-xs">
-                      Total validating time
-                    </span>
-                    <span className="text-xs font-medium">
-                      {totalValidatingTime}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-light text-xs">
-                      Validating time this week
-                    </span>
-                    <span className="text-xs font-medium">
-                      {totalValidatingTimeThisWeek}
-                    </span>
-                  </div>
-                  {getNodeStatusHistoryChart(nodeStatusHistories)}
-                </div>
+                <></>
+                // <div className="flex flex-col gap-y-2 text-subtleFg dropdown-300">
+                //   <div className="flex justify-between">
+                //     <span className="font-light text-xs">
+                //       Total validating time
+                //     </span>
+                //     <span className="text-xs font-medium">
+                //       {totalValidatingTime}
+                //     </span>
+                //   </div>
+                //   <div className="flex justify-between">
+                //     <span className="font-light text-xs">
+                //       Validating time this week
+                //     </span>
+                //     <span className="text-xs font-medium">
+                //       {totalValidatingTimeThisWeek}
+                //     </span>
+                //   </div>
+                //   {getNodeStatusHistoryChart(nodeStatusHistories)}
+                // </div>
               )}
               <div className="flex justify-end">
                 {!isNodeStopped && !isLoading && (
