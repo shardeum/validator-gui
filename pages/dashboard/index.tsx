@@ -64,7 +64,7 @@ const Dashboard = () => {
       {!isMobile && (
         <>
           {/* navbar */}
-          <nav className="px-12 shadow fixed top-0 bg-white w-full z-10">
+          <nav className="px-12 shadow fixed top-0 bg-white w-full z-20">
             <div className="flex flex-col w-full">
               <div className="flex justify-between py-3 w-full">
                 <Logo className="w-32" />
@@ -198,7 +198,7 @@ const Dashboard = () => {
       {isMobile && (
         <div className="flex flex-col text-black">
           {/* navbar */}
-          <nav className="px-4 shadow fixed top-0 bg-white w-full z-10 h-20">
+          <nav className="px-4 shadow fixed top-0 bg-white w-full z-20 h-20">
             <div className="flex flex-col w-full">
               <div className="flex justify-between py-3 w-full items-center">
                 <Logo className="w-8" isMinimalLogo={true} />
