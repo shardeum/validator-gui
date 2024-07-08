@@ -64,7 +64,7 @@ export const WalletConnectButton = ({
                       "text-green-700 font-medium bg-white" + buttonClassName
                     }
                   >
-                    {label || "Switch network"}
+                    Switch network
                   </button>
                 );
               }
