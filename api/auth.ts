@@ -19,13 +19,20 @@ const jwtSecret = (isValidSecret(process.env.JWT_SECRET))
   : generateRandomSecret();
 crypto.init('64f152869ca2d473e4ba64ab53f49ccdb2edae22da192c126850970e788af347');
 
+const MAX_CONCURRENT_EXEC = 1;
+let currentExecCount = 0;
 export const loginHandler =async (req: Request, res: Response) => {
+  if (currentExecCount >= MAX_CONCURRENT_EXEC) {
+    res.status(503).send({ error: "Server is too busy. Please try again later." });
+    return;
+  }
   const password = req.body && req.body.password
   const hashedPass = crypto.hash(password);
   const ip = String(req.socket.remoteAddress);
   
   // Exec the CLI validator login command
   execFile('operator-cli', ['gui', 'login', hashedPass,ip], (err, stdout, stderr) => {
+    currentExecCount--;
     if (err) {
       cliStderrResponse(res, 'Unable to check login', err.message)
       return
