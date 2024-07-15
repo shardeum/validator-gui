@@ -23,7 +23,7 @@ const MAX_CONCURRENT_EXEC = 1;
 let currentExecCount = 0;
 export const loginHandler =async (req: Request, res: Response) => {
   if (currentExecCount >= MAX_CONCURRENT_EXEC) {
-    res.status(503).send({ error: "Server is too busy. Please try again later." });
+    res.status(429).send({ error: "Server is too busy. Please try again later." });
     return;
   }
   const password = req.body && req.body.password
@@ -44,7 +44,7 @@ export const loginHandler =async (req: Request, res: Response) => {
 
     const cliResponse = yaml.load(stdout)
     if(cliResponse.login === 'blocked'){
-      res.send({block:true})
+      res.status(401).send({block:true})
       return;
     }
     if (cliResponse.login !== 'authorized') {
