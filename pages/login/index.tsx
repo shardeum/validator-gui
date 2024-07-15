@@ -38,7 +38,7 @@ const Login = () => {
       } catch (err: any) {
         setApiError(err as SetStateAction<Error | null>);
       }
-    }, 10 * 1000); // 1 minute in milliseconds
+    }, 60 * 1000); // 1 minute in milliseconds
 
     // Clear interval on component unmount
     return () => clearInterval(intervalId);
