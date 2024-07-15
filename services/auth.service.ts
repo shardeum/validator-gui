@@ -21,7 +21,12 @@ function useLogin() {
         throw new Error('Invalid password!');
       }
     }
-    localStorage.setItem(isLoggedInKey, 'true');
+    else if(res.ok && data?.block){
+      throw new Error("IpAddress has been blocked for too many failed Attempts")
+    }
+    else{      localStorage.setItem(tokenKey, data.accessToken);
+    }
+
   }, [apiBase]);
 }
 

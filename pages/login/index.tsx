@@ -21,6 +21,7 @@ const Login = () => {
   const {register, handleSubmit, formState} = useForm()
 
   const [apiError, setApiError] = useState<Error | null>(null);
+  const [isDisabled,setIsDisabled] = useState(false);
 
   async function onSubmit({password}: FieldValues) {
     setApiError(null);
@@ -29,7 +30,10 @@ const Login = () => {
       await login(password)
       router.push('/')
     }
-    catch(error){
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    catch(error:any){
+      if(error?.message === 'IpAddress has been blocked for too many failed Attempts')
+          setIsDisabled(true);
       setApiError(error as SetStateAction<Error | null>)
     }
   }
@@ -52,7 +56,7 @@ const Login = () => {
               <div className="ml-2 font-semibold">{apiError.message}</div>
             </div>
           )}
-          <button disabled={formState.isSubmitting} className="btn btn-primary" type="submit">
+          <button disabled={isDisabled} className="btn btn-primary" type="submit">
             {formState.isSubmitting ? <ArrowPathIcon className='w-5 spinner'/> : 'Connect'}
           </button>
         </form>
@@ -75,4 +79,4 @@ Login.getLayout = function getLayout(page: ReactElement) {
   </>
 }
 
-export default Login
+export default Login;
