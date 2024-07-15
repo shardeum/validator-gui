@@ -25,7 +25,7 @@ export const useNodeLogs = (): NodeLogsResponse => {
   const downloadLog = (logName: string): void => {
     fetch(`${apiBase}/api/node/logs/${logName}`, {
       method: "GET",
-      credentials: 'include',
+      credentials: 'include'
     })
       .then((response) => response.blob())
       .then((blob) => {
