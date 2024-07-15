@@ -100,7 +100,34 @@ export const apiLimiter = rateLimit({
   max: 1500, // Limit each IP to 1500 requests per windowMs
   message: "Too many requests from this IP, please try again after 10 minutes",
 });
+export const checkIpHandler = (req:Request,res:Response) =>{
+  const ip = String(req.socket.remoteAddress);
+// Exec the CLI validator check-ip command
+execFile(
+  "operator-cli",
+  ["gui", "ipStatus", ip],
+  (err, stdout, stderr) => {
+    currentExecCount--;
+    if (err) {
+      cliStderrResponse(res, "Unable to check ip", err.message);
+      return;
+    }
+    if (stderr) {
+      cliStderrResponse(res, "Unable to check ip", stderr);
+      return;
+    }
 
+    const cliResponse = yaml.load(stdout);
+    if(cliResponse.status === "blocked"){
+      res.status(200).json({ip: "blocked"})
+    }
+    else{
+      res.status(200).json({ip: "unblocked"})
+    }
+  }
+);
+console.log("executing operator-cli gui check-ip...");
+}
 export const httpBodyLimiter = express.json({ limit: "100kb" });
 
 export const jwtMiddleware = (
