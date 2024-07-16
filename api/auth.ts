@@ -56,6 +56,7 @@ export const loginHandler = async (req: Request, res: Response) => {
             "operator-cli",
             ["gui", "unlock", ip],
             (err, stdout, stderr) => {
+              console.log("executing operator-cli gui unlock");
               if (err) {
                 console.error("Unable to unlock IP", err.message);
               } else if (stderr) {
@@ -126,7 +127,7 @@ execFile(
     }
   }
 );
-console.log("executing operator-cli gui check-ip...");
+console.log("executing operator-cli gui ipStatus");
 }
 export const httpBodyLimiter = express.json({ limit: "100kb" });
 
