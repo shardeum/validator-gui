@@ -69,7 +69,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
       res.json([])
       return;
     }
-    execFile('ls', ['-m'], {cwd: logsPath}, (err, stdout, stderr) => {
+    execFile('/bin/ls', ['-m'], {cwd: logsPath}, (err, stdout, stderr) => {
       if (err) {
         throw new Error('Unable to get logs', err)
       }
