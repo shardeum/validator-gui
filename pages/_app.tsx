@@ -7,7 +7,14 @@ import { NextPage } from 'next';
 import ToastContextProvider from '../components/ToastContextProvider';
 import {createConfig, http, WagmiProvider} from 'wagmi';
 import {Chain, connectorsForWallets, RainbowKitProvider} from '@rainbow-me/rainbowkit';
-import { injectedWallet, metaMaskWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets';
+import {
+  braveWallet,
+  injectedWallet,
+  metaMaskWallet,
+  phantomWallet,
+  rabbyWallet,
+  walletConnectWallet
+} from '@rainbow-me/rainbowkit/wallets';
 import ConfirmModalContextProvider from '../components/ConfirmModalContextProvider';
 import RouteGuard from '../components/RouteGuard';
 import FetcherContextProvider from '../components/FetcherContextProvider';
@@ -51,7 +58,9 @@ const connectors = connectorsForWallets([
     wallets: [
       injectedWallet,
       metaMaskWallet,
-      walletConnectWallet,
+      rabbyWallet,
+      braveWallet
+      // walletConnectWallet,
     ],
   },
 ], {
