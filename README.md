@@ -27,6 +27,14 @@ export NEXT_PUBLIC_RPC_URL=http://127.0.0.1:8081
 
 Adjust the port (8081 in this example) as needed.
 
+`.env` file configuration for running against a local network:
+
+```bash
+NEXT_PUBLIC_RPC_URL=http://127.0.0.1:8080
+PORT=8081
+RPC_SERVER_URL=http://127.0.0.1:8080
+```
+
 2. Link to the Operator CLI and set the environment to development:
 
 ```bash
