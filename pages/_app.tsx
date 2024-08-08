@@ -25,14 +25,14 @@ function getDefaultLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 }
 
-export const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL ?? 'https://sphinx.shardeum.org/';
-export const EXPLORER_URL = process.env.NEXT_EXPLORER_URL ?? 'https://explorer-sphinx.shardeum.org/';
+export const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL ?? 'https://atomium.shardeum.org/';
+export const EXPLORER_URL = process.env.NEXT_EXPLORER_URL ?? 'https://explorer-atomium.shardeum.org/';
 export const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID ? +process.env.NEXT_PUBLIC_CHAIN_ID : 8082;
 
 export const devnet: Chain = {
   id: CHAIN_ID,
   name: 'Shardeum',
-  network: 'shardeum_devnet',
+  network: 'shardeum_atomium',
   nativeCurrency: {
     decimals: 18,
     name: 'Shardeum',
@@ -42,7 +42,7 @@ export const devnet: Chain = {
     default: {http: [RPC_URL]},
     public: {http: [RPC_URL]},
   },
-  blockExplorers: {default: {name: 'Sphinx Explorer', url: EXPLORER_URL}},
+  blockExplorers: {default: {name: 'Atomium Explorer', url: EXPLORER_URL}},
 }
 
 const {chains, publicClient} = configureChains([devnet], [publicProvider()])
