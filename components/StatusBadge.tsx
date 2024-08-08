@@ -13,7 +13,7 @@ export default function StatusBadge({ status }: { status: string }) {
       "need-stake":
         "Your node is running, but it will not join the network until you stake.",
       "waiting-for-network":
-        "Node is trying to connect to the Shardeum network. If your node is stuck in this for more than 5 minutes then please contact us so we can debug and solve this.",
+        "Node is trying to connect to the Shardeum network. If your node is stuck in this for more than 15 minutes then please contact us so we can debug and solve this.",
       selected:
         "Your node has been selected from standby list and will be validating soon",
       ready: "Your node is getting ready to join active validator list",
