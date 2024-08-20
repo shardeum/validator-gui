@@ -7,12 +7,12 @@ import LoadingButton from './LoadingButton';
 import { ConfirmModalContext } from './ConfirmModalContextProvider';
 import { isMetaMaskError } from '../utils/isMetaMaskError';
 import { isEthersError } from '../utils/isEthersError';
-import { Address } from 'wagmi';
-import { ExternalProvider } from '@ethersproject/providers';
 import { NodeStatus } from '../model/node-status'
+import {useAccount} from "wagmi";
 
 export default function RemoveStakeButton({nominee, force = false, nodeStatus}: { nominee: string, force?: boolean, nodeStatus: NodeStatus['state'] }) {
   const {showTemporarySuccessMessage, showErrorDetails} = useContext(ToastContext);
+  const { address } = useAccount();
   const {writeUnstakeLog} = useTXLogs()
   const {openModal} = useContext(ConfirmModalContext);
   const ethereum = window.ethereum;
@@ -33,13 +33,10 @@ export default function RemoveStakeButton({nominee, force = false, nodeStatus}: 
       throw new Error('MetaMask not found');
     }
     try {
-      const provider = new ethers.providers.Web3Provider(ethereum as ExternalProvider);
-      const signer = provider.getSigner();
-      const [gasPrice, from, nonce] = await Promise.all([
-        signer.getGasPrice(),
-        signer.getAddress(),
-        signer.getTransactionCount()
-      ]);
+      const provider = new ethers.BrowserProvider(window.ethereum!);
+      const signer = await provider.getSigner();
+      const from = await signer.getAddress()
+      const nonce = await provider.getTransactionCount(from, 'latest');
 
       const unstakeData = {
         isInternalTx: true,
@@ -54,9 +51,8 @@ export default function RemoveStakeButton({nominee, force = false, nodeStatus}: 
       const params = {
         from,
         to: '0x0000000000000000000000000000000000010000',
-        gasPrice,
-        data: ethers.utils.hexlify(
-          ethers.utils.toUtf8Bytes(JSON.stringify(unstakeData))
+        data: ethers.hexlify(
+          ethers.toUtf8Bytes(JSON.stringify(unstakeData))
         ),
         nonce
       };
@@ -75,7 +71,7 @@ export default function RemoveStakeButton({nominee, force = false, nodeStatus}: 
       let errorMessage = (error as Error)?.message || String(error);
 
       // 4001 is the error code for when a user rejects a transaction
-      if ((isMetaMaskError(error) && error.code === 4001) 
+      if ((isMetaMaskError(error) && error.code === 4001)
       || (isEthersError(error) && error.code === 'ACTION_REJECTED')) {
         errorMessage = 'Transaction rejected by user';
       }
@@ -85,15 +81,15 @@ export default function RemoveStakeButton({nominee, force = false, nodeStatus}: 
   };
 
   const [haveMetamask, sethaveMetamask] = useState(false);
-  const [accountAddress, setAccountAddress] = useState("");
+  const [accountAddress, setAccountAddress] = useState<string>('');
 
   useEffect(() => {
-    const checkMetamaskAvailability = async () => {
+    const checkWalletAvailability = async () => {
       if (!ethereum) {
         sethaveMetamask(false);
       } else sethaveMetamask(true);
     };
-    checkMetamaskAvailability();
+    checkWalletAvailability();
   }, [ethereum]);
 
   const connectWallet = async () => {
@@ -106,26 +102,21 @@ export default function RemoveStakeButton({nominee, force = false, nodeStatus}: 
         method: "eth_requestAccounts"
       });
 
-      setAccountAddress(accounts[0]);
+      if (!address || address.length === 0) {
+        console.error("No accounts returned from Ethereum provider.");
+        return;
+      }
+
+      setAccountAddress(accounts[0]!);
 
       console.log("Account2: ", accountAddress);
-      await sendTransaction(accounts[0], nominee, force);
+      await sendTransaction(address, nominee, force);
     } catch (error) {
       setLoading(false);
     }
   };
 
   const [isLoading, setLoading] = useState(false);
-  const [data, setData] = useState({
-    isInternalTx: true,
-    internalTXType: 7,
-    nominator: accountAddress,
-    timestamp: Date.now()
-  });
-
-  ethereum?.on?.("accountsChanged", (accounts: Address[]) => {
-    setData({...data, nominator: accounts[0]});
-  });
 
   async function removeStake() {
     setLoading(true);
