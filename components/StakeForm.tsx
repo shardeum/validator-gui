@@ -15,7 +15,6 @@ interface StakeData {
   nominee: string;
   stake: string;
   timestamp: number;
-  stakeOk: boolean;
 }
 
 type StakeFormProps = {
@@ -39,6 +38,7 @@ export default function StakeForm({
   const ethereum = window.ethereum;
   const { writeStakeLog } = useTXLogs();
   const [isLoading, setLoading] = useState(false);
+  const [isStakeOk, setStakeOk] = useState(true);
   const [data, setData] = useState<StakeData>({
     isInternalTx: true,
     internalTXType: 6,
@@ -46,7 +46,6 @@ export default function StakeForm({
     nominee,
     stake: requiredStake,
     timestamp: Date.now(),
-    stakeOk: true,
   });
 
   const createStakeLog = (
@@ -82,10 +81,10 @@ export default function StakeForm({
       console.log("BLOB: ", blobData);
       console.log(stakeAmount,totalStaked);
       const value = ethers.BigNumber.from(data.stake);
-   
+
       const totalStakeBigNumber = ethers.BigNumber.from(totalStaked);
       const stakeAmountBigNumber = ethers.utils.parseUnits(stakeAmount, "ether")
-      
+
       console.log(totalStakeBigNumber, stakeAmountBigNumber)
       if (totalStakeBigNumber.lt(stakeAmountBigNumber) && value.lt(stakeAmountBigNumber)) {
         errorFlag = true;
@@ -155,14 +154,14 @@ export default function StakeForm({
       setData({
         ...data,
         stake,
-        stakeOk: true,
       });
+      setStakeOk(true)
     } catch (e) {
       console.error(e);
       setData({
         ...data,
-        stakeOk: false,
       });
+      setStakeOk(false)
     }
   }
 
@@ -201,7 +200,7 @@ export default function StakeForm({
       />
       <div
         className={`flex items-center mb-5 ${
-          !data.stakeOk ? "text-red-500" : ""
+          !isStakeOk ? "text-red-500" : ""
         }`}
       >
         <div className="ml-2 font-semibold">
@@ -214,7 +213,7 @@ export default function StakeForm({
           onClick={async () => sendTransaction()}
           isLoading={isLoading}
           className={`btn btn-primary ${
-            isLoading || !data.stakeOk ? "btn-disabled" : ""
+            isLoading || !isStakeOk ? "btn-disabled" : ""
           }`}
         >
           Stake
