@@ -10,11 +10,13 @@ import { isEthersError } from '../utils/isEthersError';
 import { Address } from 'wagmi';
 import { ExternalProvider } from '@ethersproject/providers';
 import { NodeStatus } from '../model/node-status'
+import { useSettings } from "../hooks/useSettings";
 
 export default function RemoveStakeButton({nominee, force = false, nodeStatus}: { nominee: string, force?: boolean, nodeStatus: NodeStatus['state'] }) {
-  const {showTemporarySuccessMessage, showErrorDetails} = useContext(ToastContext);
+  const {showTemporarySuccessMessage, showErrorDetails, showTemporaryWarningMessage} = useContext(ToastContext);
   const {writeUnstakeLog} = useTXLogs()
   const {openModal} = useContext(ConfirmModalContext);
+  const { settings, mutate: mutateSettings } = useSettings();
   const ethereum = window.ethereum;
 
   const createUnstakeLog = (data: unknown, params: { data: unknown }, hash: string, sender: string) => {
@@ -75,7 +77,7 @@ export default function RemoveStakeButton({nominee, force = false, nodeStatus}: 
       let errorMessage = (error as Error)?.message || String(error);
 
       // 4001 is the error code for when a user rejects a transaction
-      if ((isMetaMaskError(error) && error.code === 4001) 
+      if ((isMetaMaskError(error) && error.code === 4001)
       || (isEthersError(error) && error.code === 'ACTION_REJECTED')) {
         errorMessage = 'Transaction rejected by user';
       }
@@ -132,7 +134,19 @@ export default function RemoveStakeButton({nominee, force = false, nodeStatus}: 
     await connectWallet();
   }
 
-  const handleRemoveStake = () => {
+
+  const handleRemoveStake = async () => {
+
+    await mutateSettings();
+
+    if (
+      settings?.lastStopped &&
+      Date.now() - settings.lastStopped < 3 * 60000 // 3 minutes
+    ) {
+      showTemporaryWarningMessage(" Your node has been restarted recently. Please wait for a few minutes before removing stake.");
+      return;
+    }
+
     if (force) {
       openModal({
         header: 'Force Remove Stake',

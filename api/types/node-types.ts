@@ -106,4 +106,5 @@ export type StakeRequest = {
 
 export type NodeSettings = {
   autoRestart: boolean
+  lastStopped: number
 }
