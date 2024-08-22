@@ -49,3 +49,6 @@ export const useNodeStatus = (): NodeStatusResponse => {
     isLoading
   }
 }
+
+
+// RESTART SERVICES WITH A NEW NODE AND TEST IF NODE STATES ARE UPDATING IN THE GUI ALONGSIDE THEIR TOOLTIPS

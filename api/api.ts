@@ -8,7 +8,7 @@ import asyncRouteHandler from './handlers/async-router-handler'
 import { fetchWithTimeout } from "./handlers/util";
 const yaml = require('js-yaml')
 
-const ACCOUNT_INFO_URL = process.env.ACCOUNT_INFO_URL ?? "https://explorer-sphinx.shardeum.org/api/account";
+const ACCOUNT_INFO_URL = process.env.ACCOUNT_INFO_URL ?? "https://explorer-atomium.shardeum.org/api/account";
 // const FAUCET_CLAIM_URL =
 //   process.env.FAUCET_CLAIM_URL ?? "https://api.shardeum.org/api/transfer";
 
