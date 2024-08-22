@@ -289,7 +289,7 @@ const Onboarding = () => {
                     </div>
                     <div className="flex flex-col w-full pl-7">
                       <span className="font-light text-sm text-gray-600">
-                        Connect your wallet and switch to Shardeum Sphinx
+                        Connect your wallet and switch to Shardeum Atomium
                         Network.
                       </span>
                       <div className="flex flex-col mt-4 pr-5">
@@ -307,7 +307,7 @@ const Onboarding = () => {
                                 disabled={!isConnected}
                                 onClick={() => switchNetwork?.(CHAIN_ID)}
                               >
-                                2. Switch to Shardeum Sphinx
+                                2. Switch to Shardeum Atomium
                               </button>
                             </div>
                           )}
