@@ -24,6 +24,8 @@ export enum NodeState {
   SYNCING = "SYNCING",
   NEED_STAKE = "NEED_STAKE",
   WAITING_FOR_NETWORK = "WAITING_FOR_NETWORK",
+  READY = "READY",
+  SELECTED = "SELECTED",
 }
 
 type DailyNodeStatus = {
@@ -63,6 +65,14 @@ export const getNodeState = (
     case "waiting-for-network":
       nodeState = NodeState.WAITING_FOR_NETWORK;
       break;
+    case "ready":
+      nodeState = NodeState.READY;
+      break;
+    case "selected":
+      nodeState = NodeState.SELECTED;
+      break;
+    default:
+      nodeState = NodeState.STOPPED;
   }
   return nodeState;
 };
@@ -80,13 +90,19 @@ export const getTitle = (state: NodeState) => {
       title = "Stopped";
       break;
     case NodeState.SYNCING:
-      title = "On Standby";
+      title = "Syncing";
       break;
     case NodeState.NEED_STAKE:
       title = "No SHM Staked";
       break;
     case NodeState.WAITING_FOR_NETWORK:
       title = "Waiting for network";
+      break;
+    case NodeState.READY:
+      title = "Ready";
+      break;
+    case NodeState.SELECTED:
+      title = "Selected";
       break;
     default:
       title = "";
@@ -95,27 +111,45 @@ export const getTitle = (state: NodeState) => {
 };
 
 export const getTitleBgColor = (state: NodeState) => {
-  return state === NodeState.ACTIVE
-    ? "successBg"
-    : state === NodeState.STOPPED
-    ? "dangerBg"
-    : state === NodeState.NEED_STAKE
-    ? "severeBg"
-    : state === NodeState.WAITING_FOR_NETWORK
-    ? "attentionBg"
-    : "subtleBg";
+  switch (state) {
+    case NodeState.ACTIVE:
+      return "successBg";
+    case NodeState.READY:
+      return "readyBg";
+    case NodeState.SELECTED:
+      return "selectedBg";
+    case NodeState.STOPPED:
+      return "dangerBg";
+    case NodeState.NEED_STAKE:
+      return "severeBg";
+    case NodeState.WAITING_FOR_NETWORK:
+    case NodeState.SYNCING:
+    case NodeState.STANDBY:
+      return "attentionBg";
+    default:
+      return "subtleBg";
+  }
 };
 
 export const getTitleTextColor = (state: NodeState) => {
-  return state === NodeState.ACTIVE
-    ? "successFg"
-    : state === NodeState.STOPPED
-    ? "dangerFg"
-    : state === NodeState.NEED_STAKE
-    ? "severeFg"
-    : state === NodeState.WAITING_FOR_NETWORK
-    ? "attentionFg"
-    : "subtleFg";
+  switch (state) {
+    case NodeState.ACTIVE:
+      return "successFg";
+    case NodeState.READY:
+      return "readyFg";
+    case NodeState.SELECTED:
+      return "selectedFg";
+    case NodeState.STOPPED:
+      return "dangerFg";
+    case NodeState.NEED_STAKE:
+      return "severeFg";
+    case NodeState.WAITING_FOR_NETWORK:
+    case NodeState.SYNCING:
+    case NodeState.STANDBY:
+      return "attentionFg";
+    default:
+      return "subtleFg";
+  }
 };
 
 const getNodeStatusHistoryChart = (nodeStatusHistories: DailyNodeStatus[]) => {
@@ -262,7 +296,7 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
       const wasLoggedOut = localStorage.getItem(wasLoggedOutKey) === "true";
       if (
         wasLoggedOut &&
-        ["active", "stopped", "waiting-for-network", "need-stake"].includes(
+        ["active", "stopped", "waiting-for-network", "need-stake", "standby", "ready", "selected"].includes(
           nodeStatus?.state || ""
         )
       ) {
@@ -285,7 +319,6 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
           });
           break;
         case "standby":
-          // case "need-stake":
           setCurrentToast({
             severity: ToastSeverity.ATTENTION,
             title: "Node is on standby",
@@ -304,6 +337,61 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
               type: NotificationType.NODE_STATUS,
               severity: NotificationSeverity.DANGER,
               title: "Your node status had been updated to: Stopped",
+            },
+          });
+          break;
+        case "syncing":
+          setCurrentToast({
+            severity: ToastSeverity.ATTENTION,
+            title: "Node is syncing",
+            followupNotification: {
+              type: NotificationType.NODE_STATUS,
+              severity: NotificationSeverity.ATTENTION,
+              title: "Your node status had been updated to: Syncing",
+            },
+          });
+          break;
+        case "need-stake":
+          setCurrentToast({
+            severity: ToastSeverity.ATTENTION,
+            title: "Node needs stake",
+            followupNotification: {
+              type: NotificationType.NODE_STATUS,
+              severity: NotificationSeverity.ATTENTION,
+              title: "Your node status had been updated to: Need Stake",
+            },
+          });
+          break;
+        case "waiting-for-network":
+          setCurrentToast({
+            severity: ToastSeverity.ATTENTION,
+            title: "Node is waiting for network",
+            followupNotification: {
+              type: NotificationType.NODE_STATUS,
+              severity: NotificationSeverity.ATTENTION,
+              title: "Your node status had been updated to: Waiting for Network",
+            },
+          });
+          break;
+        case "ready":
+          setCurrentToast({
+            severity: ToastSeverity.SUCCESS,
+            title: "Node is ready",
+            followupNotification: {
+              type: NotificationType.NODE_STATUS,
+              severity: NotificationSeverity.SUCCESS,
+              title: "Your node status had been updated to: Ready",
+            },
+          });
+          break;
+        case "selected":
+          setCurrentToast({
+            severity: ToastSeverity.SUCCESS,
+            title: "Node has been selected",
+            followupNotification: {
+              type: NotificationType.NODE_STATUS,
+              severity: NotificationSeverity.SUCCESS,
+              title: "Your node status had been updated to: Selected",
             },
           });
           break;
@@ -349,6 +437,8 @@ export const NodeStatus = ({ isWalletConnected, address }: NodeStatusProps) => {
           <span className="bg-attentionBg text-xl text-attentionFg">3</span>
           <span className="bg-subtleBg text-xl text-subtleFg">4</span>
           <span className="bg-dangerBg text-xl text-dangerFg">5</span>
+          <span className="bg-readyBg text-xl text-readyFg">6</span>
+          <span className="bg-selectedBg text-xl text-selectedFg">7</span>
         </div>
         <div className="flex flex-col text-subtleFg">
           <div
