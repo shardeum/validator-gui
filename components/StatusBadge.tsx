@@ -28,14 +28,40 @@ export default function StatusBadge({ status }: { status: string }) {
       stopped: "text-error",
       "need-stake": "text-warning",
       "waiting-for-network": "text-warning",
+      ready: "text-success",
+      selected: "text-success",
     })
   );
+
+  const getStatusTitle = (status: string) => {
+    switch (status) {
+      case "active":
+        return "Validating";
+      case "standby":
+        return "On Standby";
+      case "stopped":
+        return "Stopped";
+      case "syncing":
+        return "Syncing";
+      case "need-stake":
+        return "No SHM Staked";
+      case "waiting-for-network":
+        return "Waiting for network";
+      case "ready":
+        return "Ready";
+      case "selected":
+        return "Selected";
+      default:
+        return status;
+    }
+  };
 
   return (
     <div className="tooltip normal-case" data-tip={statusTip.get(status)}>
       <InformationCircleIcon
         className={`h-5 w-5 mb-1 inline ${statusColor.get(status)}`}
       />
+      <span className={`ml-1 ${statusColor.get(status)}`}>{getStatusTitle(status)}</span>
     </div>
   );
 }

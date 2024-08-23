@@ -25,20 +25,33 @@ export enum NodeState {
   SYNCING = "SYNCING",
   NEED_STAKE = "NEED_STAKE",
   WAITING_FOR_NETWORK = "WAITING_FOR_NETWORK",
+  READY = "READY",
+  SELECTED = "SELECTED",
 }
 
 const previousNodeStateKey = "previousNodeState";
 
 const getBorderColor = (state: NodeState) => {
-  return state === NodeState.ACTIVE
-    ? "successBorder"
-    : state === NodeState.STOPPED
-    ? "dangerBorder"
-    : state === NodeState.NEED_STAKE
-    ? "severeBorder"
-    : state === NodeState.WAITING_FOR_NETWORK
-    ? "attentionBorder"
-    : "subtleBg";
+  switch (state) {
+    case NodeState.ACTIVE:
+      return "successBorder";
+    case NodeState.STANDBY:
+      return "attentionBorder";
+    case NodeState.STOPPED:
+      return "dangerBorder";
+    case NodeState.NEED_STAKE:
+      return "severeBorder";
+    case NodeState.WAITING_FOR_NETWORK:
+      return "attentionBorder";
+    case NodeState.READY:
+      return "attentionBorder";
+    case NodeState.SELECTED:
+      return "attentionBorder";
+    case NodeState.SYNCING:
+      return "attentionBorder";
+    default:
+      return "subtleBg";
+  }
 };
 
 export const NodeStatusRibbon = () => {
@@ -75,7 +88,7 @@ export const NodeStatusRibbon = () => {
       const wasLoggedOut = localStorage.getItem(wasLoggedOutKey) === "true";
       if (
         wasLoggedOut &&
-        ["active", "stopped", "waiting-for-network", "need-stake"].includes(
+        ["active", "stopped", "waiting-for-network", "need-stake", "ready", "selected"].includes(
           nodeStatus?.state || ""
         )
       ) {
@@ -120,6 +133,28 @@ export const NodeStatusRibbon = () => {
             },
           });
           break;
+        case "ready":
+          setCurrentToast({
+            severity: ToastSeverity.SUCCESS,
+            title: "Node is Ready",
+            followupNotification: {
+              type: NotificationType.NODE_STATUS,
+              severity: NotificationSeverity.SUCCESS,
+              title: "Your node status had been updated to: Ready",
+            },
+          });
+          break;
+        case "selected":
+          setCurrentToast({
+            severity: ToastSeverity.SUCCESS,
+            title: "Node has been Selected",
+            followupNotification: {
+              type: NotificationType.NODE_STATUS,
+              severity: NotificationSeverity.SUCCESS,
+              title: "Your node status had been updated to: Selected",
+            },
+          });
+          break;
         default:
           break;
       }
@@ -146,6 +181,19 @@ export const NodeStatusRibbon = () => {
         <span className="bg-dangerBg text-xl text-dangerFg border border-b-dangerBorder">
           5
         </span>
+        <span className="bg-subtleBg text-xl text-subtleFg border border-b-subtleBg">
+          6
+        </span>
+        <span className="bg-subtleBg text-xl text-subtleFg border border-b-subtleBg">
+          7
+        </span>
+        <span className="bg-selectedBg text-xl text-selectedFg border border-b-selectedBg">
+          8
+        </span>
+        <span className="bg-readyBg text-xl text-readyFg border border-b-readyBg">
+          9
+        </span>
+        
       </div>
       <div
         className={`h-12 shadow flex items-center bg-${titleBgColor} border border-b-${borderColor}`}

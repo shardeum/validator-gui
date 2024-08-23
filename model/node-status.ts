@@ -8,7 +8,9 @@ export interface NodeStatus {
     | "stopped"
     | "syncing"
     | "need-stake"
-    | "waiting-for-network";
+    | "waiting-for-network"
+    | "ready"
+    | "selected";
   exitStatus: "Exit with warning" | "Exited cleanly" | "Exit with error";
   exitMessage: string;
   totalTimeValidating: number;
