@@ -11,7 +11,7 @@ import { errorMiddleware } from './error-middleware';
 import { nodeVersionHandler } from './handlers/node';
 
 dotenv.config()
-const port = process.env.PORT ? +process.env.PORT : 8080
+const port = process.env.PORT ? +process.env.PORT : 8081
 const isDev = process.env.NODE_ENV === 'development'
 const cookieParser = require('cookie-parser')
 

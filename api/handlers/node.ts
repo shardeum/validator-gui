@@ -73,7 +73,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
     ));
 
   apiRouter.get('/node/logs', asyncRouteHandler(async (req: Request, res: Response<NodeLogsResponse>) => {
-    let logsPath = path.join(__dirname, '../../../cli/build/logs');
+    let logsPath = path.join(__dirname, '../../../validator-cli/build/logs');
     if (!existsSync(logsPath)) {
       res.json([])
       return;
@@ -91,7 +91,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
   }));
 
   apiRouter.delete('/node/logs', asyncRouteHandler(async (req: Request, res: Response<NodeClearLogsResponse>) => {
-    let logsPath = path.join(__dirname, '../../../cli/build/logs');
+    let logsPath = path.join(__dirname, '../../../validator-cli/build/logs');
     if (!existsSync(logsPath)) {
       res.json({ logsCleared: [] });
       return;
@@ -105,7 +105,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
       }
       const availableLogs = stdout.split(',').map((s: string) => s.trim());
       for (let availableLog of availableLogs) {
-        const logPath = path.join(__dirname, `../../../cli/build/logs/${availableLog}`);
+        const logPath = path.join(__dirname, `../../../validator-cli/build/logs/${availableLog}`);
         fs.writeFileSync(logPath, "", 'utf-8');
       }
       res.json({ logsCleared: availableLogs });
@@ -115,7 +115,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
   apiRouter.get('/node/logs/:file', asyncRouteHandler(async (req: Request, res: Response) => {
     const fileParam = req.params.file;
     const sanitizedFile = fileParam.replace(/[^a-zA-Z0-9.-]/g, '');
-    const file = path.join(__dirname, '../../../cli/build/logs', sanitizedFile);
+    const file = path.join(__dirname, '../../../validator-cli/build/logs', sanitizedFile);
     res.download(file);
   }));
 
