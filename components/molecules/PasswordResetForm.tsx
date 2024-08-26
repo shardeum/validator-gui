@@ -28,6 +28,9 @@ const PasswordResetForm = () => {
   const confirmNewPasswordInput = watch("confirmNewPassword");
 
   const [areAllInputsActive, setAreAllInputsActive] = useState(false);
+  
+  // State for displaying the success alert
+  const [isPasswordReset, setIsPasswordReset] = useState(false);
 
   const resetForm = () => {
     reset();
@@ -76,6 +79,12 @@ const PasswordResetForm = () => {
     } else {
       await changePassword(data.currentPassword, data.newPassword);
       resetForm();
+      setIsPasswordReset(true);  // Show success alert
+
+      // Hide the alert after 3 seconds
+      setTimeout(() => {
+        setIsPasswordReset(false);
+      }, 3000);
     }
   };
 
@@ -87,6 +96,14 @@ const PasswordResetForm = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="w-full p-5 flex flex-col gap-y-4"
         >
+          {/* Show the success alert if password reset is successful */}
+          {isPasswordReset && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+              <strong className="font-bold">Success!</strong>
+              <span className="block sm:inline"> Your password has been reset successfully.</span>
+            </div>
+          )}
+
           <div className="flex flex-col justify-between gap-y-1">
             <label htmlFor="currentPassword" className="text-xs">
               Enter Current Password
