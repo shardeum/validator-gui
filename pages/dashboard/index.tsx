@@ -1,3 +1,4 @@
+// src/pages/dashboard/index.tsx
 import { ArrowRightOnRectangleIcon, BellIcon } from "@heroicons/react/24/solid";
 import { Logo } from "../../components/atoms/Logo";
 import { Cog6ToothIcon } from "@heroicons/react/20/solid";
@@ -332,7 +333,7 @@ Dashboard.getLayout = function getLayout(page: ReactElement) {
         />
         <meta
           httpEquiv="Content-Security-Policy"
-          content="upgrade-insecure-requests"
+          content="default-src 'self'; connect-src 'self' https://atomium.shardeum.org/; upgrade-insecure-requests"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
