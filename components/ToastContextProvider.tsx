@@ -17,6 +17,8 @@ export const ToastContext = createContext<{
   showTemporaryErrorMessage: (message: string) => void;
   showErrorMessage: (message: string) => void;
   showErrorDetails: (errorDetails: string) => void;
+  showWarningMessage: (message: string) => void;
+  showTemporaryWarningMessage: (message: string) => void;
 }>({
   open: false,
   setOpen: () => false,
@@ -36,6 +38,13 @@ export const ToastContext = createContext<{
   showErrorDetails: () => {
     return;
   },
+  showWarningMessage: () => {
+    return;
+  },
+  showTemporaryWarningMessage: () => {
+    return;
+  },
+
 });
 
 type ToastSeverity =
@@ -71,6 +80,12 @@ export default function ToastContextProvider({
   // todo: right now we can only display one message at a time. if need arises to queue multiple messages, we can do that
   function showErrorMessage(message: string) {
     setSeverity("alert-error");
+    setMessage(message);
+    setOpen(true);
+  }
+
+  function showWarningMessage(message: string) {
+    setSeverity("alert-warning");
     setMessage(message);
     setOpen(true);
   }
@@ -126,6 +141,12 @@ export default function ToastContextProvider({
 
   function showTemporaryErrorMessage(message: string) {
     showErrorMessage(message);
+    setTimeout(() => handleClose(), 6000);
+  }
+
+
+  function showTemporaryWarningMessage(message: string) {
+    showWarningMessage(message);
     setTimeout(() => handleClose(), 6000);
   }
 
@@ -187,6 +208,8 @@ export default function ToastContextProvider({
           showTemporaryErrorMessage,
           showErrorMessage,
           showErrorDetails,
+          showWarningMessage,
+          showTemporaryWarningMessage
         }}
       >
         {children}
