@@ -1,3 +1,4 @@
+// src/pages/onboarding/index.tsx
 import Head from "next/head";
 import { ReactElement, useEffect, useMemo, useState } from "react";
 import onboardingBg from "../../assets/onboarding-bg.svg";
@@ -716,7 +717,7 @@ Onboarding.getLayout = function getLayout(page: ReactElement) {
         />
         <meta
           httpEquiv="Content-Security-Policy"
-          content="upgrade-insecure-requests"
+          content="default-src 'self'; connect-src 'self' https://atomium.shardeum.org/; upgrade-insecure-requests"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>

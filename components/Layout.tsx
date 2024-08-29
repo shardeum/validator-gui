@@ -1,3 +1,4 @@
+// src/components/Layout.tsx
 import Link from "next/link";
 import Head from "next/head";
 import { PropsWithChildren } from "react";
@@ -20,7 +21,7 @@ export default function Layout({ children }: PropsWithChildren) {
         />
         <meta
           httpEquiv="Content-Security-Policy"
-          content="upgrade-insecure-requests"
+          content="default-src 'self'; connect-src 'self' https://atomium.shardeum.org/; upgrade-insecure-requests"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
