@@ -35,7 +35,7 @@ function getDefaultLayout(page: ReactElement) {
 }
 
 export const RPC_URL =
-  process.env.RPC_SERVER_URL ?? "https://airnet.shardeum.org";
+  process.env.RPC_SERVER_URL ?? "https://atomium.shardeum.org";
 export const EXPLORER_URL =
   process.env.NEXT_EXPLORER_URL ?? "https://explorer-atomium.shardeum.org/";
 export const CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
