@@ -1,4 +1,3 @@
-// src/pages/login/index.tsx
 import { ReactElement } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
@@ -10,8 +9,7 @@ import loginAsideBg from "../../assets/login-aside-bg.svg";
 import mobileLoginBg from "../../assets/mobile-login-bg.svg";
 import { Logo } from "../../components/atoms/Logo";
 import { Title } from "../../components/atoms/Title";
-import { LoginForm } from "../../components/molecules/LoginForm";
-import { useDevice } from "../../context/device";
+import { LoginForm } from "../../components/molecules/LoginForm";import { useDevice } from "../../context/device";
 import { onboardingCompletedKey } from "../onboarding";
 import { useNodeVersion } from "../../hooks/useNodeVersion";
 
@@ -112,9 +110,9 @@ Login.getLayout = function getLayout(page: ReactElement) {
           content="Dashboard to configure a Shardeum validator"
         />
         <meta
-  httpEquiv="Content-Security-Policy"
-  content="default-src 'self'; connect-src 'self' https://atomium.shardeum.org/; upgrade-insecure-requests"
-/>
+          httpEquiv="Content-Security-Policy"
+          content="default-src 'self'; connect-src 'self' https://atomium.shardeum.org/; upgrade-insecure-requests"
+        />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="bg-[$FAFAFA] h-screen">{page}</div>
