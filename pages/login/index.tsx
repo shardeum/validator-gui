@@ -1,4 +1,3 @@
-// src/pages/login/index.tsx
 import { ReactElement, useContext } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
@@ -112,10 +111,6 @@ Login.getLayout = function getLayout(page: ReactElement) {
         <meta
           name="description"
           content="Dashboard to configure a Shardeum validator"
-        />
-        <meta
-          httpEquiv="Content-Security-Policy"
-          content="upgrade-insecure-requests"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
