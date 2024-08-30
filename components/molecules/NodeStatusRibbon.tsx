@@ -184,14 +184,11 @@ export const NodeStatusRibbon = () => {
         <span className="bg-subtleBg text-xl text-subtleFg border border-b-subtleBg">
           6
         </span>
-        <span className="bg-subtleBg text-xl text-subtleFg border border-b-subtleBg">
+        <span className="bg-selectedBg text-xl text-selectedFg border border-b-selectedBg">
           7
         </span>
-        <span className="bg-selectedBg text-xl text-selectedFg border border-b-selectedBg">
-          8
-        </span>
         <span className="bg-readyBg text-xl text-readyFg border border-b-readyBg">
-          9
+          8
         </span>
         
       </div>

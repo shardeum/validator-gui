@@ -16,7 +16,7 @@ export const useAccountStakeInfo = (eoa?: string): AccountStakeInfoResponse => {
   const { data, error } = useSWR<AccountStakeInfo, Error>(
     eoa != null ? `${apiBase}/api/account/${eoa}/stakeInfo` : null,
     fetcher,
-    { refreshInterval: 60000 }
+    { refreshInterval: 1000 }
   )
 
   return {
