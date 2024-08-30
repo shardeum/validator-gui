@@ -17,7 +17,7 @@ export const fetcher = <T>(input: RequestInfo | URL,
     if (res.status === 403) {
       authService.logout(apiBase);
     } else if (res.status === 500) {
-      showErrorMessage('Please stake your node before attempting to join the network.');
+      showErrorMessage('Sorry, something went wrong. Please report this issue to our support team so we can investigate and resolve the problem.');
       return;
     } else if (!res.ok) {
       console.log(data.errorDetails);

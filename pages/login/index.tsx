@@ -9,7 +9,8 @@ import loginAsideBg from "../../assets/login-aside-bg.svg";
 import mobileLoginBg from "../../assets/mobile-login-bg.svg";
 import { Logo } from "../../components/atoms/Logo";
 import { Title } from "../../components/atoms/Title";
-import { LoginForm } from "../../components/molecules/LoginForm";import { useDevice } from "../../context/device";
+import { LoginForm } from "../../components/molecules/LoginForm";
+import { useDevice } from "../../context/device";
 import { onboardingCompletedKey } from "../onboarding";
 import { useNodeVersion } from "../../hooks/useNodeVersion";
 
@@ -111,7 +112,7 @@ Login.getLayout = function getLayout(page: ReactElement) {
         />
         <meta
           httpEquiv="Content-Security-Policy"
-          content="default-src 'self'; connect-src 'self' https://atomium.shardeum.org/; upgrade-insecure-requests"
+          content="upgrade-insecure-requests"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
