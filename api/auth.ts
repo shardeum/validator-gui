@@ -53,6 +53,7 @@ export const loginHandler = (req: Request, res: Response) => {
 
 export const logoutHandler = (req: Request, res: Response) => {
   res.clearCookie("accessToken");
+  res.clearCookie("csrfToken");
   res.send({ status: 'ok' })
 }
 
