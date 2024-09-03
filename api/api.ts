@@ -7,6 +7,7 @@ import { Request, Response } from 'express';
 import asyncRouteHandler from './handlers/async-router-handler'
 import { fetchWithTimeout } from "./handlers/util";
 const yaml = require('js-yaml')
+import { doubleCsrfProtection } from './csrf';
 
 const ACCOUNT_INFO_URL = process.env.ACCOUNT_INFO_URL ?? "https://explorer-atomium.shardeum.org/api/account";
 // const FAUCET_CLAIM_URL =
@@ -70,7 +71,7 @@ apiRouter.get('/node/performance', (req, res) => {
   ])
 })
 
-apiRouter.post('/log/stake', (req, res) => {
+apiRouter.post('/log/stake', doubleCsrfProtection, (req, res) => {
   console.log('Writing Stake TX logs')
   fs.appendFile(path.join(__dirname, '../stakeTXs.log'), JSON.stringify(req.body, undefined, 3), err => {
     if (err) {
@@ -84,7 +85,7 @@ apiRouter.post('/log/stake', (req, res) => {
   res.status(200).json({ status: 'ok' })
 })
 
-apiRouter.post('/log/unstake', (req, res) => {
+apiRouter.post('/log/unstake', doubleCsrfProtection, (req, res) => {
   console.log('Writing Unstake TX logs')
   fs.appendFile(path.join(__dirname, '../unstakeTXs.log'), JSON.stringify(req.body, undefined, 3), err => {
     if (err) {
