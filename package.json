@@ -15,6 +15,7 @@
     "@walletconnect/modal": "^2.6.2",
     "chart.js": "4.3.0",
     "cookie-parser": "^1.4.6",
+    "csrf-csrf": "^3.0.6",
     "daisyui": "2.52.0",
     "dotenv": "16.3.1",
     "ethers": "5.7.2",
