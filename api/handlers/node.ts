@@ -16,6 +16,7 @@ import { existsSync } from 'fs';
 import asyncRouteHandler from './async-router-handler';
 import fs from 'fs';
 import * as crypto from '@shardus/crypto-utils';
+import { doubleCsrfProtection } from '../csrf';
 
 const yaml = require('js-yaml')
 
@@ -29,14 +30,14 @@ export const nodeVersionHandler = asyncRouteHandler(async (req: Request, res: Re
 
 export default function configureNodeHandlers(apiRouter: Router) {
   let lastActiveNodeState: NodeStatus;
-  apiRouter.post('/node/start', asyncRouteHandler(async (req: Request, res: Response) => {
+  apiRouter.post('/node/start', doubleCsrfProtection, asyncRouteHandler(async (req: Request, res: Response) => {
     // Exec the CLI validator start command
     console.log('executing operator-cli start...');
     execFileSync('operator-cli', ['start']);
     res.status(200).json({ status: "ok" })
   }));
 
-  apiRouter.post('/node/stop', asyncRouteHandler(async (req: Request, res: Response) => {
+  apiRouter.post('/node/stop', doubleCsrfProtection, asyncRouteHandler(async (req: Request, res: Response) => {
     // Exec the CLI validator stop command
     console.log('executing operator-cli stop...');
     execFileSync('operator-cli', ['stop', '-f'])
@@ -90,7 +91,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
     });
   }));
 
-  apiRouter.delete('/node/logs', asyncRouteHandler(async (req: Request, res: Response<NodeClearLogsResponse>) => {
+  apiRouter.delete('/node/logs', doubleCsrfProtection, asyncRouteHandler(async (req: Request, res: Response<NodeClearLogsResponse>) => {
     let logsPath = path.join(__dirname, '../../../validator-cli/build/logs');
     if (!existsSync(logsPath)) {
       res.json({ logsCleared: [] });
@@ -135,7 +136,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
   );
 
   apiRouter.post(
-    '/node/update',
+    '/node/update', doubleCsrfProtection,
     asyncRouteHandler(async (req: Request, res: Response) => {
       const outUpdate = execFileSync('operator-cli', ['update']);
       console.log('operator-cli update: ', outUpdate);
@@ -158,7 +159,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
     }));
 
   apiRouter.post(
-    '/password',
+    '/password', doubleCsrfProtection,
     asyncRouteHandler(async (req: Request<{
       currentPassword: string;
       newPassword: string;
@@ -189,7 +190,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
   }
 
 
-  apiRouter.post('/settings', asyncRouteHandler(async (req: Request, res: Response) => {
+  apiRouter.post('/settings', doubleCsrfProtection, asyncRouteHandler(async (req: Request, res: Response) => {
     if (!req.body) {
       badRequestResponse(res, 'Invalid body');
       return;
