@@ -10,4 +10,5 @@ export interface NodeNetwork {
   txInjected: number
   txProcessed: number
   txRejected: number
+  joining?: number
 }
