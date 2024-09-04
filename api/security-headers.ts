@@ -9,6 +9,11 @@ export function setSecurityHeaders(app: Express) {
           defaultSrc: ["'self'"],
           fontSrc: ["'self'"],
           frameAncestors: ["'self'"],
+          connectSrc: [
+            "'self'",
+            ...(process.env.RPC_SERVER_URL ? [process.env.RPC_SERVER_URL] : [])
+          ],
+          upgradeInsecureRequests: [],
         },
       },
       referrerPolicy: {policy: 'strict-origin'},
@@ -21,6 +26,7 @@ export function setSecurityHeaders(app: Express) {
       preload: true,
     })
   );
+  app.use(helmet.crossOriginOpenerPolicy({ policy: "same-origin" }));
   app.use(helmet.frameguard({action: 'sameorigin'}));
   app.use(helmet.noSniff());
   app.use(helmet.xssFilter());

@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useContext } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { GeistSans } from "geist/font";
@@ -10,9 +10,9 @@ import mobileLoginBg from "../../assets/mobile-login-bg.svg";
 import { Logo } from "../../components/atoms/Logo";
 import { Title } from "../../components/atoms/Title";
 import { LoginForm } from "../../components/molecules/LoginForm";
-import { useDevice } from "../../context/device";
 import { onboardingCompletedKey } from "../onboarding";
 import { useNodeVersion } from "../../hooks/useNodeVersion";
+import { useDevice } from "../../context/device";
 
 const Login = () => {
   const router = useRouter();
@@ -40,6 +40,8 @@ const Login = () => {
           className="basis-0 grow max-sm:hidden w-full h-screen bg-[#3042FB] text-white flex flex-col justify-end items-start fill-bg"
           style={{
             backgroundImage: `url(${loginAsideBg.src})`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "fill",
           }}
         >
           <div className="flex flex-col items-center mb-20 ml-20 gap-y-8">
@@ -109,10 +111,6 @@ Login.getLayout = function getLayout(page: ReactElement) {
         <meta
           name="description"
           content="Dashboard to configure a Shardeum validator"
-        />
-        <meta
-          httpEquiv="Content-Security-Policy"
-          content="upgrade-insecure-requests"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
