@@ -13,6 +13,7 @@ export function setSecurityHeaders(app: Express) {
             "'self'",
             ...(process.env.RPC_SERVER_URL ? [process.env.RPC_SERVER_URL] : [])
           ],
+          upgradeInsecureRequests: [],
         },
       },
       referrerPolicy: {policy: 'strict-origin'},
