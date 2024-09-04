@@ -9,6 +9,10 @@ export function setSecurityHeaders(app: Express) {
           defaultSrc: ["'self'"],
           fontSrc: ["'self'"],
           frameAncestors: ["'self'"],
+          connectSrc: [
+            "'self'",
+            ...(process.env.RPC_SERVER_URL ? [process.env.RPC_SERVER_URL] : [])
+          ],
         },
       },
       referrerPolicy: {policy: 'strict-origin'},
