@@ -2,7 +2,7 @@ import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import type { AppProps } from "next/app";
 import Layout from "../components/Layout";
-import React, { ReactElement } from "react";
+import React, { ReactElement, useEffect } from "react";
 import { NextPage } from "next";
 import ToastContextProvider from "../components/ToastContextProvider";
 import { Chain, configureChains, createConfig, WagmiConfig } from "wagmi";
@@ -80,8 +80,26 @@ const config = createConfig({
   connectors,
 });
 
+// Prevents certain types of cross-origin attacks and iframe-based clickjacking
+function preventWindowControl() {
+  if (window.opener) {
+    window.opener = null;
+  }
+  if (window.top && window.top !== window.self) {
+    window.top.location = window.self.location;
+  }
+}
+
 function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? getDefaultLayout;
+
+  useEffect(() => {
+    preventWindowControl();
+    window.addEventListener('focus', preventWindowControl);
+    return () => {
+      window.removeEventListener('focus', preventWindowControl);
+    };
+  }, []);
 
   return (
     <>
@@ -93,7 +111,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
                 <DeviceContextProvider>
                   <FetcherContextProvider>
                     {getLayout(<Component {...pageProps} />)}
-                    <Modal />
+                  <Modal />
                   </FetcherContextProvider>
                 </DeviceContextProvider>
               </ToastContextProvider>
