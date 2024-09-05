@@ -5,6 +5,7 @@ import * as crypto from '@shardus/crypto-utils';
 import rateLimit from 'express-rate-limit';
 const yaml = require('js-yaml')
 const jwt = require('jsonwebtoken')
+import { doubleCsrfProtection } from './csrf';
 
 function isValidSecret(secret: unknown) {
   return typeof secret === 'string' && secret.length >= 32;
@@ -19,7 +20,7 @@ const jwtSecret = (isValidSecret(process.env.JWT_SECRET))
   : generateRandomSecret();
 crypto.init('64f152869ca2d473e4ba64ab53f49ccdb2edae22da192c126850970e788af347');
 
-export const loginHandler = (req: Request, res: Response) => {
+export const loginHandler = [doubleCsrfProtection,(req: Request, res: Response) => {
   const password = req.body && req.body.password
   const hashedPass = crypto.hash(password);
   // Exec the CLI validator login command
@@ -49,7 +50,7 @@ export const loginHandler = (req: Request, res: Response) => {
     res.send({ status: 'ok' })
   })
   console.log('executing operator-cli gui login...')
-}
+}]
 
 export const logoutHandler = (req: Request, res: Response) => {
   res.clearCookie("accessToken");
