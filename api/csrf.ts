@@ -9,7 +9,7 @@ const cookieOptions: DoubleCsrfCookieOptions = {
   maxAge: 24 * 60 * 60 * 1000,
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'strict',
-  path: '/api'
+  path: '/'
 };
 
 export const { doubleCsrfProtection, generateToken } = doubleCsrf({
