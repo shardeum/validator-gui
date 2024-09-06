@@ -29,7 +29,7 @@ export const NetworkSizeCard = () => {
         </div>
         <hr className="mt-3 mb-2" />
         <div className="flex justify-between">
-          <span className="text-xs ">Users joining</span>
+          <span className="text-xs ">Validators joining</span>
           <span className="font-semibold text-xs">{network?.joining || 0}</span>
         </div>
         <hr className="mt-3 mb-2" />
