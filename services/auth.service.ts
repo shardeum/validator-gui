@@ -7,7 +7,7 @@ export const isFirstTimeUserKey = 'isFirstTimeUser'
 
 export async function getCsrfToken(): Promise<string> {
   document.cookie = "csrf-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  const response = await fetch(`/api/csrf-token`, {
+  const response = await fetch(`/csrf-token`, {
     signal: AbortSignal.timeout(2000),
   });
 
