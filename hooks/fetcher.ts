@@ -3,7 +3,7 @@ import { useGlobals } from '../utils/globals'
 
 const { apiBase } = useGlobals()
 export async function getCsrfToken(): Promise<string> {
-  const response = await fetch(`/api/csrf-token`, {
+  const response = await fetch(`/csrf-token`, {
     mode: 'cors',
     signal: AbortSignal.timeout(2000),
     credentials: 'include',
