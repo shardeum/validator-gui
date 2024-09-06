@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import LoadingButton from "./LoadingButton";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { usePassword } from "../hooks/usePasswordChange";
+import { ToastContext } from "./ToastContextProvider";
 
 type FormData = {
   currentPassword: string;
@@ -10,7 +11,20 @@ type FormData = {
   confirmNewPassword: string;
 };
 
+function validPassword(password: string) {
+  return (
+    password.length >= 8 &&
+    /[A-Z]/.test(password) &&
+    /[a-z]/.test(password) &&
+    /[0-9]/.test(password) &&
+    /[!@#$%^&*()_+*$]/.test(password)
+  );
+}
+
+
 const ResetPasswordForm = () => {
+  const {showTemporaryWarningMessage} = useContext(ToastContext);
+
   const {
     register,
     handleSubmit,
@@ -23,6 +37,10 @@ const ResetPasswordForm = () => {
   const { changePassword, isLoading } = usePassword({ setError });
 
   const onSubmit = (data: FormData) => {
+    if (!validPassword(data.newPassword)) {
+      showTemporaryWarningMessage('The password does not meet the requirements!');
+      return;
+    }
     changePassword(data.currentPassword, data.newPassword);
   };
 
@@ -33,6 +51,7 @@ const ResetPasswordForm = () => {
     <>
       <h1 className="font-semibold mb-3 mt-4 text-lg">Change Password</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-[21rem]">
+        <p className="text-sm text-gray-500">Password requirements: min 8 characters, at least 1 letter, at least 1 number, at least 1 special character</p>
         <div className="flex justify-between mt-2">
           <label htmlFor="currentPassword">Current Password</label>
           <input
