@@ -325,21 +325,10 @@ const Dashboard = () => {
 Dashboard.getLayout = function getLayout(page: ReactElement) {
   return (
     <>
-      <Head>
+      <Head >
         <title>Shardeum Dashboard</title>
-        <meta
-          name="description"
-          content="Dashboard to configure a Shardeum validator"
-        />
-        <meta
-          httpEquiv="Content-Security-Policy"
-          content="default-src 'self'; connect-src 'self' https://atomium.shardeum.org/; upgrade-insecure-requests"
-        />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
-      <body>
-        <div className="bg-[$FAFAFA] relative">{page}</div>
-      </body>
+      <div className="bg-[$FAFAFA] relative">{page}</div>
     </>
   );
 };
