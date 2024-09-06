@@ -141,9 +141,9 @@ export default function RemoveStakeButton({nominee, force = false, nodeStatus}: 
 
     if (
       settings?.lastStopped &&
-      Date.now() - settings.lastStopped < 3 * 60000 // 3 minutes
+      Date.now() - settings.lastStopped < 15 * 60000 // 15 minutes
     ) {
-      showTemporaryWarningMessage(" Your node has been stopped recently. Please wait for a few minutes before removing stake.");
+      showTemporaryWarningMessage(" Your node has been stopped recently. Please wait for at least 15 minutes before removing stake.");
       return;
     }
 
