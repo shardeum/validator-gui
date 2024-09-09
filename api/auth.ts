@@ -69,7 +69,7 @@ export const apiLimiter = rateLimit({
 export const loginAttemptLimiter = slowDown({
   windowMs: 1 * 60 * 1000, // 1 minute
   delayAfter: 10, // allow 10 requests per `windowMs` (1 minute) without slowing them down
-  delayMs: (hits) => hits * 2000, // add 2s of delay to every request after the 10th request
+  delayMs: (hits) => Math.pow(2, hits - 10), // exponentially increase delay each request after the 10th request
 });
 
 export const httpBodyLimiter = express.json({ limit: '100kb' })
