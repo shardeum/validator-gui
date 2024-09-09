@@ -11,6 +11,16 @@ type FormData = {
   confirmNewPassword: string;
 };
 
+function validPassword(password: string) {
+  return (
+    password.length >= 8 &&
+    /[A-Z]/.test(password) &&
+    /[a-z]/.test(password) &&
+    /[0-9]/.test(password) &&
+    /[!@#$%^&*()_+*$]/.test(password)
+  );
+}
+
 const PasswordResetForm = () => {
   const { register, handleSubmit, formState, setError, reset, watch } =
     useForm<FormData>({
@@ -28,7 +38,7 @@ const PasswordResetForm = () => {
   const confirmNewPasswordInput = watch("confirmNewPassword");
 
   const [areAllInputsActive, setAreAllInputsActive] = useState(false);
-  
+
   // State for displaying the success alert
   const [isPasswordReset, setIsPasswordReset] = useState(false);
 
@@ -70,7 +80,23 @@ const PasswordResetForm = () => {
   ]);
 
   const onSubmit = async (data: FormData) => {
-    if (data.confirmNewPassword != data.newPassword) {
+    if (!validPassword(data.newPassword)) {
+      setError(
+        `newPassword`,
+        {
+          message:
+            "The password does not meet the requirements!",
+        },
+        { shouldFocus: true }
+      );
+    }
+    else if (data.currentPassword == data.newPassword) {
+      setError(
+        `confirmNewPassword`,
+        { message: "New password is the same as the current password" },
+        { shouldFocus: true }
+      );
+    } else if (data.confirmNewPassword != data.newPassword) {
       setError(
         `confirmNewPassword`,
         { message: "Doesn't match the New Password" },
@@ -91,6 +117,10 @@ const PasswordResetForm = () => {
   return (
     <div className="flex flex-col gap-y-2">
       <span className="font-semibold">Password Reset</span>
+      <p className="text-sm text-gray-500">
+        Password requirements: min 8 characters, at least 1 letter, at least 1
+        number, at least 1 special characters
+      </p>
       <Card>
         <form
           onSubmit={handleSubmit(onSubmit)}
