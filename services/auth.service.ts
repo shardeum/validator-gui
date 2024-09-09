@@ -5,12 +5,26 @@ const isLoggedInKey = 'isLoggedIn'
 export const wasLoggedOutKey = 'wasLoggedOut'
 export const isFirstTimeUserKey = 'isFirstTimeUser'
 
+export async function getCsrfToken(): Promise<string> {
+  document.cookie = "csrf-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  const response = await fetch(`/csrf-token`, {
+    signal: AbortSignal.timeout(2000),
+  });
+
+  if (!response.ok) {
+    throw new Error('Token was not received.');
+  }
+
+  return await response.text();
+}
 const login = async (apiBase: string, password: string) => {
   const sha256digest = await hashSha256(password);
+  const csrfToken = await getCsrfToken();
   const res = await fetch(`${apiBase}/auth/login`, {
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' , 'X-Csrf-Token': csrfToken},
     method: 'POST',
     body: JSON.stringify({ password: sha256digest }),
+    credentials: 'include',
   });
   await res.json();
   if (!res.ok) {

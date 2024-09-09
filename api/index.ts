@@ -9,6 +9,7 @@ import dotenv from 'dotenv';
 import { cacheStaticFiles, preventBrowserCacheForDynamicContent, setSecurityHeaders } from './security-headers';
 import { errorMiddleware } from './error-middleware';
 import { nodeVersionHandler } from './handlers/node';
+import { generateTokenHandler } from './csrf';
 
 dotenv.config()
 const port = process.env.PORT ? +process.env.PORT : 8081
@@ -41,6 +42,7 @@ if (isDev) {
   app.use(apiLimiter)
   app.use(cookieParser());
   setSecurityHeaders(app);
+  app.get('/csrf-token', generateTokenHandler)
   app.post('/auth/login', loginHandler)
   app.post('/auth/logout', logoutHandler)
   app.use('/api', jwtMiddleware, apiRouter)
