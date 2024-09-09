@@ -119,7 +119,7 @@ const PasswordResetForm = () => {
       <span className="font-semibold">Password Reset</span>
       <p className="text-sm text-gray-500">
         Password requirements: min 8 characters, at least 1 letter, at least 1
-        number, at least 1 special characters
+        number, at least 1 special character (<span className="text-sm text-gray-400">{"!@#$%^&*()_+*$"}</span>)
       </p>
       <Card>
         <form
