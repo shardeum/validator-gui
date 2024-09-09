@@ -92,7 +92,7 @@ const PasswordResetForm = () => {
     }
     else if (data.currentPassword == data.newPassword) {
       setError(
-        `confirmNewPassword`,
+        `newPassword`,
         { message: "New password is the same as the current password" },
         { shouldFocus: true }
       );
