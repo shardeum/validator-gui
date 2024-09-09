@@ -24,6 +24,7 @@ if (isDev) {
     app.use(httpBodyLimiter)
     app.use(apiLimiter)
     app.use(cookieParser());
+    app.get('/csrf-token', generateTokenHandler)
     app.post('/auth/login', loginHandler)
     app.post('/auth/logout', logoutHandler)
     app.use('/api', jwtMiddleware, apiRouter)
