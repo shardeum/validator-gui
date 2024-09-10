@@ -118,7 +118,7 @@ const PasswordResetForm = () => {
     <div className="flex flex-col gap-y-2">
       <span className="font-semibold">Password Reset</span>
       <p className="text-sm text-gray-500">
-        Password requirements: min 8 characters, at least 1 letter, at least 1
+        Password requirements: min 8 characters, at least 1 lower case letter, at least 1 upper case letter, at least 1
         number, at least 1 special character (<span className="text-sm text-gray-400">{"!@#$%^&*()_+*$"}</span>)
       </p>
       <Card>
