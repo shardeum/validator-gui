@@ -66,10 +66,9 @@ export const apiLimiter = rateLimit({
 
 
 export const loginAttemptLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  delayAfter: 10, // allow 10 requests per `windowMs` (1 minute) without slowing them down
-  delayMs: (hits) => Math.pow(2, hits - 10), // exponentially increase delay each request after the 10th request
-  message: 'Too many login attempts from this IP, please try again after 1 minute',
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 20, // Limit each IP to 20 requests per windowMs
+  message: 'Too many login attempts from this IP, please try again after 10 minutes',
 });
 
 export const httpBodyLimiter = express.json({ limit: '100kb' })
