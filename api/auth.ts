@@ -3,7 +3,6 @@ import { execFile } from 'child_process'
 import { cliStderrResponse, unautorizedResponse } from './handlers/util'
 import * as crypto from '@shardus/crypto-utils';
 import rateLimit from 'express-rate-limit';
-import slowDown from 'express-slow-down';
 const yaml = require('js-yaml')
 const jwt = require('jsonwebtoken')
 import { doubleCsrfProtection } from './csrf';
@@ -66,10 +65,11 @@ export const apiLimiter = rateLimit({
 });
 
 
-export const loginAttemptLimiter = slowDown({
+export const loginAttemptLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
   delayAfter: 10, // allow 10 requests per `windowMs` (1 minute) without slowing them down
   delayMs: (hits) => Math.pow(2, hits - 10), // exponentially increase delay each request after the 10th request
+  message: 'Too many login attempts from this IP, please try again after 1 minute',
 });
 
 export const httpBodyLimiter = express.json({ limit: '100kb' })
