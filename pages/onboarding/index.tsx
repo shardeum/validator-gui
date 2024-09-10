@@ -608,7 +608,7 @@ const Onboarding = () => {
                                   stakeInfo?.nominee &&
                                   stakeInfo.nominee !==
                                     nodeStatus?.nomineeAddress
-                                    ? "Wallet is staked to another node. Press `Skip setup for now` to continue. Then use settings (top-right cog) to remove existing stake."
+                                    ? "Connected wallet is staked to another node. Press `Skip setup for now` to continue. Navigate to settings to force remove existing stake if you wish to stake this current node."
                                     : isEmpty ||
                                       stakedAmount < minimumStakeRequirement
                                     ? "Please enter a valid stake amount"

@@ -169,7 +169,7 @@ export const StakeDisplay = () => {
                     data-tip={
                       stakeInfo?.nominee &&
                       stakeInfo.nominee !== nodeStatus?.nomineeAddress
-                        ? "Wallet is staked to another node. Navigate to settings (top-right cog icon) to force remove stake."
+                        ? "Connected wallet is staked to another node. Navigate to settings to force remove stake if you wish to stake this current node."
                         : hasNodeStopped || !nodeStatus?.nomineeAddress
                         ? "Node is stopped or nominee address is missing"
                         : ""
