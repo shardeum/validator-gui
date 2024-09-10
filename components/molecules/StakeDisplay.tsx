@@ -157,19 +157,19 @@ export const StakeDisplay = () => {
                         (stakeInfo?.nominee &&
                           stakeInfo.nominee !== nodeStatus?.nomineeAddress)
                         ? "text-gray-400 border border-bodyFg tooltip tooltip-bottom"
-                          : "bg-primary text-white"
+                        : "bg-primary text-white"
                       }
                     `}
-                    disabled={
+                    disabled={!!(
                       hasNodeStopped ||
                       !nodeStatus?.nomineeAddress ||
                       (stakeInfo?.nominee &&
                         stakeInfo.nominee !== nodeStatus?.nomineeAddress)
-                    }
+                    )}
                     data-tip={
                       stakeInfo?.nominee &&
                       stakeInfo.nominee !== nodeStatus?.nomineeAddress
-                        ? "Stake Address is staked to another node. Use force remove in settings to remove existing stake in order to stake to this node."
+                        ? "Wallet is staked to another node. Navigate to settings (top-right cog icon) to force remove stake."
                         : hasNodeStopped || !nodeStatus?.nomineeAddress
                         ? "Node is stopped or nominee address is missing"
                         : ""
