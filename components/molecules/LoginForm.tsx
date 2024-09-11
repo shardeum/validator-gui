@@ -84,7 +84,7 @@ export const LoginForm: React.FC = () => {
                 <div className="spinner mr-2">
                   <div className="border-2 border-white border-t-transparent rounded-full h-4 w-4 animate-spin"></div>
                 </div>
-                Logging in...
+                Confirming...
               </>
             ) : (
               "Connect Securely"
