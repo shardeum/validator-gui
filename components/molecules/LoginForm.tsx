@@ -8,7 +8,7 @@ import { useGlobals } from "../../utils/globals";
 import { useDevice } from "../../context/device";
 
 export const LoginForm: React.FC = () => {
-  const { register, handleSubmit, watch, formState } = useForm();
+  const { register, handleSubmit, watch, formState: { isSubmitting } } = useForm();
   const [isInputActive, setIsInputActive] = useState(false);
   const passwordInput = watch("password");
 
@@ -68,32 +68,28 @@ export const LoginForm: React.FC = () => {
         </div>
 
         <div className="flex justify-end">
-          {!formState.isSubmitting && (
-            <button
-              disabled={formState.isSubmitting || !isInputActive}
-              className={
-                (isInputActive
-                  ? "bg-indigo-600 hover:bg-indigo-700"
-                  : "bg-gray-300") +
-                " text-white text-sm font-semibold py-2 px-4 w-40 rounded-md flex justify-center ease-in-out duration-300 " +
-                GeistSans.className
-              }
-              type="submit"
-            >
-              Connect Securely
-            </button>
-          )}
-          {formState.isSubmitting && (
-            <button
-              className="border border-gray-300 rounded px-4 py-2 w-40 flex items-center justify-center text-sm font-medium"
-              disabled={true}
-            >
-              <div className="spinner flex items-center justify-center mr-3">
-                <div className="border-2 border-black border-b-white rounded-full h-3.5 w-3.5"></div>
-              </div>{" "}
-              Confirming
-            </button>
-          )}
+          <button
+            disabled={isSubmitting || !isInputActive}
+            className={
+              (isInputActive && !isSubmitting
+                ? "bg-indigo-600 hover:bg-indigo-700"
+                : "bg-gray-300") +
+              " text-white text-sm font-semibold py-2 px-4 w-40 rounded-md flex justify-center items-center ease-in-out duration-300 " +
+              GeistSans.className
+            }
+            type="submit"
+          >
+            {isSubmitting ? (
+              <>
+                <div className="spinner mr-2">
+                  <div className="border-2 border-white border-t-transparent rounded-full h-4 w-4 animate-spin"></div>
+                </div>
+                Logging in...
+              </>
+            ) : (
+              "Connect Securely"
+            )}
+          </button>
         </div>
       </form>
     </div>
