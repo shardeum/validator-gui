@@ -1,4 +1,4 @@
-import { ReactElement, useContext } from "react";
+import { ReactElement, useState } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { GeistSans } from "geist/font";
@@ -17,19 +17,38 @@ import { useDevice } from "../../context/device";
 const Login = () => {
   const router = useRouter();
   const { isMobile } = useDevice();
+  const [isChecking, setIsChecking] = useState(true);
 
-  // redirect to home if already logged in
-  if (authService.isLogged) {
-    const onboardingCompleted =
-      localStorage.getItem(onboardingCompletedKey) === "true";
-    if (onboardingCompleted) {
-      router.push("/onboarding");
-    } else {
-      router.push("/dashboard");
-    }
-  }
+  useEffect(() => {
+    const checkAuth = () => {
+      setIsChecking(true);
+      try {
+        if (authService.isLogged) {
+          const onboardingCompleted =
+            localStorage.getItem(onboardingCompletedKey) === "true";
+          if (onboardingCompleted) {
+            router.push("/onboarding");
+            return;
+          } else {
+            router.push("/dashboard");
+            return;
+          }
+        }
+      } catch (err) {
+        console.error('Error checking authentication:', err);
+      } finally {
+        setIsChecking(false);
+      }
+    };
+
+    checkAuth();
+  }, [router]);
 
   const { version } = useNodeVersion(true);
+
+  if (isChecking) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex flex-col h-screen justify-between relative">
