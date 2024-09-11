@@ -54,7 +54,10 @@ export const LoginForm: React.FC = () => {
         </label>
         <div>
           <PasswordInput
-            inputProps={register("password")}
+            inputProps={register("password", {
+              required: true,
+              minLength: 8,
+            })}
             isInputActive={isInputActive}
             setIsInputActive={setIsInputActive}
           />
