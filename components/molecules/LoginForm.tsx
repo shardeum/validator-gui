@@ -36,9 +36,9 @@ export const LoginForm: React.FC = () => {
       .login(apiBase, password)
       .then(() => {
         if (isFirstTimeUser() && !isMobile) {
-          router.push("/onboarding");
+          router.replace("/onboarding");
         } else {
-          router.push("/dashboard");
+          router.replace("/dashboard");
         }
       })
       .catch((error) => {
