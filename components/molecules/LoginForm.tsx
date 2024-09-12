@@ -55,12 +55,16 @@ export const LoginForm: React.FC = () => {
         <div>
           <PasswordInput
             inputProps={register("password", {
-              required: true,
-              minLength: 8,
+              minLength: { value: 8, message: "Password must be at least 8 characters" },
             })}
             isInputActive={isInputActive}
             setIsInputActive={setIsInputActive}
           />
+          {formState.errors.password && (
+            <div className="text-red-600 text-xs mt-1">
+              {formState.errors.password.message as string}
+            </div>
+          )}
           {apiError && (
             <div className="flex text-red-600 items-center mb-5 mt-1">
               <div className={"font-normal text-xs " + GeistSans.className}>
