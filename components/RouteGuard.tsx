@@ -1,6 +1,6 @@
 import { useState, useEffect, ReactNode } from "react";
 import { useRouter } from "next/router";
-import { authService } from "../services/auth.service";
+import { authService, checkServerAuth } from "../services/auth.service";
 
 export default function RouteGuard({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -26,11 +26,12 @@ export default function RouteGuard({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function authCheck(url: string) {
+  async function authCheck(url: string) {
     // redirect to login page if accessing a private page and not logged in
     const publicPaths = ["/login"];
     const path = url.split("?")[0];
-    if (!authService.isLogged && !publicPaths.includes(path)) {
+    const isServerAuth = await checkServerAuth();
+    if ((!authService.isLogged || !isServerAuth) && !publicPaths.includes(path)) {
       setAuthorized(false);
       router.push({
         pathname: "/login",

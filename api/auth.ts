@@ -91,3 +91,10 @@ export const jwtMiddleware = (req: Request, res: Response, next: NextFunction) =
     next()
   })
 }
+
+export const checkAuthHandler = [
+  jwtMiddleware,
+  (req: Request, res: Response) => {
+    res.json({ authenticated: true });
+  }
+];

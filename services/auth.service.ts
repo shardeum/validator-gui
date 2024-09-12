@@ -56,6 +56,22 @@ async function logout(apiBase: string) {
   Router.push('/login')
 }
 
+export async function checkServerAuth(): Promise<boolean> {
+  try {
+    const res = await fetch('/api/auth/check', {
+      credentials: 'include',
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data.authenticated === true;
+    }
+    return false;
+  } catch (error) {
+    console.error('checkServerAuth: Error checking authentication:', error);
+    return false;
+  }
+}
+
 export const authService = {
   get isLogged(): boolean {
     return !!localStorage.getItem(isLoggedInKey)
