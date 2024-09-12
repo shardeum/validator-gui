@@ -30,6 +30,12 @@ export const nodeVersionHandler = asyncRouteHandler(async (req: Request, res: Re
 
 export default function configureNodeHandlers(apiRouter: Router) {
   let lastActiveNodeState: NodeStatus;
+
+  const getLogsPath = () => {
+    const basePath = path.join(__dirname, '../../../');
+    return path.join(basePath, fs.existsSync(path.join(basePath, 'cli')) ? 'cli' : 'validator-cli', 'build/logs');
+  };
+
   apiRouter.post('/node/start', doubleCsrfProtection, asyncRouteHandler(async (req: Request, res: Response) => {
     // Exec the CLI validator start command
     console.log('executing operator-cli start...');
@@ -74,7 +80,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
     ));
 
   apiRouter.get('/node/logs', asyncRouteHandler(async (req: Request, res: Response<NodeLogsResponse>) => {
-    let logsPath = path.join(__dirname, '../../../cli/build/logs');
+    const logsPath = getLogsPath();
     if (!existsSync(logsPath)) {
       res.json([])
       return;
@@ -92,7 +98,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
   }));
 
   apiRouter.delete('/node/logs', doubleCsrfProtection, asyncRouteHandler(async (req: Request, res: Response<NodeClearLogsResponse>) => {
-    let logsPath = path.join(__dirname, '../../../validator-cli/build/logs');
+    const logsPath = getLogsPath();
     if (!existsSync(logsPath)) {
       res.json({ logsCleared: [] });
       return;
@@ -106,7 +112,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
       }
       const availableLogs = stdout.split(',').map((s: string) => s.trim());
       for (let availableLog of availableLogs) {
-        const logPath = path.join(__dirname, `../../../cli/build/logs/${availableLog}`);
+        const logPath = path.join(logsPath, availableLog);
         fs.writeFileSync(logPath, "", 'utf-8');
       }
       res.json({ logsCleared: availableLogs });
@@ -116,7 +122,8 @@ export default function configureNodeHandlers(apiRouter: Router) {
   apiRouter.get('/node/logs/:file', asyncRouteHandler(async (req: Request, res: Response) => {
     const fileParam = req.params.file;
     const sanitizedFile = fileParam.replace(/[^a-zA-Z0-9.-]/g, '');
-    const file = path.join(__dirname, '../../../cli/build/logs', sanitizedFile);
+    const logsPath = getLogsPath();
+    const file = path.join(logsPath, sanitizedFile);
     res.download(file);
   }));
 

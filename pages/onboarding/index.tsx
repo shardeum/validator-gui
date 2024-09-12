@@ -1,4 +1,3 @@
-// src/pages/onboarding/index.tsx
 import Head from "next/head";
 import { ReactElement, useEffect, useMemo, useState } from "react";
 import onboardingBg from "../../assets/onboarding-bg.svg";
@@ -192,23 +191,25 @@ const Onboarding = () => {
   return (
     <div
       className={
-        "h-full w-full flex justify-between text-black fill-bg py-24 " +
+        "h-full w-full flex flex-col justify-center items-center text-black fill-bg " +
         GeistSans.className
       }
       style={{
         backgroundImage: `url(${onboardingBg.src})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
       }}
     >
-      {!showSuccessScreen && (
-        <>
-          {/* left pane */}
-          <div className="h-full w-full max-w-xl flex flex-col ml-12 justify-between">
-            <div className="h-full w-full flex flex-col items-center justify-between">
-              <div className="max-w-sm">
-                <span className="font-semibold text-3xl w-full">
+      <div className="max-w-4xl w-full px-4 py-12 md:px-12 md:py-24">
+        {!showSuccessScreen && (
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            {/* left pane */}
+            <div className="w-full md:w-1/2 mb-8 md:mb-0 md:pr-8">
+              <div className="flex flex-col items-center md:items-start">
+                <span className="font-semibold text-2xl md:text-3xl text-center md:text-left mb-6">
                   Welcome to Shardeum Validator Setup
                 </span>
-                <div className="flex flex-col gap-y-3 mt-6">
+                <div className="flex flex-col gap-y-3 mb-6">
                   <div className="flex gap-x-1 items-center">
                     <CheckCircleIcon className="h-5 w-5" />
                     <span className="text-sm">
@@ -258,25 +259,25 @@ const Onboarding = () => {
                   </div>
                 </div>
               </div>
-              <div className="w-full flex justify-start max-w-sm">
+              <div className="w-full flex justify-center md:justify-start mt-8">
                 <Logo className="w-32" />
               </div>
             </div>
-          </div>
 
-          {/* right pane */}
-          <div className="grow h-full w-full">
-            <div className="absolute top-0 right-60">
-              <ToastWindow
-                viewLogsOnClick={() => {
-                  return;
-                }}
-                disableActions={true}
-              />
-            </div>
-            <div className="w-full max-w-xl flex flex-col items-start gap-y-3">
-              {/* Step 1: Connect wallet */}
-              <div className="bg-white w-full border p-3 shadow-md rounded-sm">
+            {/* right pane */}
+            <div className="w-full md:w-1/2">
+              <div className="absolute top-4 right-4 md:right-12">
+                <ToastWindow
+                  viewLogsOnClick={() => {
+                    return;
+                  }}
+                  disableActions={true}
+                />
+              </div>
+              <div className="w-full flex flex-col items-center md:items-start gap-y-3">
+                {/* Step 1: Connect wallet */}
+                <div className="bg-white w-full border p-3 shadow-md rounded-sm">
+                  <div>
                 {!(isConnected && chainId === CHAIN_ID) && (
                   <div className="flex flex-col">
                     <div className="flex items-center gap-x-2 max-w-xl">
@@ -351,9 +352,10 @@ const Onboarding = () => {
                   </>
                 )}
               </div>
-
-              {/* Step 2: Claim tokens */}
-              <div className="bg-white w-full border p-3 shadow-md rounded-sm">
+                </div>
+                {/* Step 2: Claim tokens */}
+                <div className="bg-white w-full border p-3 shadow-md rounded-sm">
+                  <div>
                 {isConnected && chainId === CHAIN_ID && tokenClaimPhase < 2 && (
                   <div className="flex flex-col">
                     <div className="flex items-center gap-x-2 max-w-xl">
@@ -462,9 +464,9 @@ const Onboarding = () => {
                   </div>
                 )}
               </div>
-
-              {/* Step 3: Start node */}
-              <div className="bg-white w-full border p-3 shadow-md rounded-sm">
+                </div>
+                <div className="bg-white w-full border p-3 shadow-md rounded-sm">
+                  <div>
                 {tokenClaimPhase === 2 && !isNodeStarted && (
                   <div className="flex flex-col">
                     <div className="flex items-center gap-x-2 max-w-xl">
@@ -536,9 +538,10 @@ const Onboarding = () => {
                   </div>
                 )}
               </div>
-
-              {/* Step 4: Stake SHM */}
-              <div className="bg-white w-full border p-3 shadow-md rounded-sm">
+                </div>
+                {/* Step 4: Stake SHM */}
+                <div className="bg-white w-full border p-3 shadow-md rounded-sm">
+                  <div>
                 {(!isConnected || tokenClaimPhase < 2 || !isNodeStarted) && (
                   <div className="flex flex-col">
                     <div className="flex items-center gap-x-2">
@@ -666,42 +669,42 @@ const Onboarding = () => {
                     </>
                   )}
               </div>
-
-              {/* Skip all */}
-              <div className="flex w-full justify-end my-2">
-                <button
-                  className="text-xs font-semibold"
-                  onClick={() => {
-                    router.push("/dashboard");
-                  }}
-                >
-                  Skip setup for now
-                </button>
+                </div>
+                <div className="flex w-full justify-end my-2">
+                  <button
+                    className="text-xs font-semibold"
+                    onClick={() => {
+                      router.push("/dashboard");
+                    }}
+                  >
+                    Skip setup for now
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </>
-      )}
-      {showSuccessScreen && (
-        <div className="flex flex-col h-full w-full justify-center items-center">
-          <div className="bg-white max-w-sm flex flex-col justify-center items-center p-8 -translate-y-12 border shadow-md gap-y-3">
-            <span className="text-md w-full text-center font-semibold">
-              Congratulations! You successfully setup your Shardeum node.
-            </span>
-            <button
-              className="bg-primary px-4 py-2 w-full text-white text-sm rounded"
-              onClick={() => {
-                router.push("/dashboard");
-              }}
-            >
-              Go to Dashboard
-            </button>
+        )}
+        {showSuccessScreen && (
+          <div className="flex flex-col items-center justify-center">
+            <div className="bg-white max-w-sm flex flex-col justify-center items-center p-8 border shadow-md gap-y-3">
+              <span className="text-md w-full text-center font-semibold">
+                Congratulations! You successfully setup your Shardeum node.
+              </span>
+              <button
+                className="bg-primary px-4 py-2 w-full text-white text-sm rounded"
+                onClick={() => {
+                  router.push("/dashboard");
+                }}
+              >
+                Go to Dashboard
+              </button>
+            </div>
+            <div className="w-full flex justify-center mt-8">
+              <Logo className="w-32"></Logo>
+            </div>
           </div>
-          <div className="w-full flex justify-center">
-            <Logo className="w-32"></Logo>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
