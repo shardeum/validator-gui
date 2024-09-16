@@ -30,9 +30,6 @@ export default function RouteGuard({ children }: { children: ReactNode }) {
 
   async function initialAuthCheck() {
     const isServerAuth = await checkServerAuth();
-    if (!isServerAuth) {
-      authService.logout(apiBase);
-    }
     authCheck(router.asPath);
   }
 
