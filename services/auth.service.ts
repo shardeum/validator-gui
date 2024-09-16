@@ -1,6 +1,6 @@
 import Router from 'next/router'
 import { hashSha256 } from '../utils/sha256-hash';
-
+import { fetcher } from '../hooks/fetcher';
 const isLoggedInKey = 'isLoggedIn'
 export const wasLoggedOutKey = 'wasLoggedOut'
 export const isFirstTimeUserKey = 'isFirstTimeUser'
@@ -57,15 +57,14 @@ async function logout(apiBase: string) {
 }
 
 export async function checkServerAuth(): Promise<boolean> {
+  const url = '/api/auth/check';
+  console.log(`Checking auth at: ${url}`);
   try {
-    const res = await fetch('/api/auth/check', {
-      credentials: 'include',
-    });
-    if (res.ok) {
-      const data = await res.json();
-      return data.authenticated === true;
-    }
-    return false;
+    const data = await fetcher<{ authenticated: boolean }>(url, {
+      method: 'GET',
+    }, (errorMsg) => console.error(errorMsg));
+
+    return data.authenticated === true;
   } catch (error) {
     console.error('checkServerAuth: Error checking authentication:', error);
     return false;
