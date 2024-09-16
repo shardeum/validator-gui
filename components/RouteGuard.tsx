@@ -51,11 +51,6 @@ export default function RouteGuard({ children }: { children: ReactNode }) {
     }
   }
 
-  // prevent rendering until authorized is set
-  if (authorized === null) {
-    return null; 
-  }
-
   return (
     <div>
       {authorized && children}
