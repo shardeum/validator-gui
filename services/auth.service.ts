@@ -30,6 +30,8 @@ const login = async (apiBase: string, password: string) => {
   if (!res.ok) {
     if (res.status === 403) {
       throw new Error('The password you’ve entered is invalid. Please enter the correct password');
+    } else {
+      throw new Error('Something went wrong. Please try again later.');
     }
   }
   localStorage.setItem(isLoggedInKey, 'true');
