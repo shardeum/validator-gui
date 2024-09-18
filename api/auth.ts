@@ -24,7 +24,7 @@ export const loginHandler = [doubleCsrfProtection,(req: Request, res: Response) 
   const password = req.body && req.body.password
   const hashedPass = crypto.hash(password);
   // Exec the CLI validator login command
-  execFile('operator-cli', ['gui', 'login', hashedPass], (err, stdout, stderr) => {
+  execFile('/usr/local/bin/operator-cli', ['gui', 'login', hashedPass], (err, stdout, stderr) => {
     if (err) {
       cliStderrResponse(res, 'Unable to check login', err.message)
       return
