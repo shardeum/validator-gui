@@ -11,6 +11,7 @@ import { ClipboardIcon } from "../atoms/ClipboardIcon";
 import { MobileModalWrapper } from "../layouts/MobileModalWrapper";
 import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 import { useSettings } from "../../hooks/useSettings";
+import { formatRemainingTime } from "../../utils/formatTime";
 
 export const StakeDisplay = () => {
   const addressRef = useRef<HTMLSpanElement>(null);
@@ -52,11 +53,7 @@ export const StakeDisplay = () => {
     return { isStoppedForLongerThan15Minutes, remainingWaitTime };
   }, [settings?.lastStopped]);
 
-  const formatRemainingTime = (ms: number) => {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = Math.floor((ms % 60000) / 1000);
-    return `${minutes}m ${seconds}s`;
-  };
+ 
 
   return (
     <Card>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import rewardsCardBg from "../../assets/rewards-card.png";
 import { useNodeStatus } from "../../hooks/useNodeStatus";
 import { Card } from "../layouts/Card";
@@ -8,9 +8,10 @@ import useModalStore from "../../hooks/useModalStore";
 import { ConfirmRedemptionModal } from "./ConfirmRedemptionModal";
 import { MobileModalWrapper } from "../layouts/MobileModalWrapper";
 import { BgImage } from "../atoms/BgImage";
+import { useSettings } from "../../hooks/useSettings";
+import { formatRemainingTime } from "../../utils/formatTime";
 
 function formatDate(date: Date) {
-  // Format date and time separately
   const datePart = date.toLocaleDateString("en-US", {
     weekday: "short",
     day: "2-digit",
@@ -23,7 +24,6 @@ function formatDate(date: Date) {
     hour12: true,
   });
 
-  // Combine date and time parts
   return `${datePart} ${timePart}`;
 }
 
@@ -38,20 +38,26 @@ export const RewardsCard = () => {
   const { nodeStatus } = useNodeStatus();
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
-  const [canRedeem, setCanRedeem] = useState(
-    isConnected &&
-      chain?.id === CHAIN_ID &&
-      nodeStatus?.state === "stopped" &&
-      parseFloat(nodeStatus?.lockedStake || "0") > 0
-  );
+  const { settings } = useSettings();
+  const [canRedeem, setCanRedeem] = useState(false);
+
+  const { isStoppedForLongerThan15Minutes, remainingWaitTime } = useMemo(() => {
+    if (!settings?.lastStopped) return { isStoppedForLongerThan15Minutes: true, remainingWaitTime: 0 };
+    const timeDifference = Date.now() - settings.lastStopped;
+    const isStoppedForLongerThan15Minutes = timeDifference > 15 * 60 * 1000;
+    const remainingWaitTime = Math.max(15 * 60 * 1000 - timeDifference, 0);
+    return { isStoppedForLongerThan15Minutes, remainingWaitTime };
+  }, [settings?.lastStopped]);
+
   useEffect(() => {
     setCanRedeem(
       isConnected &&
         chain?.id === CHAIN_ID &&
         nodeStatus?.state === "stopped" &&
-        parseFloat(nodeStatus?.lockedStake || "0") > 0
+        parseFloat(nodeStatus?.lockedStake || "0") > 0 &&
+        isStoppedForLongerThan15Minutes
     );
-  }, [nodeStatus?.state, nodeStatus?.lockedStake, isConnected, chain?.id]);
+  }, [nodeStatus?.state, nodeStatus?.lockedStake, isConnected, chain?.id, isStoppedForLongerThan15Minutes]);
 
   return (
     <Card>
@@ -65,7 +71,6 @@ export const RewardsCard = () => {
                     {parseFloat(nodeStatus?.currentRewards || "0").toFixed(2)}{" "}
                     SHM
                   </span>
-                  {/* <span className="text-xs leading-9 bodyFg">(~0.00$)</span> */}
                 </span>
                 <div className="text-xs flex justify-between w-full bodyFg">
                   <span>Earned since last validating cycle</span>
@@ -92,11 +97,16 @@ export const RewardsCard = () => {
                 (canRedeem
                   ? "text-primary"
                   : `text-gray-400 ${
-                      nodeStatus?.state === "active" ? "tooltip" : ""
+                      nodeStatus?.state === "active" || !isStoppedForLongerThan15Minutes ? "tooltip" : ""
                     }`)
               }
-              data-tip="It is not possible to redeem rewards while you are validating.
-              If absolutely necessary, use the force stop option in settings (Not Recommended)."
+              data-tip={
+                nodeStatus?.state === "active"
+                  ? "It is not possible to redeem rewards while you are validating. If absolutely necessary, use the force stop option in settings (Not Recommended)."
+                  : !isStoppedForLongerThan15Minutes
+                  ? `Node has been stopped recently. Please wait for another ${formatRemainingTime(remainingWaitTime)} before redeeming rewards.`
+                  : ""
+              }
               disabled={!canRedeem}
               onClick={() => {
                 resetModal();
