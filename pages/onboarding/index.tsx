@@ -43,6 +43,9 @@ const Onboarding = () => {
   const [accountBalance, setAccountBalance] = useState("");
   const [chainId, setChainId] = useState(0);
   const [tokenClaimPhase, setTokenClaimPhase] = useState(0); // 0: hasn't claimed yet, 1: initiated request, 2: has claimed
+  const { resetToast } = useToastStore((state: any) => ({
+    resetToast: state.resetToast,
+  }));
   const { isConnected, address } = useAccount({
     onConnect: async (args) => {
       if (args?.address) {
@@ -102,7 +105,30 @@ const Onboarding = () => {
     stakeAmount: minimumStakeRequirement.toString(),
     totalStaked: nodeStatus?.lockedStake ? Number(nodeStatus?.lockedStake) : 0,
     onStake: (wasTxnSuccessful: boolean) => {
-      setIsStakingComplete(wasTxnSuccessful);
+      if (wasTxnSuccessful) {
+        setIsStakingComplete(true);
+        setCurrentToast({
+          severity: ToastSeverity.SUCCESS,
+          title: "Stake Added",
+          description: `${stakedAmount.toFixed(2)} SHM staked Successfully`,
+          followupNotification: {
+            title: "Stake Added",
+            type: NotificationType.REWARD,
+            severity: NotificationSeverity.SUCCESS,
+          },
+        });
+      } else {
+        setCurrentToast({
+          severity: ToastSeverity.DANGER,
+          title: "Staking Unsuccessful",
+          description: "Transaction failed or was rejected by the user",
+          followupNotification: {
+            title: "Staking Unsuccessful",
+            type: NotificationType.REWARD,
+            severity: NotificationSeverity.DANGER,
+          },
+        });
+      }
     },
   });
 
@@ -158,6 +184,8 @@ const Onboarding = () => {
         description: "Your add stake transaction is in process.",
         duration: 300000, // 300 seconds
       });
+    } else {
+      resetToast();
     }
   }, [isStaking]);
 
