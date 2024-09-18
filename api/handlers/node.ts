@@ -174,7 +174,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
         return;
       }
 
-      execFileSync('operator-cli', ['gui', 'set', 'password', '-h', req.body.newPassword]);
+      execFileSync('operator-cli', ['gui', 'set', 'password', '-h'], { input: req.body.newPassword });
       res.status(200).json({ status: "ok" })
     }));
 
