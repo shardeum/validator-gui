@@ -60,9 +60,11 @@ export const AddStakeModal = () => {
           },
         });
       } else {
+        // This will handle both rejection and other failure cases
         setCurrentToast({
           severity: ToastSeverity.DANGER,
           title: "Staking Unsuccessful",
+          description: "Transaction failed or was rejected by the user",
           followupNotification: {
             title: "Staking Unsuccessful",
             type: NotificationType.REWARD,
@@ -87,6 +89,8 @@ export const AddStakeModal = () => {
         title: "Processing Adding Stake",
         description: "Your add stake transaction is in process.",
       });
+    } else {
+      resetToast();
     }
   }, [isLoading]);
 
