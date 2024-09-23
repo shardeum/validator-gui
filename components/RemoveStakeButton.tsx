@@ -129,7 +129,7 @@ export default function RemoveStakeButton({nominee, force = false, nodeStatus}: 
   });
 
   ethereum?.on?.("accountsChanged", (args: unknown) => {
-    const accounts = args as Address[]; // Correct type assertion
+    const accounts = args as Address[]; 
     if (accounts && accounts.length > 0) {
       setData({...data, nominator: accounts[0]});
     } else {
