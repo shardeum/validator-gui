@@ -128,20 +128,8 @@ export default function configureNodeHandlers(apiRouter: Router) {
         badRequestResponse(res, 'No address provided');
         return;
       }
-  
-
       console.log('Executing operator-cli stake_info...');
       const output = execFileSync('operator-cli', ['stake_info', address], { encoding: 'utf8' })
-
-      // Check for specific error message 
-      // Case where query was valid but no stake info was found
-      if (output === 'No stake information found. Please fund the account and try again.') {
-        // Check if the response headers have already been sent
-        if (!res.headersSent) {
-          res.status(404).json({ errorMessage: 'Account not found. Please ensure the account has been funded.', errorDetails: '' });
-        }
-        return;
-      }
       const yamlData = yaml.load(output);
       res.json(yamlData);
     })
