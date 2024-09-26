@@ -35,7 +35,7 @@ export const fetcher = async <T>(input: RequestInfo | URL,
     const data = await res.json();
     if (res.status === 403) {
       authService.logout(apiBase);
-    } else if (input.toString().includes('account') && res.status === 500 && data.errorMessage === `Account not found. Please ensure the account has been created and funded.`) {
+    } else if (input.toString().includes('account') && res.status === 404 && data.errorMessage === `Account not found. Please ensure the account has been funded.`) {
       throw new Error('No stake information found. Please fund the account and try again.');
     } else if (res.status === 500) {
       showErrorMessage('Sorry, something went wrong. Please report this issue to our support team so we can investigate and resolve the problem.');
