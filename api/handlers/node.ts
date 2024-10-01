@@ -130,8 +130,12 @@ export default function configureNodeHandlers(apiRouter: Router) {
       }
       console.log('executing operator-cli status...');
       const output = execFileSync('operator-cli', ['stake_info', address], { encoding: 'utf8' })
-      const yamlData = yaml.load(output);
-      res.json(yamlData);
+      try {
+        const yamlData = yaml.load(output);
+        res.json(yamlData);
+      } catch (e) {
+        badRequestResponse(res, 'Unable to fetch status');
+      }
     })
   );
 
