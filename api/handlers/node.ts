@@ -10,7 +10,7 @@ import {
   NodeStatusResponse,
   NodeVersionResponse
 } from '../types/node-types';
-import { badRequestResponse, cliStderrResponse } from './util';
+import { badRequestResponse, cliStderrResponse, notFoundResponse } from './util';
 import path from 'path';
 import { existsSync } from 'fs';
 import asyncRouteHandler from './async-router-handler';
@@ -134,7 +134,7 @@ export default function configureNodeHandlers(apiRouter: Router) {
         const yamlData = yaml.load(output);
         res.json(yamlData);
       } catch (e) {
-        badRequestResponse(res, 'Unable to fetch status');
+        notFoundResponse(res, 'Unable to fetch status');
       }
     })
   );
