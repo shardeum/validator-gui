@@ -88,7 +88,6 @@ export const OverviewSidebar: React.FC = () => {
                       ? "bg-severeFg tooltip"
                       : "bg-successFg")
                   }
-                  data-tip={`Your validator version is out of date. Please update to the latest version (${version?.activeShardeumVersion})`}
                 ></div>
               </div>
               <span
