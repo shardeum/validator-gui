@@ -8,14 +8,6 @@ import { BgImage } from "../atoms/BgImage";
 
 export const LogsDisplay = () => {
   const { logs, downloadAllLogs, clearAllLogs } = useNodeLogs();
-  const pageSize = 5;
-  const [startingIndex, setStartingIndex] = useState(0);
-  const [endingIndex, setEndingIndex] = useState(pageSize - 1);
-
-  const handlePageClick = (page: number) => {
-    setStartingIndex((page - 1) * pageSize);
-    setEndingIndex(page * pageSize - 1);
-  };
 
   return (
     <div className="grow flex flex-col justify-between">
@@ -54,19 +46,13 @@ export const LogsDisplay = () => {
               </div>
             </div>
             {/* logs */}
-            <div className="flex flex-col gap-y-3">
-              {logs?.slice(startingIndex, endingIndex + 1).map((logId) => (
+            <div className="flex flex-col gap-y-1">
+              {logs?.map((logId) => (
                 <LogFrame logId={logId} key={logId} />
               ))}
             </div>
           </div>
         </div>
-        <Pagination
-          totalItems={logs?.length || 0}
-          pageSize={5}
-          onPageClick={handlePageClick}
-          range={1}
-        />
       </div>
       <BgImage src={dashboardBg} alt="dashboard-bg" />
     </div>
