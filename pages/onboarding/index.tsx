@@ -8,6 +8,7 @@ import {
   QuestionMarkCircleIcon,
 } from "@heroicons/react/24/solid";
 import { ArrowUpRightIcon } from "@heroicons/react/20/solid";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { Logo } from "../../components/atoms/Logo";
 import { useAccount, useNetwork, useSwitchNetwork, useDisconnect } from "wagmi";
 import { useNodeStatus } from "../../hooks/useNodeStatus";
@@ -26,6 +27,7 @@ import {
   NotificationSeverity,
   NotificationType,
 } from "../../hooks/useNotificationsStore";
+import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 
 const tokensClaimedByKey = "tokensClaimedBy";
 export const onboardingCompletedKey = "onboardingCompleted";
@@ -57,6 +59,7 @@ const Onboarding = () => {
       setAccountBalance("");
     },
   });
+  const { stakeInfo } = useAccountStakeInfo(address);
   const [isStakingComplete, setIsStakingComplete] = useState(
     localStorage.getItem(onboardingCompletedKey) === "true"
   );
@@ -593,18 +596,46 @@ const Onboarding = () => {
                                   await sendTransaction();
                                 }}
                                 disabled={
-                                  isEmpty ||
-                                  stakedAmount < minimumStakeRequirement
+                                  !!(
+                                    isEmpty ||
+                                    stakedAmount < minimumStakeRequirement ||
+                                    (stakeInfo?.nominee &&
+                                      stakeInfo.nominee !==
+                                        nodeStatus?.nomineeAddress)
+                                  )
                                 }
-                                className={
-                                  (isEmpty ||
-                                  stakedAmount < minimumStakeRequirement
-                                    ? "bg-gray-300"
-                                    : "bg-indigo-600 hover:bg-indigo-700") +
-                                  " text-white text-sm font-semibold w-32 py-2 rounded flex justify-center ease-in-out duration-300 " +
-                                  GeistSans.className
+                                data-tip={
+                                  stakeInfo?.nominee &&
+                                  stakeInfo.nominee !==
+                                    nodeStatus?.nomineeAddress
+                                    ? "Connected wallet is staked to another node. Press `Skip setup for now` to continue. Navigate to settings to force remove existing stake if you wish to stake this current node."
+                                    : isEmpty ||
+                                      stakedAmount < minimumStakeRequirement
+                                    ? "Please enter a valid stake amount"
+                                    : ""
                                 }
+                                className={`
+                                  text-white text-sm font-semibold w-32 py-2 rounded
+                                  flex items-center justify-center gap-2
+                                  ease-in-out duration-300 ${
+                                    GeistSans.className
+                                  }
+                                  ${
+                                    isEmpty ||
+                                    stakedAmount < minimumStakeRequirement ||
+                                    (stakeInfo?.nominee &&
+                                      stakeInfo.nominee !==
+                                        nodeStatus?.nomineeAddress)
+                                      ? "bg-gray-300 tooltip tooltip-bottom"
+                                      : "bg-indigo-600 hover:bg-indigo-700"
+                                  }
+                              `}
                               >
+                                {stakeInfo?.nominee &&
+                                  stakeInfo.nominee !==
+                                    nodeStatus?.nomineeAddress && (
+                                    <ExclamationTriangleIcon className="h-5 w-5 text-yellow-500" />
+                                  )}
                                 Stake
                               </button>
                             )}

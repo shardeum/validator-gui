@@ -11,6 +11,7 @@ import { ClipboardIcon } from "../atoms/ClipboardIcon";
 import { MobileModalWrapper } from "../layouts/MobileModalWrapper";
 import { useAccountStakeInfo } from "../../hooks/useAccountStakeInfo";
 import { useSettings } from "../../hooks/useSettings";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
 export const StakeDisplay = () => {
   const addressRef = useRef<HTMLSpanElement>(null);
@@ -147,13 +148,32 @@ export const StakeDisplay = () => {
                     Remove Stake
                   </button>
                   <button
-                    className={
-                      "px-3 py-2 rounded text-sm basis-0 grow max-w-[12rem] " +
-                      (hasNodeStopped || !nodeStatus?.nomineeAddress
-                        ? "text-gray-400 border border-bodyFg"
-                        : "bg-primary text-white")
+                    className={`
+                      px-3 py-2 rounded text-sm basis-0 grow max-w-[12rem] 
+                      flex items-center justify-center gap-2
+                      ${
+                        hasNodeStopped ||
+                        !nodeStatus?.nomineeAddress ||
+                        (stakeInfo?.nominee &&
+                          stakeInfo.nominee !== nodeStatus?.nomineeAddress)
+                        ? "text-gray-400 border border-bodyFg tooltip tooltip-bottom"
+                        : "bg-primary text-white"
+                      }
+                    `}
+                    disabled={!!(
+                      hasNodeStopped ||
+                      !nodeStatus?.nomineeAddress ||
+                      (stakeInfo?.nominee &&
+                        stakeInfo.nominee !== nodeStatus?.nomineeAddress)
+                    )}
+                    data-tip={
+                      stakeInfo?.nominee &&
+                      stakeInfo.nominee !== nodeStatus?.nomineeAddress
+                        ? "Connected wallet is staked to another node. Navigate to settings to force remove stake if you wish to stake this current node."
+                        : hasNodeStopped || !nodeStatus?.nomineeAddress
+                        ? "Node is stopped or nominee address is missing"
+                        : ""
                     }
-                    disabled={hasNodeStopped || !nodeStatus?.nomineeAddress}
                     onClick={() => {
                       resetModal();
                       setContent(
@@ -167,6 +187,10 @@ export const StakeDisplay = () => {
                       setShowModal(true);
                     }}
                   >
+                    {stakeInfo?.nominee &&
+                      stakeInfo.nominee !== nodeStatus?.nomineeAddress && (
+                        <ExclamationTriangleIcon className="h-5 w-5 text-yellow-500" />
+                      )}
                     Add Stake
                   </button>
                 </div>
