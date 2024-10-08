@@ -70,7 +70,9 @@ export const StakeDisplay = () => {
           </span>
           <div className="flex gap-x-1">
             <span className="font-light text-xs">Min. requirement: </span>
-            <span className="text-xs">{minimumStakeRequirement} SHM</span>
+            <span className="text-xs">
+              {nodeStatus?.stakeRequirement || "10"} SHM
+            </span>
           </div>
         </div>
         <hr className="my-1 mx-3" />
